@@ -1,0 +1,177 @@
+/*
+ * ================================================================
+ * APP.CSS - Sertifikasi Elektronik
+ * ================================================================
+ * File CSS utama yang di-load oleh Vite & Tailwind CSS v4.
+ * Berisi:
+ * 1. Import Tailwind CSS (wajib ada)
+ * 2. Source scanning untuk Tailwind JIT
+ * 3. Konfigurasi tema (font, warna custom)
+ * 4. Custom utility classes dan komponen tambahan
+ * ================================================================
+ */
+
+/* Import Tailwind CSS v4 */
+@import 'tailwindcss';
+
+/* Scanning sumber file untuk Tailwind JIT */
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+/* ================================================================
+   KONFIGURASI TEMA
+   Mendefinisikan font utama dan token warna custom.
+================================================================ */
+@theme {
+    /* Font sans-serif utama: Inter (modern & profesional) */
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Warna kustom biru navy untuk konsistensi branding */
+    --color-navy-50:  #eff6ff;
+    --color-navy-100: #dbeafe;
+    --color-navy-600: #1d4ed8;
+    --color-navy-700: #1e3a8a;
+    --color-navy-800: #1e3050;
+    --color-navy-900: #0f172a;
+}
+
+/* ================================================================
+   BASE STYLES
+   Style dasar yang diterapkan ke semua elemen.
+================================================================ */
+@layer base {
+    /* Scrollbar custom yang tipis dan elegan */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* Smooth scroll behavior untuk anchor links */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Fokus outline yang lebih baik untuk aksesibilitas */
+    *:focus-visible {
+        outline: 2px solid #3b82f6;
+        outline-offset: 2px;
+    }
+}
+
+/* ================================================================
+   KOMPONEN CUSTOM
+   Style komponen yang digunakan di seluruh halaman.
+================================================================ */
+@layer components {
+
+    /* Input field base style */
+    .input-field {
+        @apply w-full px-4 py-3 border border-slate-200 rounded-xl text-sm text-slate-800
+               placeholder-slate-400 bg-white
+               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+               hover:border-slate-300
+               transition-all duration-200;
+    }
+
+    .input-field-error {
+        @apply border-red-400 bg-red-50 focus:ring-red-400;
+    }
+
+    /* Tombol primer biru */
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 px-6 py-3
+               bg-blue-700 hover:bg-blue-800 active:bg-blue-900
+               text-white font-semibold rounded-xl
+               transition-all duration-300
+               shadow-md hover:shadow-lg hover:shadow-blue-300/40
+               hover:-translate-y-0.5
+               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+    }
+
+    /* Tombol sekunder (outline/ghost) */
+    .btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 px-6 py-3
+               bg-slate-100 hover:bg-slate-200
+               text-slate-700 font-semibold rounded-xl
+               transition-all duration-300
+               focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2;
+    }
+
+    /* Card dasar */
+    .card {
+        @apply bg-white rounded-2xl border border-slate-200 shadow-sm;
+    }
+
+    /* Badge / Label */
+    /* Catatan: Tailwind v4 tidak mendukung @apply ke sesama custom class.
+       Setiap varian badge harus mendefinisikan ulang utilitas dasarnya. */
+    .badge {
+        @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold;
+    }
+
+    .badge-blue {
+        @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700;
+    }
+
+    .badge-green {
+        @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700;
+    }
+
+    .badge-amber {
+        @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700;
+    }
+}
+
+/* ================================================================
+   UTILITY CLASSES CUSTOM
+================================================================ */
+@layer utilities {
+
+    /* Animasi fade-in untuk halaman */
+    .animate-fade-in {
+        animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Text gradient biru */
+    .text-gradient-blue {
+        @apply text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-800;
+    }
+
+    /* Prose / artikel styling tambahan */
+    .prose-article p {
+        margin-bottom: 1rem;
+        line-height: 1.75;
+        color: #475569;
+    }
+
+    .prose-article strong {
+        color: #1e293b;
+        font-weight: 600;
+    }
+}
