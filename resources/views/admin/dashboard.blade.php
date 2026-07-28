@@ -114,16 +114,13 @@
             </div>
             
             {{-- Tombol Logout Admin di Pojok Kanan Atas --}}
-            <form action="{{ route('admin.logout') }}" method="POST" class="shrink-0">
-                @csrf
-                <button type="submit" 
-                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 font-semibold rounded-xl text-xs transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer">
-                    <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    <span>Logout Sesi Admin</span>
-                </button>
-            </form>
+            <button type="button" onclick="openLogoutModal()" 
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 font-semibold rounded-xl text-xs transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer">
+                <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span>Logout Sesi Admin</span>
+            </button>
         </div>
 
         {{-- ============================================================
@@ -240,15 +237,19 @@
                                     <div class="text-slate-400 font-medium">{{ $item['instansi'] }}</div>
                                 </td>
                                 <td class="p-4 text-xs font-semibold text-slate-600">{{ $item['jabatan'] }}</td>
-                                <td class="p-4 text-xs text-slate-400 font-mono">{{ date('d/m/Y H:i', strtotime($item['created_at'])) }}</td>
+                                <td class="p-4 text-xs text-slate-400 font-mono">{{ $item->created_at ? $item->created_at->format('d/m/Y H:i') : '-' }}</td>
                                 <td class="p-4 text-center">
-                                    <a href="#" onclick="alert('Membuka file dokumen: {{ $item['dokumen'] }} (Fitur Mockup)')"
-                                        class="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-bold bg-indigo-50 hover:bg-indigo-100/80 px-2.5 py-1.5 rounded-lg transition-colors">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                        </svg>
-                                        <span>Lihat PDF</span>
-                                    </a>
+                                    @if(!empty($item['dokumen']))
+                                        <a href="{{ asset('storage/' . $item['dokumen']) }}" target="_blank"
+                                            class="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-bold bg-indigo-50 hover:bg-indigo-100/80 px-2.5 py-1.5 rounded-lg transition-colors">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                            </svg>
+                                            <span>Lihat PDF</span>
+                                        </a>
+                                    @else
+                                        <span class="text-xs text-slate-400 font-medium">-</span>
+                                    @endif
                                 </td>
                                 <td class="p-4 text-center">
                                     <form action="{{ route('admin.penerbitan.status', $item['id']) }}" method="POST" class="inline-block">
@@ -377,15 +378,19 @@
                                     <div class="text-slate-400 font-mono text-[11px]">{{ $item['no_telepon'] ?? '-' }}</div>
                                     <div class="text-slate-400 font-medium">{{ $item['instansi'] ?? '-' }}</div>
                                 </td>
-                                <td class="p-4 text-xs text-slate-400 font-mono">{{ date('d/m/Y H:i', strtotime($item['created_at'])) }}</td>
+                                <td class="p-4 text-xs text-slate-400 font-mono">{{ $item->created_at ? $item->created_at->format('d/m/Y H:i') : '-' }}</td>
                                 <td class="p-4 text-center">
-                                    <a href="#" onclick="alert('Membuka file rekomendasi: {{ $item['bukti_sertifikat'] }} (Fitur Mockup)')"
-                                        class="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-bold bg-indigo-50 hover:bg-indigo-100/80 px-2.5 py-1.5 rounded-lg transition-colors">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                        <span>Lihat Surat</span>
-                                    </a>
+                                    @if(!empty($item['surat_rekomendasi']))
+                                        <a href="{{ asset('storage/' . $item['surat_rekomendasi']) }}" target="_blank"
+                                            class="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-bold bg-indigo-50 hover:bg-indigo-100/80 px-2.5 py-1.5 rounded-lg transition-colors">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            <span>Lihat Surat</span>
+                                        </a>
+                                    @else
+                                        <span class="text-xs text-slate-400 font-medium">-</span>
+                                    @endif
                                 </td>
                                 <td class="p-4 text-center">
                                     <form action="{{ route('admin.pembaruan.status', $item['id']) }}" method="POST" class="inline-block">
@@ -495,7 +500,7 @@
                     </div>
                     <div>
                         <span class="block text-slate-400 font-semibold text-xs uppercase tracking-wider">Statistik Total Penerbitan</span>
-                        <span id="metric-total-penerbitan" class="block text-2xl font-black text-slate-800 mt-1 font-mono">160</span>
+                        <span id="metric-total-penerbitan" class="block text-2xl font-black text-slate-800 mt-1 font-mono">{{ $stats['totalPenerbitan'] ?? 0 }}</span>
                     </div>
                 </div>
 
@@ -508,7 +513,7 @@
                     </div>
                     <div>
                         <span class="block text-slate-400 font-semibold text-xs uppercase tracking-wider">Statistik Total Pembaruan</span>
-                        <span id="metric-total-pembaruan" class="block text-2xl font-black text-slate-800 mt-1 font-mono">86</span>
+                        <span id="metric-total-pembaruan" class="block text-2xl font-black text-slate-800 mt-1 font-mono">{{ $stats['totalPembaruan'] ?? 0 }}</span>
                     </div>
                 </div>
 
@@ -521,7 +526,7 @@
                     </div>
                     <div>
                         <span class="block text-slate-400 font-semibold text-xs uppercase tracking-wider">Monitoring Data Selesai</span>
-                        <span id="metric-total-selesai" class="block text-2xl font-black text-slate-800 mt-1 font-mono">220</span>
+                        <span id="metric-total-selesai" class="block text-2xl font-black text-slate-800 mt-1 font-mono">{{ $stats['totalSelesai'] ?? 0 }}</span>
                         <span class="text-xs text-emerald-600 font-bold block mt-0.5">Selesai terbit & dikirim</span>
                     </div>
                 </div>
@@ -554,6 +559,44 @@
     </main>
 
 </div>
+
+{{-- ================================================================
+    MODAL KONFIRMASI LOGOUT ADMIN
+================================================================ --}}
+<div id="logout-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200 no-print">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 transform transition-all animate-fade-in mx-4">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center text-rose-600 shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                </div>
+                <h3 class="text-base font-extrabold text-slate-800">Konfirmasi Logout</h3>
+            </div>
+        </div>
+
+        <div class="py-4">
+            <p class="text-sm text-slate-600 leading-relaxed">
+                Apakah Anda yakin ingin keluar dari sesi Administrator? Anda harus memasukkan email & password kembali untuk mengakses dashboard admin.
+            </p>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+            <button type="button" onclick="closeLogoutModal()" 
+                class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all duration-200 cursor-pointer">
+                Batal
+            </button>
+            <form action="{{ route('admin.logout') }}" method="POST" class="inline">
+                @csrf
+                <button type="submit" 
+                    class="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-md hover:shadow-rose-200 cursor-pointer">
+                    Ya, Logout Sesi
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -561,6 +604,17 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+    // ------------------------------------------------------------------
+    // LOGOUT MODAL HANDLER
+    // ------------------------------------------------------------------
+    function openLogoutModal() {
+        document.getElementById('logout-modal').classList.remove('hidden');
+    }
+
+    function closeLogoutModal() {
+        document.getElementById('logout-modal').classList.add('hidden');
+    }
+
     // ------------------------------------------------------------------
     // TAB NAVIGATION SWITCHER
     // ------------------------------------------------------------------
@@ -761,45 +815,28 @@
     // ------------------------------------------------------------------
     // CHART.JS INTEGRATION & DYNAMIC MODE SWITCHING (Keseluruhan / Tahunan / Bulanan)
     // ------------------------------------------------------------------
+    // ------------------------------------------------------------------
+    // CHART.JS INTEGRATION & DYNAMIC TIME FILTERING (Real MySQL Data)
+    // ------------------------------------------------------------------
     let currentInfografisMode = 'keseluruhan';
     let chartBulananInstance = null;
     let chartStatusInstance = null;
 
-    // Database Mockup Infografis
-    const infografisData = {
-        keseluruhan: {
-            labels: ['2023', '2024', '2025', '2026'],
-            penerbitan: [110, 145, 180, 160],
-            pembaruan: [45, 60, 75, 86],
-            totalPenerbitan: 595,
-            totalPembaruan: 266,
-            totalSelesai: 785,
-            status: [710, 95, 56]
-        },
-        tahunan: {
-            2026: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'], penerbitan: [15, 20, 25, 18, 30, 24, 28], pembaruan: [8, 12, 10, 15, 14, 11, 16], totalPen: 160, totalPem: 86, totalSel: 220, status: [190, 40, 16] },
-            2025: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'], penerbitan: [12, 14, 16, 15, 18, 15, 16, 14, 15, 17, 14, 14], pembaruan: [5, 6, 7, 6, 8, 6, 7, 5, 6, 7, 5, 5], totalPen: 180, totalPem: 75, totalSel: 235, status: [220, 20, 15] },
-            2024: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'], penerbitan: [10, 12, 13, 11, 14, 12, 13, 11, 12, 13, 12, 12], pembaruan: [4, 5, 5, 4, 6, 5, 6, 5, 5, 6, 5, 4], totalPen: 145, totalPem: 60, totalSel: 190, status: [180, 15, 10] },
-            2023: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'], penerbitan: [8, 9, 10, 8, 10, 9, 10, 8, 9, 10, 9, 10], pembaruan: [3, 4, 4, 3, 4, 3, 4, 3, 4, 4, 4, 4], totalPen: 110, totalPem: 45, totalSel: 140, status: [135, 12, 8] }
-        },
-        bulanan: {
-            2026: {
-                1: { labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'], penerbitan: [3, 4, 5, 3], pembaruan: [2, 2, 2, 2], status: [18, 4, 1] },
-                2: { labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'], penerbitan: [4, 5, 6, 5], pembaruan: [3, 3, 3, 3], status: [26, 4, 2] },
-                3: { labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'], penerbitan: [6, 7, 7, 5], pembaruan: [2, 3, 3, 2], status: [30, 3, 2] },
-                4: { labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'], penerbitan: [4, 4, 5, 5], pembaruan: [3, 4, 4, 4], status: [28, 3, 2] },
-                5: { labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'], penerbitan: [7, 8, 8, 7], pembaruan: [3, 4, 4, 3], status: [38, 4, 2] },
-                6: { labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'], penerbitan: [5, 6, 7, 6], pembaruan: [2, 3, 3, 3], status: [30, 3, 2] },
-                7: { labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'], penerbitan: [6, 8, 8, 6], pembaruan: [4, 4, 4, 4], status: [36, 5, 3] },
-            }
-        }
-    };
+    // Real Records from Database MySQL
+    const realPenerbitan = @json($penerbitanData ?? []);
+    const realPembaruan  = @json($pembaruanData ?? []);
+
+    function parseRecordDate(dateStr) {
+        if (!dateStr) return null;
+        const d = new Date(dateStr);
+        return isNaN(d.getTime()) ? null : d;
+    }
 
     function setInfografisMode(mode) {
         currentInfografisMode = mode;
         const btnKeseluruhan = document.getElementById('btn-view-keseluruhan');
-        const btnTahunan = document.getElementById('btn-view-tahunan');
-        const btnBulanan = document.getElementById('btn-view-bulanan');
+        const btnTahunan     = document.getElementById('btn-view-tahunan');
+        const btnBulanan     = document.getElementById('btn-view-bulanan');
 
         const wrapperTahun = document.getElementById('wrapper-filter-tahun');
         const wrapperBulan = document.getElementById('wrapper-filter-bulan');
@@ -827,97 +864,149 @@
     }
 
     function updateInfografisData() {
-        const tahun = document.getElementById('filter-tahun-info').value;
-        const bulan = document.getElementById('filter-bulan-info').value;
-        
+        const selectedYear  = parseInt(document.getElementById('filter-tahun-info').value) || 2026;
+        const selectedMonth = parseInt(document.getElementById('filter-bulan-info').value) || 7;
+
+        let penerbitanFiltered = [];
+        let pembaruanFiltered  = [];
         let labels = [];
-        let penerbitan = [];
-        let pembaruan = [];
-        let totalPen = 0;
-        let totalPem = 0;
-        let totalSel = 0;
-        let status = [70, 20, 10];
+        let penerbitanChartData = [];
+        let pembaruanChartData  = [];
         let titleText = "";
 
         if (currentInfografisMode === 'keseluruhan') {
             titleText = "Tren Pengajuan Keseluruhan Waktu (Total Kumulatif)";
-            labels = infografisData.keseluruhan.labels;
-            penerbitan = infografisData.keseluruhan.penerbitan;
-            pembaruan = infografisData.keseluruhan.pembaruan;
-            totalPen = infografisData.keseluruhan.totalPenerbitan;
-            totalPem = infografisData.keseluruhan.totalPembaruan;
-            totalSel = infografisData.keseluruhan.totalSelesai;
-            status = infografisData.keseluruhan.status;
+            const yearsList = [2023, 2024, 2025, 2026];
+            labels = yearsList.map(y => y.toString());
+
+            penerbitanFiltered = realPenerbitan;
+            pembaruanFiltered  = realPembaruan;
+
+            penerbitanChartData = yearsList.map(y => {
+                return realPenerbitan.filter(i => {
+                    const d = parseRecordDate(i.created_at);
+                    return d && d.getFullYear() === y;
+                }).length;
+            });
+
+            pembaruanChartData = yearsList.map(y => {
+                return realPembaruan.filter(i => {
+                    const d = parseRecordDate(i.created_at);
+                    return d && d.getFullYear() === y;
+                }).length;
+            });
+
         } else if (currentInfografisMode === 'tahunan') {
-            const dataTahun = infografisData.tahunan[tahun] || infografisData.tahunan[2026];
-            titleText = `Tren Pengajuan Bulanan (Tahun ${tahun})`;
-            labels = dataTahun.labels;
-            penerbitan = dataTahun.penerbitan;
-            pembaruan = dataTahun.pembaruan;
-            totalPen = dataTahun.totalPen;
-            totalPem = dataTahun.totalPem;
-            totalSel = dataTahun.totalSel;
-            status = dataTahun.status;
+            titleText = `Tren Pengajuan Bulanan (Tahun ${selectedYear})`;
+            labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+            penerbitanFiltered = realPenerbitan.filter(i => {
+                const d = parseRecordDate(i.created_at);
+                return d && d.getFullYear() === selectedYear;
+            });
+
+            pembaruanFiltered = realPembaruan.filter(i => {
+                const d = parseRecordDate(i.created_at);
+                return d && d.getFullYear() === selectedYear;
+            });
+
+            for (let m = 0; m < 12; m++) {
+                penerbitanChartData.push(
+                    penerbitanFiltered.filter(i => {
+                        const d = parseRecordDate(i.created_at);
+                        return d && d.getMonth() === m;
+                    }).length
+                );
+                pembaruanChartData.push(
+                    pembaruanFiltered.filter(i => {
+                        const d = parseRecordDate(i.created_at);
+                        return d && d.getMonth() === m;
+                    }).length
+                );
+            }
+
         } else if (currentInfografisMode === 'bulanan') {
             const monthNames = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-            const dataBulanObj = (infografisData.bulanan[tahun] && infografisData.bulanan[tahun][bulan]) 
-                ? infografisData.bulanan[tahun][bulan] 
-                : (infografisData.bulanan[2026][bulan] || infografisData.bulanan[2026][7]);
-            
-            titleText = `Tren Mingguan di Bulan ${monthNames[bulan]} (${tahun})`;
-            labels = dataBulanObj.labels;
-            penerbitan = dataBulanObj.penerbitan;
-            pembaruan = dataBulanObj.pembaruan;
-            totalPen = penerbitan.reduce((a, b) => a + b, 0);
-            totalPem = pembaruan.reduce((a, b) => a + b, 0);
-            totalSel = totalPen + totalPem - (dataBulanObj.status[1] + dataBulanObj.status[2]);
-            status = dataBulanObj.status;
+            titleText = `Tren Mingguan di Bulan ${monthNames[selectedMonth]} (${selectedYear})`;
+            labels = ['Minggu 1 (Tgl 1-7)', 'Minggu 2 (Tgl 8-14)', 'Minggu 3 (Tgl 15-21)', 'Minggu 4+ (Tgl 22-31)'];
+
+            penerbitanFiltered = realPenerbitan.filter(i => {
+                const d = parseRecordDate(i.created_at);
+                return d && d.getFullYear() === selectedYear && (d.getMonth() + 1) === selectedMonth;
+            });
+
+            pembaruanFiltered = realPembaruan.filter(i => {
+                const d = parseRecordDate(i.created_at);
+                return d && d.getFullYear() === selectedYear && (d.getMonth() + 1) === selectedMonth;
+            });
+
+            penerbitanChartData = [
+                penerbitanFiltered.filter(i => parseRecordDate(i.created_at).getDate() <= 7).length,
+                penerbitanFiltered.filter(i => { const date = parseRecordDate(i.created_at).getDate(); return date >= 8 && date <= 14; }).length,
+                penerbitanFiltered.filter(i => { const date = parseRecordDate(i.created_at).getDate(); return date >= 15 && date <= 21; }).length,
+                penerbitanFiltered.filter(i => parseRecordDate(i.created_at).getDate() >= 22).length,
+            ];
+
+            pembaruanChartData = [
+                pembaruanFiltered.filter(i => parseRecordDate(i.created_at).getDate() <= 7).length,
+                pembaruanFiltered.filter(i => { const date = parseRecordDate(i.created_at).getDate(); return date >= 8 && date <= 14; }).length,
+                pembaruanFiltered.filter(i => { const date = parseRecordDate(i.created_at).getDate(); return date >= 15 && date <= 21; }).length,
+                pembaruanFiltered.filter(i => parseRecordDate(i.created_at).getDate() >= 22).length,
+            ];
         }
 
-        // Update Text & Metric
+        // Metrik Ringkasan Real
+        const totalPen = penerbitanFiltered.length;
+        const totalPem = pembaruanFiltered.length;
+
+        const countDisetujui = penerbitanFiltered.filter(i => i.status === 'Disetujui').length + pembaruanFiltered.filter(i => i.status === 'Disetujui').length;
+        const countPending   = penerbitanFiltered.filter(i => i.status === 'Pending').length + pembaruanFiltered.filter(i => i.status === 'Pending').length;
+        const countDitolak   = penerbitanFiltered.filter(i => i.status === 'Ditolak').length + pembaruanFiltered.filter(i => i.status === 'Ditolak').length;
+
+        // Update Text & Metric Card UI
         const elTitle = document.getElementById('chart-title-tren');
-        const elPen = document.getElementById('metric-total-penerbitan');
-        const elPem = document.getElementById('metric-total-pembaruan');
-        const elSel = document.getElementById('metric-total-selesai');
+        const elPen   = document.getElementById('metric-total-penerbitan');
+        const elPem   = document.getElementById('metric-total-pembaruan');
+        const elSel   = document.getElementById('metric-total-selesai');
 
         if (elTitle) elTitle.textContent = titleText;
-        if (elPen) elPen.textContent = totalPen;
-        if (elPem) elPem.textContent = totalPem;
-        if (elSel) elSel.textContent = totalSel;
+        if (elPen)   elPen.textContent   = totalPen;
+        if (elPem)   elPem.textContent   = totalPem;
+        if (elSel)   elSel.textContent   = countDisetujui;
 
-        // Update Chart Bulanan / Tren
+        // Update Chart Batang (Tren)
         if (chartBulananInstance) {
             chartBulananInstance.data.labels = labels;
-            chartBulananInstance.data.datasets[0].data = penerbitan;
-            chartBulananInstance.data.datasets[1].data = pembaruan;
+            chartBulananInstance.data.datasets[0].data = penerbitanChartData;
+            chartBulananInstance.data.datasets[1].data = pembaruanChartData;
             chartBulananInstance.update();
         }
 
-        // Update Chart Status
+        // Update Chart Donat (Status)
         if (chartStatusInstance) {
-            chartStatusInstance.data.datasets[0].data = status;
+            chartStatusInstance.data.datasets[0].data = [countDisetujui, countPending, countDitolak];
             chartStatusInstance.update();
         }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        // 1. Chart Bulanan (Bar Chart)
+        // 1. Chart Bulanan / Tren (Bar Chart)
         const ctxBulanan = document.getElementById('chart-bulanan').getContext('2d');
         chartBulananInstance = new Chart(ctxBulanan, {
             type: 'bar',
             data: {
-                labels: infografisData.keseluruhan.labels,
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
                 datasets: [
                     {
                         label: 'Penerbitan',
-                        data: infografisData.keseluruhan.penerbitan,
-                        backgroundColor: '#4f46e5', // indigo-600
+                        data: [],
+                        backgroundColor: '#4f46e5',
                         borderRadius: 6
                     },
                     {
                         label: 'Pembaruan',
-                        data: infografisData.keseluruhan.pembaruan,
-                        backgroundColor: '#c084fc', // purple-400
+                        data: [],
+                        backgroundColor: '#c084fc',
                         borderRadius: 6
                     }
                 ]
@@ -932,7 +1021,10 @@
                 },
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
                     }
                 }
             }
@@ -945,7 +1037,7 @@
             data: {
                 labels: ['Disetujui', 'Pending', 'Ditolak'],
                 datasets: [{
-                    data: infografisData.keseluruhan.status,
+                    data: [0, 0, 0],
                     backgroundColor: [
                         '#10b981', // emerald-500
                         '#f59e0b', // amber-500

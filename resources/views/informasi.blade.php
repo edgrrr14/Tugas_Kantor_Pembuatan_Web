@@ -74,28 +74,20 @@
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:sticky lg:top-24">
                     <h3 class="text-sm font-bold text-slate-800 uppercase tracking-widest mb-4">Daftar Isi</h3>
                     <nav class="space-y-2">
-                        <a href="#apa-itu" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
-                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">1</span>
-                            Apa itu Sertifikasi Elektronik?
-                        </a>
                         <a href="#dasar-hukum" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
-                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">2</span>
+                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">1</span>
                             Dasar Hukum
                         </a>
-                        <a href="#manfaat" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
-                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">3</span>
-                            Manfaat Layanan
-                        </a>
                         <a href="#prosedur" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
-                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">4</span>
+                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">2</span>
                             Prosedur Pengajuan
                         </a>
                         <a href="#persyaratan" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
-                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">5</span>
+                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">3</span>
                             Persyaratan Dokumen
                         </a>
                         <a href="#faq" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
-                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">6</span>
+                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">4</span>
                             FAQ
                         </a>
                     </nav>
@@ -126,29 +118,7 @@
             <main class="flex-1 min-w-0">
                 <div class="space-y-8">
 
-                    {{-- ===== SECTION 1: Apa itu Sertifikasi Elektronik? ===== --}}
-                    <article id="apa-itu" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 scroll-mt-24">
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                </svg>
-                            </div>
-                            <h2 class="text-xl font-bold text-slate-800">Apa itu Sertifikasi Elektronik?</h2>
-                        </div>
 
-                        <div class="prose prose-slate max-w-none">
-                            <p class="text-slate-600 leading-relaxed text-base mb-4">
-                                <strong class="text-slate-800">Sertifikasi Elektronik</strong> adalah layanan penerbitan sertifikat digital resmi yang dikeluarkan oleh lembaga berwenang untuk membuktikan identitas, kompetensi, atau kewenangan seseorang atau entitas dalam lingkungan digital.
-                            </p>
-                            <p class="text-slate-600 leading-relaxed text-base mb-4">
-                                Sertifikat elektronik menggunakan teknologi kriptografi (Public Key Infrastructure / PKI) untuk memastikan keaslian dan integritas dokumen. Sertifikat ini berfungsi layaknya tanda tangan dan stempel resmi dalam dunia digital, sehingga memiliki kekuatan hukum yang setara dengan dokumen fisik.
-                            </p>
-                            <p class="text-slate-600 leading-relaxed text-base">
-                                Dalam era transformasi digital, sertifikasi elektronik menjadi kebutuhan yang semakin penting untuk berbagai keperluan resmi, mulai dari pengajuan perizinan, penandatanganan kontrak, hingga transaksi e-commerce B2B.
-                            </p>
-                        </div>
-                    </article>
 
                     {{-- ===== SECTION 2: Dasar Hukum ===== --}}
                     <article id="dasar-hukum" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 scroll-mt-24">
@@ -187,40 +157,7 @@
                         </div>
                     </article>
 
-                    {{-- ===== SECTION 3: Manfaat ===== --}}
-                    <article id="manfaat" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 scroll-mt-24">
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                                </svg>
-                            </div>
-                            <h2 class="text-xl font-bold text-slate-800">Manfaat Layanan</h2>
-                        </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            @foreach([
-                                ['icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', 'title' => 'Keamanan Tinggi', 'desc' => 'Dilindungi teknologi kriptografi & enkripsi SSL.', 'color' => 'green'],
-                                ['icon' => 'M13 10V3L4 14h7v7l9-11h-7z', 'title' => 'Proses Cepat', 'desc' => 'Penerbitan dalam 1-3 hari kerja tanpa antri.', 'color' => 'blue'],
-                                ['icon' => 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z', 'title' => 'Akses 24/7', 'desc' => 'Ajukan kapan saja dan dari mana saja.', 'color' => 'indigo'],
-                                ['icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4', 'title' => 'Diakui Resmi', 'desc' => 'Sah secara hukum untuk keperluan resmi pemerintah.', 'color' => 'amber'],
-                                ['icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', 'title' => 'Tanpa Kertas', 'desc' => 'Proses 100% digital, ramah lingkungan.', 'color' => 'cyan'],
-                                ['icon' => 'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z', 'title' => 'Dukungan Admin', 'desc' => 'Tim helpdesk siap membantu melalui WhatsApp.', 'color' => 'rose'],
-                            ] as $manfaat)
-                            <div class="flex items-start gap-3 p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-slate-200 transition-colors duration-200">
-                                <div class="w-8 h-8 bg-{{ $manfaat['color'] }}-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
-                                    <svg class="w-4 h-4 text-{{ $manfaat['color'] }}-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $manfaat['icon'] }}" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <div class="text-sm font-bold text-slate-800">{{ $manfaat['title'] }}</div>
-                                    <div class="text-xs text-slate-500 mt-0.5 leading-relaxed">{{ $manfaat['desc'] }}</div>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                    </article>
 
                     {{-- ===== SECTION 4: Prosedur Pengajuan ===== --}}
                     <article id="prosedur" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 scroll-mt-24">
@@ -282,9 +219,10 @@
                                     @foreach([
                                         'Kartu Tanda Penduduk (KTP) yang masih berlaku',
                                         'Nomor Induk Kependudukan (NIK)',
+                                        'Nomor Induk Pegawai (NIP)',
                                         'Alamat email aktif',
                                         'Surat keterangan dari instansi/perusahaan',
-                                        'Dokumen pendukung sesuai kebutuhan (PDF/JPG/PNG, maks 5MB)',
+                                        'Dokumen pendukung sesuai kebutuhan (PDF, maks 10MB)',
                                     ] as $item)
                                     <li class="flex items-start gap-2 text-sm text-blue-700">
                                         <svg class="w-4 h-4 text-blue-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -307,6 +245,7 @@
                                 <ul class="space-y-2.5">
                                     @foreach([
                                         'Nama lengkap pemegang sertifikat',
+                                        'Nomor Induk Kependudukan (NIK)',
                                         'Alamat email aktif yang terdaftar',
                                         'Surat rekomendasi permohonan pembaruan (PDF, maks 10MB)',
                                     ] as $item)

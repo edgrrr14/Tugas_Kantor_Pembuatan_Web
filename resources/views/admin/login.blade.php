@@ -71,19 +71,7 @@
                 </button>
             </form>
 
-            {{-- Helper Kredensial Dummy --}}
-            <div class="bg-slate-50 border-t border-slate-100 px-8 py-4">
-                <div class="flex items-start gap-2.5">
-                    <svg class="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div class="text-xs text-slate-500 leading-relaxed">
-                        <span class="font-bold text-slate-700">Kredensial Login Demo (Dummy)</span>:<br>
-                        Email: <code class="bg-slate-200/80 px-1 rounded text-slate-800">admin@sertifikasiel.go.id</code><br>
-                        Password: <code class="bg-slate-200/80 px-1 rounded text-slate-800">admin123</code>
-                    </div>
-                </div>
-            </div>
+
 
         </div>
 

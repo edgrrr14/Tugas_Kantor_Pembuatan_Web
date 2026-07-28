@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Penerbitan;
+use App\Models\Pembaruan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * AdminController
  *
- * Mengontrol autentikasi admin (dummy) dan pengelolaan data dashboard admin.
- * Menggunakan data session untuk kelola status agar terasa hidup sebelum database diintegrasikan.
+ * Mengontrol autentikasi admin dan pengelolaan data dashboard admin via Database MySQL.
  */
 class AdminController extends Controller
 {
     /**
      * Menampilkan form Login Admin.
      */
-    public function login(Request $request)
+    public function login()
     {
-        // Jika sudah login, langsung ke dashboard
-        if ($request->session()->has('admin_logged_in')) {
+        if (Auth::check()) {
             return redirect()->route('admin.dashboard');
         }
 
@@ -27,11 +27,11 @@ class AdminController extends Controller
     }
 
     /**
-     * Memproses autentikasi Login Admin (Dummy).
+     * Memproses autentikasi Login Admin menggunakan database MySQL.
      */
     public function authenticate(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email'    => 'required|email',
             'password' => 'required',
         ], [
@@ -40,12 +40,8 @@ class AdminController extends Controller
             'password.required' => 'Password wajib diisi.',
         ]);
 
-        $credentials = $request->only('email', 'password');
-
-        // Kredensial Dummy
-        if ($credentials['email'] === 'admin@sertifikasiel.go.id' && $credentials['password'] === 'admin123') {
-            $request->session()->put('admin_logged_in', true);
-            $this->initializeMockData($request); // Inisialisasi data laporan pertama kali
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
             return redirect()->route('admin.dashboard')->with('success_auth', 'Selamat datang kembali, Admin!');
         }
 
@@ -59,35 +55,65 @@ class AdminController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->session()->forget('admin_logged_in');
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return redirect()->route('home')->with('success', 'Admin berhasil logout.');
     }
 
     /**
-     * Menampilkan Dashboard Utama Admin.
+     * Menampilkan Dashboard Utama Admin dengan Data Real dari MySQL.
      */
-    public function dashboard(Request $request)
+    public function dashboard()
     {
-        // Cek autentikasi manual
-        if (!$request->session()->has('admin_logged_in')) {
+        if (!Auth::check()) {
             return redirect()->route('admin.login')->withErrors(['login_error' => 'Silakan login terlebih dahulu untuk mengakses dashboard admin.']);
         }
 
-        // Pastikan mock data siap
-        $this->initializeMockData($request);
+        $penerbitanData = Penerbitan::latest()->get();
+        $pembaruanData  = Pembaruan::latest()->get();
 
-        $penerbitanData = $request->session()->get('admin_penerbitan_data');
-        $pembaruanData = $request->session()->get('admin_pembaruan_data');
+        // Total metrik utama real
+        $totalPenerbitan = $penerbitanData->count();
+        $totalPembaruan  = $pembaruanData->count();
+        $totalSelesai    = $penerbitanData->where('status', 'Disetujui')->count() + $pembaruanData->where('status', 'Disetujui')->count();
 
-        return view('admin.dashboard', compact('penerbitanData', 'pembaruanData'));
+        // Distribusi Status Real
+        $statusDisetujui = $totalSelesai;
+        $statusPending   = $penerbitanData->where('status', 'Pending')->count() + $pembaruanData->where('status', 'Pending')->count();
+        $statusDitolak   = $penerbitanData->where('status', 'Ditolak')->count() + $pembaruanData->where('status', 'Ditolak')->count();
+
+        // Hitung data tren per bulan (Jan - Des) tahun berjalan dari database MySQL
+        $currentYear = (int) date('Y');
+        $monthlyPenerbitan = [];
+        $monthlyPembaruan  = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $monthlyPenerbitan[] = Penerbitan::whereYear('created_at', $currentYear)->whereMonth('created_at', $m)->count();
+            $monthlyPembaruan[]  = Pembaruan::whereYear('created_at', $currentYear)->whereMonth('created_at', $m)->count();
+        }
+
+        $stats = [
+            'totalPenerbitan'   => $totalPenerbitan,
+            'totalPembaruan'    => $totalPembaruan,
+            'totalSelesai'      => $totalSelesai,
+            'statusDisetujui'   => $statusDisetujui,
+            'statusPending'     => $statusPending,
+            'statusDitolak'     => $statusDitolak,
+            'monthlyPenerbitan' => $monthlyPenerbitan,
+            'monthlyPembaruan'  => $monthlyPembaruan,
+            'currentYear'       => $currentYear,
+        ];
+
+        return view('admin.dashboard', compact('penerbitanData', 'pembaruanData', 'stats'));
     }
 
     /**
-     * Mengubah status pengajuan Penerbitan.
+     * Mengubah status pengajuan Penerbitan pada database MySQL.
      */
     public function updateStatusPenerbitan(Request $request, $id)
     {
-        if (!$request->session()->has('admin_logged_in')) {
+        if (!Auth::check()) {
             return redirect()->route('admin.login');
         }
 
@@ -95,27 +121,18 @@ class AdminController extends Controller
             'status' => 'required|in:Disetujui,Ditolak,Pending',
         ]);
 
-        $this->initializeMockData($request);
-        $data = $request->session()->get('admin_penerbitan_data');
-
-        foreach ($data as &$item) {
-            if ($item['id'] == $id) {
-                $item['status'] = $request->status;
-                break;
-            }
-        }
-
-        $request->session()->put('admin_penerbitan_data', $data);
+        $penerbitan = Penerbitan::findOrFail($id);
+        $penerbitan->update(['status' => $request->status]);
 
         return back()->with('success', 'Status pengajuan penerbitan berhasil diubah menjadi: ' . $request->status);
     }
 
     /**
-     * Mengubah status pengajuan Pembaruan.
+     * Mengubah status pengajuan Pembaruan pada database MySQL.
      */
     public function updateStatusPembaruan(Request $request, $id)
     {
-        if (!$request->session()->has('admin_logged_in')) {
+        if (!Auth::check()) {
             return redirect()->route('admin.login');
         }
 
@@ -123,32 +140,22 @@ class AdminController extends Controller
             'status' => 'required|in:Disetujui,Ditolak,Pending',
         ]);
 
-        $this->initializeMockData($request);
-        $data = $request->session()->get('admin_pembaruan_data');
-
-        foreach ($data as &$item) {
-            if ($item['id'] == $id) {
-                $item['status'] = $request->status;
-                break;
-            }
-        }
-
-        $request->session()->put('admin_pembaruan_data', $data);
+        $pembaruan = Pembaruan::findOrFail($id);
+        $pembaruan->update(['status' => $request->status]);
 
         return back()->with('success', 'Status pengajuan pembaruan berhasil diubah menjadi: ' . $request->status);
     }
 
     /**
-     * Ekspor data Penerbitan ke Excel (format CSV).
+     * Ekspor data Penerbitan dari database MySQL ke Excel (format CSV).
      */
-    public function exportPenerbitanCSV(Request $request)
+    public function exportPenerbitanCSV()
     {
-        if (!$request->session()->has('admin_logged_in')) {
+        if (!Auth::check()) {
             return redirect()->route('admin.login');
         }
 
-        $this->initializeMockData($request);
-        $data = $request->session()->get('admin_penerbitan_data');
+        $data = Penerbitan::latest()->get();
 
         $filename = 'laporan_penerbitan_sertifikat_' . date('Ymd_His') . '.csv';
 
@@ -172,16 +179,16 @@ class AdminController extends Controller
             foreach ($data as $index => $row) {
                 fputcsv($file, [
                     $index + 1,
-                    $row['nama_lengkap'],
-                    "\t" . $row['nik'], // Prefiks tab agar Excel tidak merusak format teks angka
-                    "\t" . $row['nip'],
-                    $row['email'],
-                    "\t" . ($row['no_telepon'] ?? '-'),
-                    $row['instansi'],
-                    $row['jabatan'],
-                    $row['alasan'],
-                    $row['status'],
-                    $row['created_at'],
+                    $row->nama_lengkap,
+                    "\t" . $row->nik, // Prefiks tab agar Excel tidak merusak format teks angka
+                    "\t" . $row->nip,
+                    $row->email,
+                    "\t" . ($row->no_telepon ?? '-'),
+                    $row->instansi,
+                    $row->jabatan,
+                    $row->alasan,
+                    $row->status,
+                    $row->created_at->format('Y-m-d H:i:s'),
                 ]);
             }
 
@@ -189,145 +196,5 @@ class AdminController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
-    }
-
-    /**
-     * Inisialisasi data tiruan di session.
-     */
-    private function initializeMockData(Request $request)
-    {
-        if (!$request->session()->has('admin_penerbitan_data')) {
-            $request->session()->put('admin_penerbitan_data', [
-                [
-                    'id' => 1,
-                    'nama_lengkap' => 'Ahmad Fauzi',
-                    'nik' => '3273012345670001',
-                    'nip' => '198503122010011002',
-                    'email' => 'ahmad.fauzi@bandung.go.id',
-                    'no_telepon' => '081234567801',
-                    'instansi' => 'Dinas Komunikasi dan Informatika',
-                    'jabatan' => 'Kepala Seksi Infrastruktur Teknologi',
-                    'alasan' => 'Dibutuhkan untuk penandatanganan surat keputusan dinas secara elektronik.',
-                    'dokumen' => 'surat_rekomendasi_ahmad.pdf',
-                    'status' => 'Pending',
-                    'created_at' => '2026-07-14 14:32:00',
-                ],
-                [
-                    'id' => 2,
-                    'nama_lengkap' => 'Rina Kartika',
-                    'nik' => '3273059876540003',
-                    'nip' => '199008242015032001',
-                    'email' => 'rina.kartika@dinkes.go.id',
-                    'no_telepon' => '081234567802',
-                    'instansi' => 'Dinas Kesehatan Kota',
-                    'jabatan' => 'Kepala Sub Bagian Kepegawaian',
-                    'alasan' => 'Penandatanganan elektronik dokumen kepegawaian dan surat izin praktek tenaga kesehatan.',
-                    'dokumen' => 'surat_rekomendasi_rina.pdf',
-                    'status' => 'Pending',
-                    'created_at' => '2026-07-13 09:15:00',
-                ],
-                [
-                    'id' => 3,
-                    'nama_lengkap' => 'Budi Santoso',
-                    'nik' => '3273024567890002',
-                    'nip' => '197811052003121004',
-                    'email' => 'budi.santoso@bappeda.go.id',
-                    'no_telepon' => '081234567803',
-                    'instansi' => 'Badan Perencanaan Pembangunan Daerah',
-                    'jabatan' => 'Perencana Ahli Madya',
-                    'alasan' => 'Penandatanganan dokumen rencana pembangunan daerah dan evaluasi kerja tahunan.',
-                    'dokumen' => 'surat_rekomendasi_budi.pdf',
-                    'status' => 'Disetujui',
-                    'created_at' => '2026-07-11 11:20:00',
-                ],
-                [
-                    'id' => 4,
-                    'nama_lengkap' => 'Siti Aminah',
-                    'nik' => '3273091234560004',
-                    'nip' => '199304152019082003',
-                    'email' => 'siti.aminah@dinsos.go.id',
-                    'no_telepon' => '081234567804',
-                    'instansi' => 'Dinas Sosial',
-                    'jabatan' => 'Pekerja Sosial Ahli Pertama',
-                    'alasan' => 'Dibutuhkan untuk penandatanganan surat rekomendasi bantuan sosial daerah.',
-                    'dokumen' => 'surat_rekomendasi_siti.pdf',
-                    'status' => 'Ditolak',
-                    'created_at' => '2026-07-10 16:45:00',
-                ],
-            ]);
-        }
-
-        if (!$request->session()->has('admin_pembaruan_data')) {
-            $request->session()->put('admin_pembaruan_data', [
-                [
-                    'id' => 1,
-                    'nama_lengkap' => 'Joko Widodo Susilo',
-                    'nik' => '3273019876540005',
-                    'email' => 'joko.ws@disdik.go.id',
-                    'no_telepon' => '081234567801',
-                    'instansi' => 'Dinas Pendidikan',
-                    'bukti_sertifikat' => 'rekomendasi_pembaruan_joko.pdf',
-                    'status' => 'Pending',
-                    'created_at' => '2026-07-14 16:10:00',
-                ],
-                [
-                    'id' => 2,
-                    'nama_lengkap' => 'Dewi Lestari',
-                    'nik' => '3273051234560007',
-                    'email' => 'dewi.lestari@setda.go.id',
-                    'no_telepon' => '081234567802',
-                    'instansi' => 'Sekretariat Daerah',
-                    'bukti_sertifikat' => 'rekomendasi_pembaruan_dewi.pdf',
-                    'status' => 'Pending',
-                    'created_at' => '2026-07-13 11:30:00',
-                ],
-                [
-                    'id' => 3,
-                    'nama_lengkap' => 'Hendri Pratama',
-                    'nik' => '3273026543210009',
-                    'email' => 'hendri.pratama@dispar.go.id',
-                    'no_telepon' => '081234567803',
-                    'instansi' => 'Dinas Kebudayaan dan Pariwisata',
-                    'bukti_sertifikat' => 'rekomendasi_pembaruan_hendri.pdf',
-                    'status' => 'Disetujui',
-                    'created_at' => '2026-07-12 10:00:00',
-                ],
-                [
-                    'id' => 4,
-                    'nama_lengkap' => 'Bambang Wijaya',
-                    'nik' => '3273087654320011',
-                    'email' => 'bambang.w@diskop.go.id',
-                    'no_telepon' => '081298765432',
-                    'instansi' => 'Dinas Koperasi dan UMKM',
-                    'bukti_sertifikat' => 'rekomendasi_pembaruan_bambang.pdf',
-                    'status' => 'Pending',
-                    'created_at' => '2026-07-15 08:30:00',
-                ],
-            ]);
-        } else {
-            // Pastikan data dummy Pending baru juga tersimpan pada session yang sedang berjalan
-            $existingPembaruan = $request->session()->get('admin_pembaruan_data');
-            $hasItem4 = false;
-            foreach ($existingPembaruan as $item) {
-                if (isset($item['id']) && $item['id'] == 4) {
-                    $hasItem4 = true;
-                    break;
-                }
-            }
-            if (!$hasItem4) {
-                $existingPembaruan[] = [
-                    'id' => 4,
-                    'nama_lengkap' => 'Bambang Wijaya',
-                    'nik' => '3273087654320011',
-                    'email' => 'bambang.w@diskop.go.id',
-                    'no_telepon' => '081298765432',
-                    'instansi' => 'Dinas Koperasi dan UMKM',
-                    'bukti_sertifikat' => 'rekomendasi_pembaruan_bambang.pdf',
-                    'status' => 'Pending',
-                    'created_at' => '2026-07-15 08:30:00',
-                ];
-                $request->session()->put('admin_pembaruan_data', $existingPembaruan);
-            }
-        }
     }
 }

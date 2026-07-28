@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Penerbitan;
+use App\Models\Pembaruan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -84,10 +86,10 @@ class CertificationController extends Controller
         // -----------------------------------------------------------
         $validated = $request->validate([
             'nama_lengkap'   => 'required|string|max:255|min:3',
-            'nik'            => 'required|string|max:16|min:10',
-            'nip'            => 'required|string|max:18|min:9',
+            'nik'            => 'required|numeric|digits:16',
+            'nip'            => 'required|numeric|digits:18',
             'email'          => 'required|email|max:255',
-            'no_telepon'     => 'required|string|max:20',
+            'no_telepon'     => 'required|string|max:13|min:10',
             'instansi'       => 'required|string|max:255',
             'jabatan'        => 'required|string|max:255',
             'alasan'         => 'required|string|max:2000',
@@ -98,13 +100,18 @@ class CertificationController extends Controller
             'nama_lengkap.required'  => 'Nama lengkap wajib diisi.',
             'nama_lengkap.min'       => 'Nama lengkap minimal 3 karakter.',
             'nik.required'           => 'NIK wajib diisi.',
+            'nik.numeric'            => 'NIK harus berupa angka 16 digit.',
+            'nik.digits'             => 'NIK harus terdiri dari 16 digit.',
             'nik.max'                => 'NIK tidak boleh lebih dari 16 karakter.',
             'nip.required'           => 'NIP wajib diisi.',
-            'nip.min'                => 'NIP minimal 9 karakter.',
+            'nip.numeric'            => 'NIP harus berupa angka 18 digit.',
+            'nip.digits'             => 'NIP harus terdiri dari 18 digit.',
             'nip.max'                => 'NIP tidak boleh lebih dari 18 karakter.',
             'email.required'         => 'Alamat email wajib diisi.',
             'email.email'            => 'Format alamat email tidak valid.',
             'no_telepon.required'    => 'Nomor telepon wajib diisi.',
+            'no_telepon.max'         => 'Nomor telepon tidak boleh lebih dari 13 karakter.',
+            'no_telepon.min'         => 'Nomor telepon tidak boleh kurang dari 10 karakter.',
             'instansi.required'      => 'Nama Instansi wajib diisi.',
             'jabatan.required'       => 'Jabatan wajib diisi.',
             'alasan.required'        => 'Alasan pengajuan wajib diisi.',
@@ -126,23 +133,20 @@ class CertificationController extends Controller
         }
 
         // -----------------------------------------------------------
-        // STEP 3: SIMPAN DATA KE DATABASE
-        //
-        // TODO: Aktifkan kode berikut setelah menjalankan migrasi database.
-        // Buat model: php artisan make:model PenerbitanSertifikat -m
+        // STEP 3: SIMPAN DATA KE DATABASE MYSQL
         // -----------------------------------------------------------
-        // $penerbitan = \App\Models\PenerbitanSertifikat::create([
-        //     'nama_lengkap' => $validated['nama_lengkap'],
-        //     'nik'          => $validated['nik'],
-        //     'nip'          => $validated['nip'],
-        //     'email'        => $validated['email'],
-        //     'no_telepon'   => $validated['no_telepon'],
-        //     'instansi'     => $validated['instansi'],
-        //     'jabatan'      => $validated['jabatan'],
-        //     'alasan'       => $validated['alasan'],
-        //     'dokumen_path' => $dokumenPath,
-        //     'status'       => 'pending', // Status default: menunggu review
-        // ]);
+        $penerbitan = Penerbitan::create([
+            'nama_lengkap' => $validated['nama_lengkap'],
+            'nik'          => $validated['nik'],
+            'nip'          => $validated['nip'],
+            'email'        => $validated['email'],
+            'no_telepon'   => $validated['no_telepon'],
+            'instansi'     => $validated['instansi'],
+            'jabatan'      => $validated['jabatan'],
+            'alasan'       => $validated['alasan'],
+            'dokumen'      => $dokumenPath,
+            'status'       => 'Pending',
+        ]);
 
         // -----------------------------------------------------------
         // STEP 4: NOTIFIKASI WHATSAPP KE ADMIN
@@ -211,9 +215,9 @@ class CertificationController extends Controller
             'nama_lengkap'     => 'required|string|max:255|min:3',
             'nik'              => 'required|numeric|digits:16',
             'email'            => 'required|email|max:255',
-            'no_telepon'       => 'required|string|max:20',
+            'no_telepon'       => 'required|string|max:13|min:10',
             'instansi'         => 'required|string|max:255',
-            'bukti_sertifikat' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240', // Maks 10MB
+            'bukti_sertifikat' => 'required|file|mimes:pdf|max:10240', // Maks 10MB
             'persetujuan'      => 'accepted',
         ], [
             // Pesan validasi dalam Bahasa Indonesia
@@ -225,9 +229,11 @@ class CertificationController extends Controller
             'email.required'            => 'Alamat email wajib diisi.',
             'email.email'               => 'Format alamat email tidak valid.',
             'no_telepon.required'       => 'Nomor telepon wajib diisi.',
+            'no_telepon.max'            => 'Nomor telepon tidak boleh lebih dari 13 karakter.',
+            'no_telepon.min'            => 'Nomor telepon tidak boleh kurang dari 10 karakter.',
             'instansi.required'         => 'Instansi wajib diisi.',
             'bukti_sertifikat.required' => 'Surat rekomendasi permohonan pembaruan sertifikat elektronik wajib diunggah.',
-            'bukti_sertifikat.mimes'    => 'Format file harus berupa PDF, JPG, JPEG, atau PNG.',
+            'bukti_sertifikat.mimes'    => 'Format file harus berupa PDF.',
             'bukti_sertifikat.max'      => 'Ukuran file tidak boleh lebih dari 10MB.',
             'persetujuan.accepted'      => 'Anda harus menyetujui pernyataan ini sebelum mengirim pengajuan.',
         ]);
@@ -241,20 +247,17 @@ class CertificationController extends Controller
         }
 
         // -----------------------------------------------------------
-        // STEP 3: SIMPAN DATA KE DATABASE
-        //
-        // TODO: Aktifkan kode berikut setelah menjalankan migrasi database.
-        // Buat model: php artisan make:model PembaruanSertifikat -m
+        // STEP 3: SIMPAN DATA KE DATABASE MYSQL
         // -----------------------------------------------------------
-        // $pembaruan = \App\Models\PembaruanSertifikat::create([
-        //     'nama_lengkap'     => $validated['nama_lengkap'],
-        //     'nik'              => $validated['nik'],
-        //     'email'            => $validated['email'],
-        //     'no_telepon'       => $validated['no_telepon'],
-        //     'instansi'         => $validated['instansi'],
-        //     'bukti_path'       => $buktiPath,
-        //     'status'           => 'pending',
-        // ]);
+        $pembaruan = Pembaruan::create([
+            'nama_lengkap'      => $validated['nama_lengkap'],
+            'nik'               => $validated['nik'],
+            'email'             => $validated['email'],
+            'no_telepon'        => $validated['no_telepon'],
+            'instansi'          => $validated['instansi'],
+            'surat_rekomendasi' => $buktiPath,
+            'status'            => 'Pending',
+        ]);
 
         // -----------------------------------------------------------
         // STEP 4: NOTIFIKASI WHATSAPP KE ADMIN
