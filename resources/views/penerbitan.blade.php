@@ -169,7 +169,7 @@
                                 id="email"
                                 name="email"
                                 value="{{ old('email') }}"
-                                placeholder="contoh@email.com"
+                                placeholder="contoh@mail.go.id"
                                 autocomplete="email"
                                 class="w-full px-4 py-3 border rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200
                                     {{ $errors->has('email') ? 'border-red-400 bg-red-50 focus:ring-red-400' : 'border-slate-200 bg-white hover:border-slate-300' }}"

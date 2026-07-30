@@ -50,22 +50,20 @@
 
         {{-- Header section: Judul utama Portal Sertifikasi Elektronik --}}
         <div class="text-center mb-12">
-            {{-- Ikon logo --}}
-            <div class="flex justify-center mb-5">
-                <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center shadow-lg">
-                    <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                    </svg>
-                </div>
+            {{-- Logo Kabupaten Mamasa --}}
+            <div class="flex justify-center mb-4">
+                <img src="{{ asset('images/logo-mamasa.png') }}" alt="Logo Kabupaten Mamasa" class="h-28 sm:h-32 w-auto object-contain drop-shadow-md hover:scale-105 transition-transform duration-300">
+            </div>
+            {{-- Identitas Pemerintah --}}
+            <div class="inline-block px-4 py-1.5 bg-blue-50 border border-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider mb-3">
+                Pemerintah Kabupaten Mamasa
             </div>
             {{-- Judul utama H1 --}}
             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-800 mb-3 leading-tight">
                 Portal <span class="text-blue-700">Sertifikasi Elektronik</span>
             </h1>
             <p class="text-slate-500 text-base max-w-xl mx-auto leading-relaxed">
-                Layanan penerbitan dan pembaruan sertifikat digital yang <strong class="text-slate-700">cepat, aman, dan terpercaya</strong>.
-                Pilih layanan yang Anda butuhkan di bawah ini.
+                Layanan penerbitan dan pembaruan sertifikat digital <strong class="text-slate-700">Pemerintah Kabupaten Mamasa</strong> yang <strong class="text-slate-700">cepat, aman, dan terpercaya</strong>.
             </p>
         </div>
 

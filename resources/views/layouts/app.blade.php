@@ -45,9 +45,36 @@
 
     {{-- Style tambahan per halaman (opsional) --}}
     @stack('styles')
+
+    {{-- Anti-Flicker Script Aksesibilitas (9 Spesifikasi) --}}
+    <script>
+        (function() {
+            var doc = document.documentElement;
+            var savedSize = localStorage.getItem('a11y_text_size');
+            var savedSat = localStorage.getItem('a11y_sat');
+            var savedHC = localStorage.getItem('a11y_high_contrast');
+            var savedDyslexia = localStorage.getItem('a11y_dyslexia');
+            var savedLineHeight = localStorage.getItem('a11y_line_height');
+            var savedCursor = localStorage.getItem('a11y_large_cursor');
+            var savedSpacing = localStorage.getItem('a11y_text_spacing');
+            var savedUnderline = localStorage.getItem('a11y_underline');
+
+            if (savedSize && savedSize !== '100') doc.style.fontSize = savedSize + '%';
+            if (savedSat && savedSat !== 'normal') doc.classList.add('sat-' + savedSat);
+            if (savedHC === '1') doc.classList.add('high-contrast');
+            if (savedDyslexia === '1') doc.classList.add('dyslexia-mode');
+            if (savedLineHeight === '1') doc.classList.add('line-height-mode');
+            if (savedCursor === '1') doc.classList.add('large-cursor');
+            if (savedSpacing === '1') doc.classList.add('text-spacing-mode');
+            if (savedUnderline === '1') doc.classList.add('underline-links');
+        })();
+    </script>
 </head>
 
 <body class="font-sans antialiased bg-slate-50 text-slate-800">
+
+    {{-- Skip link untuk pengguna keyboard & screen reader (Spesifikasi 1) --}}
+    <a href="#main-content" class="skip-link">Lompati ke Konten Utama</a>
 
     {{-- Tombol Login Admin Melayang di Pojok Kanan Atas (Tampil hanya di Beranda utama saat belum login) --}}
     @if(request()->routeIs('home') && !session()->has('admin_logged_in'))
@@ -68,16 +95,11 @@
 
                 {{-- LOGO & NAMA WEBSITE (Kiri) --}}
                 <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                    {{-- Ikon sertifikat sebagai logo --}}
-                    <div class="w-9 h-9 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-blue-300 transition-shadow duration-300">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                        </svg>
-                    </div>
+                    {{-- Logo Kabupaten Mamasa --}}
+                    <img src="{{ asset('images/logo-mamasa.png') }}" alt="Logo Kabupaten Mamasa" class="h-10 w-auto object-contain transition-transform group-hover:scale-105">
                     <div>
                         <span class="font-bold text-blue-800 text-base leading-tight block">Sertifikasi Elektronik</span>
-                        <span class="text-slate-500 text-xs leading-tight block">Portal Resmi</span>
+                        <span class="text-slate-500 text-xs leading-tight block">Kabupaten Mamasa</span>
                     </div>
                 </a>
 
@@ -150,7 +172,7 @@
         KONTEN UTAMA
         Area ini akan diisi oleh setiap halaman yang extends layout ini.
     ============================================================ --}}
-    <main>
+    <main id="main-content">
         @yield('content')
     </main>
 
@@ -165,12 +187,7 @@
                 {{-- Kolom 1: Logo & Deskripsi --}}
                 <div>
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                            </svg>
-                        </div>
+                        <img src="{{ asset('images/logo-mamasa.png') }}" alt="Logo Kabupaten Mamasa" class="h-10 w-auto object-contain">
                         <span class="text-white font-bold">Sertifikasi Elektronik</span>
                     </div>
                     <p class="text-sm leading-relaxed">
@@ -212,11 +229,176 @@
 
             {{-- Garis pemisah & Copyright --}}
             <div class="border-t border-slate-800 pt-6 text-center text-xs">
-                <p>&copy; {{ date('Y') }} Sertifikasi Elektronik &mdash; Portal Resmi Sertifikasi Elektronik. Seluruh hak cipta dilindungi.</p>
+                <p>&copy; {{ date('Y') }} Dinas Komunikasi Informatika dan Persandian &mdash; Portal Resmi Sertifikasi Elektronik. Seluruh hak cipta dilindungi.</p>
             </div>
         </div>
     </footer>
     @endif
+
+    {{-- ============================================================
+        WIDGET AKSESIBILITAS GLOBAL (A11Y TOOLBAR 9 FITUR)
+    ============================================================ --}}
+    <div id="a11y-widget-container" class="fixed bottom-6 left-6 z-50 font-sans">
+        {{-- Live Announcer untuk Screen Reader --}}
+        <div id="a11y-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+        {{-- Tombol Utama Floating Accessibility (Icon Orang Lingkaran Biru Pure Vector) --}}
+        <button id="a11y-toggle-btn"
+            aria-label="Buka Menu Aksesibilitas Website"
+            aria-expanded="false"
+            aria-controls="a11y-panel"
+            class="group flex items-center justify-center w-14 h-14 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-4 focus:ring-yellow-400 cursor-pointer p-0">
+            <svg class="w-14 h-14" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="50" cy="50" r="48" fill="#2563eb" />
+                <circle cx="50" cy="50" r="40" stroke="white" stroke-width="5.5" fill="none" />
+                <circle cx="50" cy="27" r="7.5" fill="white" />
+                <path d="M 24 41.5 C 38 37.5 62 37.5 76 41.5 C 62 43.5 38 43.5 24 41.5 Z" fill="white" />
+                <path d="M 45 44 L 45 61 L 36 81 L 43 83 L 50 67 L 57 83 L 64 81 L 55 61 L 55 44 Z" fill="white" />
+            </svg>
+        </button>
+
+        {{-- Panel Popover Menu Aksesibilitas 9 Fitur --}}
+        <div id="a11y-panel"
+            class="hidden absolute bottom-16 left-0 w-[92vw] sm:w-[480px] md:w-[540px] bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transition-all duration-300 z-50">
+            
+            {{-- Header Panel --}}
+            <div class="bg-gradient-to-r from-blue-700 to-indigo-800 p-5 text-white flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0">
+                        <svg class="w-10 h-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <circle cx="50" cy="50" r="48" fill="#2563eb" />
+                            <circle cx="50" cy="50" r="40" stroke="white" stroke-width="5.5" fill="none" />
+                            <circle cx="50" cy="27" r="7.5" fill="white" />
+                            <path d="M 24 41.5 C 38 37.5 62 37.5 76 41.5 C 62 43.5 38 43.5 24 41.5 Z" fill="white" />
+                            <path d="M 45 44 L 45 61 L 36 81 L 43 83 L 50 67 L 57 83 L 64 81 L 55 61 L 55 44 Z" fill="white" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-base leading-tight">Fitur Aksesibilitas</h3>
+                        <p class="text-xs text-blue-100">Setelan alat bantu visual & penglihatan</p>
+                    </div>
+                </div>
+                <button id="a11y-close-btn" aria-label="Tutup Menu Aksesibilitas" class="text-white/80 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            {{-- Body Panel (Grid 9 Fitur Spesifikasi) --}}
+            <div class="p-4 grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-[70vh] overflow-y-auto bg-slate-50/50">
+
+                {{-- 1. Perbesar Teks --}}
+                <button type="button" id="btn-increase-text"
+                    class="flex flex-col items-center text-center p-3 bg-white hover:bg-blue-50/80 border border-slate-200 hover:border-blue-300 rounded-2xl transition-all cursor-pointer group shadow-xs hover:shadow-md">
+                    <div class="w-9 h-9 bg-blue-50 group-hover:bg-blue-600 group-hover:text-white text-blue-700 rounded-xl flex items-center justify-center font-black text-sm mb-1.5 transition-colors">
+                        A+
+                    </div>
+                    <span class="font-bold text-slate-800 text-xs mb-0.5">Perbesar Teks</span>
+                    <span class="text-[10px] text-slate-500 leading-tight">Tambah ukuran font</span>
+                    <span id="badge-text-size-inc" class="mt-2 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">100%</span>
+                </button>
+
+                {{-- 2. Perkecil Teks --}}
+                <button type="button" id="btn-decrease-text"
+                    class="flex flex-col items-center text-center p-3 bg-white hover:bg-blue-50/80 border border-slate-200 hover:border-blue-300 rounded-2xl transition-all cursor-pointer group shadow-xs hover:shadow-md">
+                    <div class="w-9 h-9 bg-blue-50 group-hover:bg-blue-600 group-hover:text-white text-blue-700 rounded-xl flex items-center justify-center font-black text-sm mb-1.5 transition-colors">
+                        A-
+                    </div>
+                    <span class="font-bold text-slate-800 text-xs mb-0.5">Perkecil Teks</span>
+                    <span class="text-[10px] text-slate-500 leading-tight">Kurangi ukuran font</span>
+                    <span id="badge-text-size-dec" class="mt-2 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">Normal</span>
+                </button>
+
+                {{-- 3. Kejenuhan (Saturation) --}}
+                <button type="button" id="btn-toggle-sat"
+                    class="flex flex-col items-center text-center p-3 bg-white hover:bg-blue-50/80 border border-slate-200 hover:border-blue-300 rounded-2xl transition-all cursor-pointer group shadow-xs hover:shadow-md">
+                    <div class="w-9 h-9 bg-indigo-50 group-hover:bg-indigo-600 group-hover:text-white text-indigo-600 rounded-xl flex items-center justify-center font-bold text-base mb-1.5 transition-colors">
+                        🎨
+                    </div>
+                    <span class="font-bold text-slate-800 text-xs mb-0.5">Kejenuhan</span>
+                    <span class="text-[10px] text-slate-500 leading-tight">Monokrom / Redup</span>
+                    <span id="badge-sat-status" class="mt-2 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">Normal</span>
+                </button>
+
+                {{-- 4. Kontras+ (High Contrast) --}}
+                <button type="button" id="btn-toggle-contrast"
+                    class="flex flex-col items-center text-center p-3 bg-white hover:bg-blue-50/80 border border-slate-200 hover:border-blue-300 rounded-2xl transition-all cursor-pointer group shadow-xs hover:shadow-md">
+                    <div class="w-9 h-9 bg-amber-50 group-hover:bg-amber-600 group-hover:text-white text-amber-600 rounded-xl flex items-center justify-center font-bold text-base mb-1.5 transition-colors">
+                        🌓
+                    </div>
+                    <span class="font-bold text-slate-800 text-xs mb-0.5">Kontras+</span>
+                    <span class="text-[10px] text-slate-500 leading-tight">Latar gelap & kontras</span>
+                    <span id="badge-contrast-status" class="mt-2 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">Off</span>
+                </button>
+
+                {{-- 5. Ramah Disleksia --}}
+                <button type="button" id="btn-toggle-dyslexia"
+                    class="flex flex-col items-center text-center p-3 bg-white hover:bg-blue-50/80 border border-slate-200 hover:border-blue-300 rounded-2xl transition-all cursor-pointer group shadow-xs hover:shadow-md">
+                    <div class="w-9 h-9 bg-purple-50 group-hover:bg-purple-600 group-hover:text-white text-purple-600 rounded-xl flex items-center justify-center font-bold text-base mb-1.5 transition-colors">
+                        📖
+                    </div>
+                    <span class="font-bold text-slate-800 text-xs mb-0.5">Ramah Disleksia</span>
+                    <span class="text-[10px] text-slate-500 leading-tight">Font khusus disleksia</span>
+                    <span id="badge-dyslexia-status" class="mt-2 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">Off</span>
+                </button>
+
+                {{-- 6. Tinggi Garis (Line Height) --}}
+                <button type="button" id="btn-toggle-line-height"
+                    class="flex flex-col items-center text-center p-3 bg-white hover:bg-blue-50/80 border border-slate-200 hover:border-blue-300 rounded-2xl transition-all cursor-pointer group shadow-xs hover:shadow-md">
+                    <div class="w-9 h-9 bg-emerald-50 group-hover:bg-emerald-600 group-hover:text-white text-emerald-600 rounded-xl flex items-center justify-center font-bold text-base mb-1.5 transition-colors">
+                        ↕️
+                    </div>
+                    <span class="font-bold text-slate-800 text-xs mb-0.5">Tinggi Garis</span>
+                    <span class="text-[10px] text-slate-500 leading-tight">Tambah spasi baris</span>
+                    <span id="badge-line-height-status" class="mt-2 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">Normal</span>
+                </button>
+
+                {{-- 7. Kursor Besar (Large Cursor) --}}
+                <button type="button" id="btn-toggle-cursor"
+                    class="flex flex-col items-center text-center p-3 bg-white hover:bg-blue-50/80 border border-slate-200 hover:border-blue-300 rounded-2xl transition-all cursor-pointer group shadow-xs hover:shadow-md">
+                    <div class="w-9 h-9 bg-rose-50 group-hover:bg-rose-600 group-hover:text-white text-rose-600 rounded-xl flex items-center justify-center font-bold text-base mb-1.5 transition-colors">
+                        🖱️
+                    </div>
+                    <span class="font-bold text-slate-800 text-xs mb-0.5">Kursor Besar</span>
+                    <span class="text-[10px] text-slate-500 leading-tight">Pointer menonjol</span>
+                    <span id="badge-cursor-status" class="mt-2 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">Normal</span>
+                </button>
+
+                {{-- 8. Spasi Teks --}}
+                <button type="button" id="btn-toggle-text-spacing"
+                    class="flex flex-col items-center text-center p-3 bg-white hover:bg-blue-50/80 border border-slate-200 hover:border-blue-300 rounded-2xl transition-all cursor-pointer group shadow-xs hover:shadow-md">
+                    <div class="w-9 h-9 bg-cyan-50 group-hover:bg-cyan-600 group-hover:text-white text-cyan-600 rounded-xl flex items-center justify-center font-bold text-base mb-1.5 transition-colors">
+                        ↔️
+                    </div>
+                    <span class="font-bold text-slate-800 text-xs mb-0.5">Spasi Teks</span>
+                    <span class="text-[10px] text-slate-500 leading-tight">Jarak huruf & kata</span>
+                    <span id="badge-spacing-status" class="mt-2 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">Normal</span>
+                </button>
+
+                {{-- 9. Garis Bawahi Tautan --}}
+                <button type="button" id="btn-toggle-underline"
+                    class="flex flex-col items-center text-center p-3 bg-white hover:bg-blue-50/80 border border-slate-200 hover:border-blue-300 rounded-2xl transition-all cursor-pointer group shadow-xs hover:shadow-md">
+                    <div class="w-9 h-9 bg-teal-50 group-hover:bg-teal-600 group-hover:text-white text-teal-600 rounded-xl flex items-center justify-center font-bold text-base mb-1.5 transition-colors">
+                        🔗
+                    </div>
+                    <span class="font-bold text-slate-800 text-xs mb-0.5">Garis Bawah Link</span>
+                    <span class="text-[10px] text-slate-500 leading-tight">Tegaskan semua link</span>
+                    <span id="badge-underline-status" class="mt-2 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">Off</span>
+                </button>
+
+            </div>
+
+            {{-- Footer Panel (Reset) --}}
+            <div class="p-3.5 bg-slate-100 border-t border-slate-200 flex justify-between items-center text-xs">
+                <span class="text-slate-500 font-medium text-[11px]">Tersimpan di browser</span>
+                <button id="a11y-reset-btn" type="button" class="text-red-600 hover:text-red-800 font-bold underline cursor-pointer hover:scale-105 transition-all">
+                    Reset Semua
+                </button>
+            </div>
+
+        </div>
+    </div>
 
     {{-- ============================================================
         JAVASCRIPT GLOBAL
@@ -224,7 +406,6 @@
     <script>
         // ----------------------------------------------------------
         // Mobile Menu Toggle
-        // Mengontrol buka/tutup menu hamburger di tampilan mobile.
         // ----------------------------------------------------------
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -242,7 +423,6 @@
 
         // ----------------------------------------------------------
         // Auto-hide Flash Message
-        // Pesan sukses/error akan otomatis menghilang setelah 5 detik.
         // ----------------------------------------------------------
         window.addEventListener('DOMContentLoaded', () => {
             const flashMsg = document.getElementById('flash-message');
@@ -254,6 +434,227 @@
                     setTimeout(() => flashMsg.remove(), 500);
                 }, 5000);
             }
+        });
+
+        // ----------------------------------------------------------
+        // LOGIK WIDGET AKSESIBILITAS (9 FITUR SPESIFIKASI)
+        // ----------------------------------------------------------
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('a11y-toggle-btn');
+            const panel = document.getElementById('a11y-panel');
+            const closeBtn = document.getElementById('a11y-close-btn');
+            const resetBtn = document.getElementById('a11y-reset-btn');
+            const announcer = document.getElementById('a11y-announcer');
+
+            const htmlEl = document.documentElement;
+
+            const announce = (msg) => {
+                if (announcer) {
+                    announcer.textContent = '';
+                    setTimeout(() => { announcer.textContent = msg; }, 100);
+                }
+            };
+
+            // Buka / Tutup Panel Aksesibilitas
+            if (toggleBtn && panel) {
+                toggleBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isHidden = panel.classList.contains('hidden');
+                    if (isHidden) {
+                        panel.classList.remove('hidden');
+                        toggleBtn.setAttribute('aria-expanded', 'true');
+                        announce('Menu aksesibilitas terbuka.');
+                    } else {
+                        panel.classList.add('hidden');
+                        toggleBtn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        panel.classList.add('hidden');
+                        toggleBtn.setAttribute('aria-expanded', 'false');
+                        announce('Menu aksesibilitas ditutup.');
+                    });
+                }
+
+                document.addEventListener('click', (e) => {
+                    if (!panel.contains(e.target) && !toggleBtn.contains(e.target)) {
+                        panel.classList.add('hidden');
+                        toggleBtn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+
+            // Helper Badge Updates
+            const updateBadge = (elId, text, active = false) => {
+                const badge = document.getElementById(elId);
+                if (badge) {
+                    badge.textContent = text;
+                    if (active) {
+                        badge.className = "mt-2 text-[10px] font-bold text-white bg-blue-600 px-2 py-0.5 rounded-md shadow-xs";
+                    } else {
+                        badge.className = "mt-2 text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md";
+                    }
+                }
+            };
+
+            // 1 & 2. Perbesar & Perkecil Teks
+            let currentFontSize = parseInt(localStorage.getItem('a11y_text_size') || '100');
+            const updateFontSize = (newSize) => {
+                currentFontSize = Math.min(Math.max(newSize, 80), 160);
+                htmlEl.style.fontSize = currentFontSize === 100 ? '' : `${currentFontSize}%`;
+                localStorage.setItem('a11y_text_size', currentFontSize.toString());
+                updateBadge('badge-text-size-inc', `${currentFontSize}%`, currentFontSize > 100);
+                updateBadge('badge-text-size-dec', currentFontSize < 100 ? `${currentFontSize}%` : 'Normal', currentFontSize < 100);
+            };
+            updateFontSize(currentFontSize);
+
+            document.getElementById('btn-increase-text')?.addEventListener('click', () => {
+                updateFontSize(currentFontSize + 10);
+                announce(`Ukuran teks diperbesar ke ${currentFontSize} persen.`);
+            });
+
+            document.getElementById('btn-decrease-text')?.addEventListener('click', () => {
+                updateFontSize(currentFontSize - 10);
+                announce(`Ukuran teks diperkecil ke ${currentFontSize} persen.`);
+            });
+
+            // 3. Kejenuhan Warna (Saturation Cycle: normal -> monochrome -> low -> high -> normal)
+            const satModes = ['normal', 'monochrome', 'low', 'high'];
+            let currentSat = localStorage.getItem('a11y_sat') || 'normal';
+            const applySat = (mode) => {
+                htmlEl.classList.remove('sat-monochrome', 'sat-low', 'sat-high');
+                if (mode !== 'normal') htmlEl.classList.add('sat-' + mode);
+                localStorage.setItem('a11y_sat', mode);
+
+                let label = 'Normal';
+                if (mode === 'monochrome') label = 'Monokrom';
+                if (mode === 'low') label = 'Redup';
+                if (mode === 'high') label = 'Tinggi';
+                updateBadge('badge-sat-status', label, mode !== 'normal');
+            };
+            applySat(currentSat);
+
+            document.getElementById('btn-toggle-sat')?.addEventListener('click', () => {
+                const nextIdx = (satModes.indexOf(currentSat) + 1) % satModes.length;
+                currentSat = satModes[nextIdx];
+                applySat(currentSat);
+                announce(`Kejenuhan warna diatur ke ${currentSat}.`);
+            });
+
+            // 4. Kontras+ (High Contrast)
+            let isHighContrast = localStorage.getItem('a11y_high_contrast') === '1';
+            const applyContrast = (active) => {
+                htmlEl.classList.toggle('high-contrast', active);
+                localStorage.setItem('a11y_high_contrast', active ? '1' : '0');
+                updateBadge('badge-contrast-status', active ? 'Aktif' : 'Off', active);
+            };
+            applyContrast(isHighContrast);
+
+            document.getElementById('btn-toggle-contrast')?.addEventListener('click', () => {
+                isHighContrast = !isHighContrast;
+                applyContrast(isHighContrast);
+                announce(isHighContrast ? 'Mode Kontras Tinggi diaktifkan.' : 'Mode Kontras Tinggi dinonaktifkan.');
+            });
+
+            // 5. Ramah Disleksia
+            let isDyslexia = localStorage.getItem('a11y_dyslexia') === '1';
+            const applyDyslexia = (active) => {
+                htmlEl.classList.toggle('dyslexia-mode', active);
+                localStorage.setItem('a11y_dyslexia', active ? '1' : '0');
+                updateBadge('badge-dyslexia-status', active ? 'Aktif' : 'Off', active);
+            };
+            applyDyslexia(isDyslexia);
+
+            document.getElementById('btn-toggle-dyslexia')?.addEventListener('click', () => {
+                isDyslexia = !isDyslexia;
+                applyDyslexia(isDyslexia);
+                announce(isDyslexia ? 'Mode Ramah Disleksia diaktifkan.' : 'Mode Ramah Disleksia dinonaktifkan.');
+            });
+
+            // 6. Tinggi Garis (Line Height)
+            let isLineHeight = localStorage.getItem('a11y_line_height') === '1';
+            const applyLineHeight = (active) => {
+                htmlEl.classList.toggle('line-height-mode', active);
+                localStorage.setItem('a11y_line_height', active ? '1' : '0');
+                updateBadge('badge-line-height-status', active ? 'Tinggi' : 'Normal', active);
+            };
+            applyLineHeight(isLineHeight);
+
+            document.getElementById('btn-toggle-line-height')?.addEventListener('click', () => {
+                isLineHeight = !isLineHeight;
+                applyLineHeight(isLineHeight);
+                announce(isLineHeight ? 'Spasi Tinggi Garis diaktifkan.' : 'Spasi Tinggi Garis dinonaktifkan.');
+            });
+
+            // 7. Kursor Besar (Large Cursor)
+            let isLargeCursor = localStorage.getItem('a11y_large_cursor') === '1';
+            const applyLargeCursor = (active) => {
+                htmlEl.classList.toggle('large-cursor', active);
+                localStorage.setItem('a11y_large_cursor', active ? '1' : '0');
+                updateBadge('badge-cursor-status', active ? 'Besar' : 'Normal', active);
+            };
+            applyLargeCursor(isLargeCursor);
+
+            document.getElementById('btn-toggle-cursor')?.addEventListener('click', () => {
+                isLargeCursor = !isLargeCursor;
+                applyLargeCursor(isLargeCursor);
+                announce(isLargeCursor ? 'Kursor Besar diaktifkan.' : 'Kursor Besar dinonaktifkan.');
+            });
+
+            // 8. Spasi Teks
+            let isTextSpacing = localStorage.getItem('a11y_text_spacing') === '1';
+            const applyTextSpacing = (active) => {
+                htmlEl.classList.toggle('text-spacing-mode', active);
+                localStorage.setItem('a11y_text_spacing', active ? '1' : '0');
+                updateBadge('badge-spacing-status', active ? 'Renggang' : 'Normal', active);
+            };
+            applyTextSpacing(isTextSpacing);
+
+            document.getElementById('btn-toggle-text-spacing')?.addEventListener('click', () => {
+                isTextSpacing = !isTextSpacing;
+                applyTextSpacing(isTextSpacing);
+                announce(isTextSpacing ? 'Spasi Teks Renggang diaktifkan.' : 'Spasi Teks dinonaktifkan.');
+            });
+
+            // 9. Garis Bawahi Tautan
+            let isUnderline = localStorage.getItem('a11y_underline') === '1';
+            const applyUnderline = (active) => {
+                htmlEl.classList.toggle('underline-links', active);
+                localStorage.setItem('a11y_underline', active ? '1' : '0');
+                updateBadge('badge-underline-status', active ? 'Aktif' : 'Off', active);
+            };
+            applyUnderline(isUnderline);
+
+            document.getElementById('btn-toggle-underline')?.addEventListener('click', () => {
+                isUnderline = !isUnderline;
+                applyUnderline(isUnderline);
+                announce(isUnderline ? 'Garis Bawahi Tautan diaktifkan.' : 'Garis Bawahi Tautan dinonaktifkan.');
+            });
+
+            // Reset Semua Pengaturan
+            resetBtn?.addEventListener('click', () => {
+                updateFontSize(100);
+                applySat('normal'); currentSat = 'normal';
+                applyContrast(false); isHighContrast = false;
+                applyDyslexia(false); isDyslexia = false;
+                applyLineHeight(false); isLineHeight = false;
+                applyLargeCursor(false); isLargeCursor = false;
+                applyTextSpacing(false); isTextSpacing = false;
+                applyUnderline(false); isUnderline = false;
+
+                localStorage.removeItem('a11y_text_size');
+                localStorage.removeItem('a11y_sat');
+                localStorage.removeItem('a11y_high_contrast');
+                localStorage.removeItem('a11y_dyslexia');
+                localStorage.removeItem('a11y_line_height');
+                localStorage.removeItem('a11y_large_cursor');
+                localStorage.removeItem('a11y_text_spacing');
+                localStorage.removeItem('a11y_underline');
+
+                announce('Semua 9 fitur aksesibilitas direset ke default.');
+            });
         });
     </script>
 

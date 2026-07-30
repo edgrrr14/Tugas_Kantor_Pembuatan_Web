@@ -175,3 +175,310 @@
         font-weight: 600;
     }
 }
+
+/* Import Font Lexend untuk Mode Ramah Disleksia */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap');
+
+/* ================================================================
+   GAYA AKSESIBILITAS (ACCESSIBILITY MODES - 9 FITUR SPESIFIKASI)
+   1. Perbesar Teks
+   2. Perkecil Teks
+   3. Kejenuhan Warna (Saturation)
+   4. Kontras+ (High Contrast)
+   5. Ramah Disleksia (Dyslexia Friendly)
+   6. Tinggi Garis (Line Height)
+   7. Kursor Besar (Large Cursor)
+   8. Spasi Teks (Text Spacing)
+   9. Garis Bawahi Tautan (Underline Links)
+================================================================ */
+
+/* Skip Link untuk Pembaca Layar & Keyboard */
+.skip-link {
+    position: fixed;
+    top: -100px;
+    left: 1rem;
+    background-color: #1e3a8a;
+    color: #ffffff;
+    padding: 0.75rem 1.25rem;
+    z-index: 99999;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    border: 2px solid #facc15;
+    transition: top 0.2s ease-in-out;
+}
+.skip-link:focus {
+    top: 1rem;
+    outline: 4px solid #facc15 !important;
+    outline-offset: 2px;
+}
+
+/* Navigasi Keyboard Focus Ring */
+html.screen-reader-mode *:focus,
+html.screen-reader-mode *:focus-visible {
+    outline: 4px solid #facc15 !important;
+    outline-offset: 3px !important;
+    box-shadow: 0 0 0 6px rgba(29, 78, 216, 0.7) !important;
+}
+
+/* 3. Kejenuhan Warna (Saturation Modes) */
+html.sat-monochrome {
+    filter: grayscale(100%) !important;
+}
+html.sat-low {
+    filter: saturate(40%) !important;
+}
+html.sat-high {
+    filter: saturate(220%) contrast(110%) !important;
+}
+
+/* 4. Kontras+ (High Contrast Mode) - Comprehensive App & Admin Overrides */
+html.high-contrast,
+html.high-contrast body,
+html.high-contrast .min-h-screen,
+html.high-contrast main,
+html.high-contrast section,
+html.high-contrast header,
+html.high-contrast footer,
+html.high-contrast nav,
+html.high-contrast article,
+html.high-contrast aside {
+    background-color: #050505 !important;
+    background: #050505 !important;
+    color: #ffffff !important;
+}
+
+/* Sidebar Navigasi Admin */
+html.high-contrast aside#main-sidebar,
+html.high-contrast aside#main-sidebar > div {
+    background-color: #000000 !important;
+    border-color: #3f3f46 !important;
+}
+
+html.high-contrast aside#main-sidebar .tab-btn {
+    background-color: #121212 !important;
+    border: 1px solid #3f3f46 !important;
+    color: #ffffff !important;
+}
+
+html.high-contrast aside#main-sidebar .tab-btn.bg-slate-800 {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+    border: 2px solid #facc15 !important;
+}
+
+/* Container, Card, Icon Box & Filter Bar Overrides */
+html.high-contrast #search-filter-container,
+html.high-contrast .bg-white,
+html.high-contrast .bg-slate-50,
+html.high-contrast .bg-slate-100,
+html.high-contrast .bg-blue-50,
+html.high-contrast .bg-blue-100,
+html.high-contrast .bg-indigo-50,
+html.high-contrast .bg-purple-50,
+html.high-contrast .bg-emerald-50,
+html.high-contrast .bg-rose-50,
+html.high-contrast .bg-amber-50,
+html.high-contrast .bg-cyan-50,
+html.high-contrast .bg-cyan-100,
+html.high-contrast .bg-teal-50,
+html.high-contrast .bg-teal-100,
+html.high-contrast .bg-sky-50,
+html.high-contrast .bg-sky-100,
+html.high-contrast [class*="bg-white"],
+html.high-contrast [class*="bg-slate-"],
+html.high-contrast [class*="bg-blue-"],
+html.high-contrast [class*="bg-indigo-"],
+html.high-contrast [class*="bg-purple-"],
+html.high-contrast [class*="bg-emerald-"],
+html.high-contrast [class*="bg-rose-"],
+html.high-contrast [class*="bg-amber-"],
+html.high-contrast [class*="bg-cyan-"],
+html.high-contrast [class*="bg-teal-"],
+html.high-contrast [class*="bg-sky-"],
+html.high-contrast [class*="bg-gray-"],
+html.high-contrast [class*="bg-zinc-"] {
+    background-color: #121212 !important;
+    background: #121212 !important;
+    border: 1px solid #52525b !important;
+}
+
+/* Ensure ALL inline text elements, spans, SVGs, strong, b, and child elements NEVER inherit solid background boxes */
+html.high-contrast span:not(#a11y-widget-container *),
+html.high-contrast p *,
+html.high-contrast h1 *,
+html.high-contrast h2 *,
+html.high-contrast h3 *,
+html.high-contrast h4 *,
+html.high-contrast h5 *,
+html.high-contrast h6 *,
+html.high-contrast label *,
+html.high-contrast button *,
+html.high-contrast a *,
+html.high-contrast svg:not(#a11y-widget-container *),
+html.high-contrast strong,
+html.high-contrast b,
+html.high-contrast em,
+html.high-contrast small {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Force all text elements, headings, titles, paragraphs, labels & text classes to pure bright white */
+html.high-contrast p,
+html.high-contrast span:not(#a11y-widget-container *),
+html.high-contrast h1,
+html.high-contrast h2,
+html.high-contrast h3,
+html.high-contrast h4,
+html.high-contrast h5,
+html.high-contrast h6,
+html.high-contrast label,
+html.high-contrast li,
+html.high-contrast td,
+html.high-contrast th,
+html.high-contrast strong,
+html.high-contrast b,
+html.high-contrast em,
+html.high-contrast small,
+html.high-contrast [class*="text-slate-"],
+html.high-contrast [class*="text-blue-"],
+html.high-contrast [class*="text-indigo-"],
+html.high-contrast [class*="text-gray-"],
+html.high-contrast [class*="text-neutral-"],
+html.high-contrast [class*="text-rose-"],
+html.high-contrast [class*="text-emerald-"],
+html.high-contrast [class*="text-amber-"],
+html.high-contrast [class*="text-zinc-"] {
+    color: #ffffff !important;
+}
+
+/* Logo Box on Admin Sidebar Top */
+html.high-contrast aside#main-sidebar [class*="from-indigo-"] {
+    background-color: #2563eb !important;
+    background: #2563eb !important;
+    border: 1px solid #facc15 !important;
+}
+
+/* Links & Action Anchors */
+html.high-contrast a:not(#a11y-widget-container *),
+html.high-contrast a:not(#a11y-widget-container *) * {
+    color: #facc15 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 4px !important;
+}
+
+/* Buttons & Mode Switcher Controls */
+html.high-contrast button:not(#a11y-widget-container *),
+html.high-contrast #btn-view-keseluruhan,
+html.high-contrast #btn-view-tahunan,
+html.high-contrast #btn-view-bulanan {
+    background-color: #18181b !important;
+    color: #ffffff !important;
+    border: 1px solid #71717a !important;
+}
+
+html.high-contrast #btn-view-keseluruhan.bg-white,
+html.high-contrast #btn-view-tahunan.bg-white,
+html.high-contrast #btn-view-bulanan.bg-white {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+    border: 2px solid #facc15 !important;
+}
+
+/* Form Inputs, Select Dropdowns & Placeholders */
+html.high-contrast input:not(#a11y-widget-container *),
+html.high-contrast select:not(#a11y-widget-container *),
+html.high-contrast textarea:not(#a11y-widget-container *),
+html.high-contrast select[name="status"] {
+    background-color: #18181b !important;
+    color: #ffffff !important;
+    border: 2px solid #facc15 !important;
+}
+
+html.high-contrast input::placeholder,
+html.high-contrast textarea::placeholder {
+    color: #facc15 !important;
+    opacity: 0.85 !important;
+}
+
+/* Admin Table Formatting */
+html.high-contrast table thead tr {
+    background-color: #18181b !important;
+    border-bottom: 2px solid #52525b !important;
+}
+
+html.high-contrast table th {
+    color: #facc15 !important;
+}
+
+html.high-contrast table tbody tr {
+    border-bottom: 1px solid #3f3f46 !important;
+}
+
+html.high-contrast table tbody tr:hover {
+    background-color: #1e1e2c !important;
+}
+
+/* Modals */
+html.high-contrast #logout-modal > div {
+    background-color: #121212 !important;
+    border: 2px solid #facc15 !important;
+}
+
+/* Icons & SVGs */
+html.high-contrast svg:not(#a11y-widget-container *) {
+    color: #facc15 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* 5. Ramah Disleksia (Dyslexia Friendly Font) */
+html.dyslexia-mode,
+html.dyslexia-mode * {
+    font-family: 'Lexend', 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+}
+
+/* 6. Tinggi Garis (Line Height) */
+html.line-height-mode p,
+html.line-height-mode span,
+html.line-height-mode li,
+html.line-height-mode a,
+html.line-height-mode h1,
+html.line-height-mode h2,
+html.line-height-mode h3,
+html.line-height-mode h4,
+html.line-height-mode h5,
+html.line-height-mode h6 {
+    line-height: 2.1 !important;
+}
+
+/* 7. Kursor Besar (Large Cursor) */
+html.large-cursor,
+html.large-cursor * {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 24 24'%3E%3Cpath fill='%230052FF' stroke='%23ffffff' stroke-width='2' d='M4.5 3.5l14 10-6 1.5 4 7.5-3 1.5-4-7.5-5 5z'/%3E%3C/svg%3E"), auto !important;
+}
+
+/* 8. Spasi Teks (Text Spacing) */
+html.text-spacing-mode p,
+html.text-spacing-mode span,
+html.text-spacing-mode li,
+html.text-spacing-mode a,
+html.text-spacing-mode h1,
+html.text-spacing-mode h2,
+html.text-spacing-mode h3,
+html.text-spacing-mode h4,
+html.text-spacing-mode button {
+    letter-spacing: 0.12em !important;
+    word-spacing: 0.22em !important;
+}
+
+/* 9. Garis Bawahi Tautan (Underline Links) */
+html.underline-links a {
+    text-decoration: underline !important;
+    text-decoration-thickness: 2px !important;
+    text-underline-offset: 4px !important;
+}
+
+

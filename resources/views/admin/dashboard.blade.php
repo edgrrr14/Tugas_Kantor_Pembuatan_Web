@@ -112,14 +112,18 @@
                 <h2 class="text-2xl font-extrabold text-slate-800" id="current-title-section">Dashboard Penerbitan</h2>
                 <p class="text-slate-500 text-sm mt-1">Kelola permohonan sertifikat elektronik masuk secara real-time.</p>
             </div>
-            
-            {{-- Tombol Logout Admin di Pojok Kanan Atas --}}
+        </div>
+
+        {{-- Tombol Logout Admin Melayang di Pojok Kanan Atas (Floating) --}}
+        <div id="floating-logout" class="fixed top-4 right-4 sm:top-6 sm:right-6 z-40 no-print">
             <button type="button" onclick="openLogoutModal()" 
-                class="inline-flex items-center gap-2 px-4 py-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 font-semibold rounded-xl text-xs transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer">
-                <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                <span>Logout Sesi Admin</span>
+                class="group flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 bg-white/95 hover:bg-rose-50 border border-slate-200 hover:border-rose-300 text-rose-600 font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md">
+                <div class="w-7 h-7 bg-rose-100 group-hover:bg-rose-600 group-hover:text-white text-rose-600 rounded-xl flex items-center justify-center transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                </div>
+                <span class="text-xs tracking-wide">Logout Sesi Admin</span>
             </button>
         </div>
 
@@ -989,7 +993,36 @@
         }
     }
 
+    // Update dynamic theme colors for Chart.js
+    function updateChartTheme() {
+        const isHC = document.documentElement.classList.contains('high-contrast');
+        const textColor = isHC ? '#ffffff' : '#475569';
+        const gridColor = isHC ? 'rgba(255, 255, 255, 0.25)' : 'rgba(226, 232, 240, 0.8)';
+
+        if (chartBulananInstance) {
+            chartBulananInstance.options.plugins.legend.labels.color = textColor;
+            if (chartBulananInstance.options.scales.x) {
+                chartBulananInstance.options.scales.x.ticks.color = textColor;
+                chartBulananInstance.options.scales.x.grid.color = gridColor;
+            }
+            if (chartBulananInstance.options.scales.y) {
+                chartBulananInstance.options.scales.y.ticks.color = textColor;
+                chartBulananInstance.options.scales.y.grid.color = gridColor;
+            }
+            chartBulananInstance.update();
+        }
+
+        if (chartStatusInstance) {
+            chartStatusInstance.options.plugins.legend.labels.color = textColor;
+            chartStatusInstance.update();
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+        const isHC = document.documentElement.classList.contains('high-contrast');
+        const textColor = isHC ? '#ffffff' : '#475569';
+        const gridColor = isHC ? 'rgba(255, 255, 255, 0.25)' : 'rgba(226, 232, 240, 0.8)';
+
         // 1. Chart Bulanan / Tren (Bar Chart)
         const ctxBulanan = document.getElementById('chart-bulanan').getContext('2d');
         chartBulananInstance = new Chart(ctxBulanan, {
@@ -1017,14 +1050,25 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
+                        labels: {
+                            color: textColor,
+                            font: { weight: 'bold' }
+                        }
                     }
                 },
                 scales: {
+                    x: {
+                        ticks: { color: textColor, font: { weight: 'bold' } },
+                        grid: { color: gridColor }
+                    },
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            precision: 0
-                        }
+                            precision: 0,
+                            color: textColor,
+                            font: { weight: 'bold' }
+                        },
+                        grid: { color: gridColor }
                     }
                 }
             }
@@ -1053,6 +1097,10 @@
                 plugins: {
                     legend: {
                         position: 'bottom',
+                        labels: {
+                            color: textColor,
+                            font: { weight: 'bold' }
+                        }
                     }
                 }
             }
@@ -1060,6 +1108,12 @@
 
         // Inisialisasi awal ke mode keseluruhan waktu
         setInfografisMode('keseluruhan');
+
+        // Observer untuk merespon perubahan class high-contrast secara real-time
+        const observer = new MutationObserver(() => {
+            updateChartTheme();
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     });
 </script>
 @endpush
