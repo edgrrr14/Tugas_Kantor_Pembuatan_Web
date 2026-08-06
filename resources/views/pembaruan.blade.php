@@ -67,8 +67,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-white">Form Pembaruan Sertifikat</h1>
-                        <p class="text-indigo-200 text-sm mt-0.5">Perpanjangan / Pembaruan Sertifikat Elektronik</p>
+                        <h1 class="text-xl font-bold text-white" data-i18n="form_pembaruan_head">Form Pembaruan Sertifikat</h1>
+                        <p class="text-indigo-200 text-sm mt-0.5" data-i18n="form_pembaruan_sub">Perpanjangan / Pembaruan Sertifikat Elektronik</p>
                     </div>
                 </div>
             </div>
@@ -207,22 +207,77 @@
                         </div>
                     </div>
 
-                    {{-- ===== BARIS 3: Instansi (full width) ===== --}}
+                    {{-- ===== BARIS 3: NIP & Unit Kerja (2 kolom) ===== --}}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+                        {{-- Field: NIP --}}
+                        <div>
+                            <label for="nip" class="block text-sm font-semibold text-slate-700 mb-2">
+                                NIP <span class="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="nip"
+                                name="nip"
+                                value="{{ old('nip') }}"
+                                placeholder="18 digit NIP"
+                                maxlength="18"
+                                autocomplete="off"
+                                class="w-full px-4 py-3 border rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 font-mono tracking-wider
+                                    {{ $errors->has('nip') ? 'border-red-400 bg-red-50 focus:ring-red-400' : 'border-slate-200 bg-white hover:border-slate-300' }}"
+                            >
+                            @error('nip')
+                                <p class="mt-2 text-xs text-red-600 flex items-center gap-1">
+                                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                        {{-- Field: Unit Kerja --}}
+                        <div>
+                            <label for="instansi" class="block text-sm font-semibold text-slate-700 mb-2">
+                                Unit Kerja <span class="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="instansi"
+                                name="instansi"
+                                value="{{ old('instansi') }}"
+                                placeholder="Nama Unit Kerja"
+                                autocomplete="organization"
+                                class="w-full px-4 py-3 border rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200
+                                    {{ $errors->has('instansi') ? 'border-red-400 bg-red-50 focus:ring-red-400' : 'border-slate-200 bg-white hover:border-slate-300' }}"
+                            >
+                            @error('instansi')
+                                <p class="mt-2 text-xs text-red-600 flex items-center gap-1">
+                                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    {{-- ===== BARIS 4: Jabatan (full width) ===== --}}
                     <div>
-                        <label for="instansi" class="block text-sm font-semibold text-slate-700 mb-2">
-                            Instansi <span class="text-red-500">*</span>
+                        <label for="jabatan" class="block text-sm font-semibold text-slate-700 mb-2">
+                            Jabatan <span class="text-red-500">*</span>
                         </label>
                         <input
                             type="text"
-                            id="instansi"
-                            name="instansi"
-                            value="{{ old('instansi') }}"
-                            placeholder="Nama Instansi"
-                            autocomplete="organization"
+                            id="jabatan"
+                            name="jabatan"
+                            value="{{ old('jabatan') }}"
+                            placeholder="Kepala Dinas Pertanian"
+                            autocomplete="organization-title"
                             class="w-full px-4 py-3 border rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200
-                                {{ $errors->has('instansi') ? 'border-red-400 bg-red-50 focus:ring-red-400' : 'border-slate-200 bg-white hover:border-slate-300' }}"
+                                {{ $errors->has('jabatan') ? 'border-red-400 bg-red-50 focus:ring-red-400' : 'border-slate-200 bg-white hover:border-slate-300' }}"
                         >
-                        @error('instansi')
+                        @error('jabatan')
                             <p class="mt-2 text-xs text-red-600 flex items-center gap-1">
                                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -232,49 +287,135 @@
                         @enderror
                     </div>
 
-                    {{-- ===== FIELD 3: Upload Surat Rekomendasi ===== --}}
+                    {{-- ===== BARIS 4: Alasan Pengajuan Pembaruan (full width) ===== --}}
                     <div>
-                        <label for="bukti_sertifikat" class="block text-sm font-semibold text-slate-700 mb-2">
-                            Surat Rekomendasi Permohonan Pembaruan Sertifikat Elektronik <span class="text-red-500">*</span>
+                        <label for="alasan" class="block text-sm font-semibold text-slate-700 mb-2">
+                            Alasan Pengajuan Pembaruan <span class="text-red-500">*</span>
                         </label>
+                        <textarea
+                            id="alasan"
+                            name="alasan"
+                            rows="4"
+                            placeholder="Jelaskan alasan Anda mengajukan pembaruan/perpanjangan sertifikat ini secara singkat dan jelas"
+                            class="w-full px-4 py-3 border rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 resize-none leading-relaxed
+                                {{ $errors->has('alasan') ? 'border-red-400 bg-red-50 focus:ring-red-400' : 'border-slate-200 bg-white hover:border-slate-300' }}"
+                        >{{ old('alasan') }}</textarea>
+                        {{-- Counter karakter --}}
+                        <div class="flex justify-between items-center mt-1">
+                            @error('alasan')
+                                <p class="text-xs text-red-600 flex items-center gap-1">
+                                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    {{ $message }}
+                                </p>
+                            @else
+                                <span></span>
+                            @enderror
+                            <span id="char-count-alasan" class="text-xs text-slate-400 ml-auto">0 / 2000</span>
+                        </div>
+                    </div>
 
-                        {{-- Area Drop Zone --}}
-                        <div id="upload-zone-pembaruan"
-                            class="relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300
-                            {{ $errors->has('bukti_sertifikat') ? 'border-red-400 bg-red-50' : 'border-slate-300 bg-slate-50 hover:border-indigo-400 hover:bg-indigo-50' }}"
-                            onclick="document.getElementById('bukti_sertifikat').click()">
-
-                            {{-- Ikon Upload --}}
-                            <div class="w-14 h-14 bg-white border border-slate-200 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
-                                <svg class="w-7 h-7 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                </svg>
-                            </div>
-
-                            <div id="upload-text-pembaruan">
-                                <p class="text-sm font-semibold text-slate-600">Unggah Surat Rekomendasi</p>
-                                <p class="text-xs text-slate-400 mt-1">Klik untuk memilih atau seret file ke sini</p>
-                                <p class="text-xs text-slate-400 mt-2">Format: PDF &bull; Maks: 10MB</p>
-                            </div>
-
-                            {{-- Input file tersembunyi --}}
-                            <input
-                                type="file"
-                                id="bukti_sertifikat"
-                                name="bukti_sertifikat"
-                                accept=".pdf"
-                                class="hidden"
-                            >
+                    {{-- ===== FIELD 3: Upload Dokumen Pendukung (3 File Wajib) ===== --}}
+                    <div class="space-y-4 pt-2">
+                        <div class="border-b border-slate-200 pb-2">
+                            <h3 class="text-sm font-bold text-slate-800">Unggah Dokumen Pendukung <span class="text-red-500">*</span></h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Semua 3 dokumen di bawah ini wajib diunggah sebelum dapat mengirim permohonan pembaruan.</p>
                         </div>
 
-                        @error('bukti_sertifikat')
-                            <p class="mt-2 text-xs text-red-600 flex items-center gap-1">
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                {{ $message }}
-                            </p>
-                        @enderror
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                            {{-- 1. Surat Permohonan --}}
+                            <div>
+                                <label for="surat_permohonan" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                                    1. Surat Permohonan <span class="text-red-500">*</span>
+                                </label>
+                                <div id="upload-zone-permohonan"
+                                    class="relative border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all duration-300
+                                    {{ $errors->has('surat_permohonan') ? 'border-red-400 bg-red-50' : 'border-slate-300 bg-slate-50 hover:border-indigo-400 hover:bg-indigo-50' }}"
+                                    onclick="document.getElementById('surat_permohonan').click()">
+                                    <div class="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-xs">
+                                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </div>
+                                    <div id="upload-text-permohonan">
+                                        <p class="text-xs font-semibold text-slate-700">Surat Permohonan</p>
+                                        <p class="text-[11px] text-slate-400 mt-0.5">Format: PDF &bull; Maks 10MB</p>
+                                    </div>
+                                    <input type="file" id="surat_permohonan" name="surat_permohonan" accept=".pdf" class="hidden" required>
+                                </div>
+                                @error('surat_permohonan')
+                                    <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
+
+                            {{-- 2. Surat Rekomendasi Unit Kerja --}}
+                            <div>
+                                <label for="surat_rekomendasi" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                                    2. Rekomendasi Unit Kerja <span class="text-red-500">*</span>
+                                </label>
+                                <div id="upload-zone-rekomendasi"
+                                    class="relative border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all duration-300
+                                    {{ $errors->has('surat_rekomendasi') ? 'border-red-400 bg-red-50' : 'border-slate-300 bg-slate-50 hover:border-indigo-400 hover:bg-indigo-50' }}"
+                                    onclick="document.getElementById('surat_rekomendasi').click()">
+                                    <div class="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-xs">
+                                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </div>
+                                    <div id="upload-text-rekomendasi">
+                                        <p class="text-xs font-semibold text-slate-700">Rekomendasi Unit Kerja</p>
+                                        <p class="text-[11px] text-slate-400 mt-0.5">Format: PDF &bull; Maks 10MB</p>
+                                    </div>
+                                    <input type="file" id="surat_rekomendasi" name="surat_rekomendasi" accept=".pdf" class="hidden" required>
+                                </div>
+                                @error('surat_rekomendasi')
+                                    <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
+
+                            {{-- 3. Foto KTP --}}
+                            <div>
+                                <label for="foto_ktp" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                                    3. Foto KTP <span class="text-red-500">*</span>
+                                </label>
+                                <div id="upload-zone-ktp"
+                                    class="relative border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all duration-300
+                                    {{ $errors->has('foto_ktp') ? 'border-red-400 bg-red-50' : 'border-slate-300 bg-slate-50 hover:border-indigo-400 hover:bg-indigo-50' }}"
+                                    onclick="document.getElementById('foto_ktp').click()">
+                                    <div class="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center mx-auto mb-2 shadow-xs">
+                                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <div id="upload-text-ktp">
+                                        <p class="text-xs font-semibold text-slate-700">Foto KTP</p>
+                                        <p class="text-[11px] text-slate-400 mt-0.5">JPG, JPEG, PNG &bull; Maks 10MB</p>
+                                    </div>
+                                    <input type="file" id="foto_ktp" name="foto_ktp" accept=".jpg,.jpeg,.png" class="hidden" required>
+                                </div>
+                                @error('foto_ktp')
+                                    <p class="mt-1.5 text-xs text-red-600 flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
+
+                        </div>
                     </div>
 
                     {{-- ===== GARIS PEMISAH ===== --}}
@@ -336,18 +477,6 @@
             </div>
         </div>
 
-        {{-- Helpdesk info --}}
-        <div class="mt-4 text-center">
-            <p class="text-sm text-slate-500">
-                Butuh bantuan? Hubungi kami melalui
-                <a href="https://wa.me/6282312293928?text=Halo%2C%20saya%20butuh%20bantuan%20terkait%20form%20pembaruan%20sertifikat."
-                    target="_blank" rel="noopener noreferrer"
-                    class="text-green-600 font-semibold hover:text-green-700 hover:underline">
-                    WhatsApp Admin
-                </a>
-            </p>
-        </div>
-
     </div>
 </div>
 
@@ -356,49 +485,71 @@
 @push('scripts')
 <script>
     // ------------------------------------------------------------------
-    // FILE UPLOAD PREVIEW untuk Surat Rekomendasi
+    // KARAKTER COUNTER untuk textarea Alasan Pengajuan
     // ------------------------------------------------------------------
-    const inputBukti = document.getElementById('bukti_sertifikat');
-    const uploadTextPembaruan = document.getElementById('upload-text-pembaruan');
-    const uploadZonePembaruan = document.getElementById('upload-zone-pembaruan');
+    const textareaAlasan = document.getElementById('alasan');
+    const charCountAlasan = document.getElementById('char-count-alasan');
 
-    if (inputBukti) {
-        inputBukti.addEventListener('change', (e) => {
+    if (textareaAlasan && charCountAlasan) {
+        charCountAlasan.textContent = `${textareaAlasan.value.length} / 2000`;
+        textareaAlasan.addEventListener('input', () => {
+            const len = textareaAlasan.value.length;
+            charCountAlasan.textContent = `${len} / 2000`;
+            charCountAlasan.className = len > 1800
+                ? 'text-xs text-amber-500 ml-auto font-semibold'
+                : 'text-xs text-slate-400 ml-auto';
+        });
+    }
+
+    // ------------------------------------------------------------------
+    // FILE UPLOAD PREVIEW untuk 3 dokumen
+    // ------------------------------------------------------------------
+    function setupFileUpload(inputId, zoneId, textId) {
+        const input = document.getElementById(inputId);
+        const zone = document.getElementById(zoneId);
+        const text = document.getElementById(textId);
+        if (!input || !zone || !text) return;
+
+        input.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
                 const size = file.size > 1024 * 1024
                     ? `${(file.size / 1024 / 1024).toFixed(2)} MB`
                     : `${(file.size / 1024).toFixed(1)} KB`;
 
-                uploadZonePembaruan.classList.remove('border-slate-300', 'bg-slate-50', 'hover:border-indigo-400', 'hover:bg-indigo-50');
-                uploadZonePembaruan.classList.add('border-green-400', 'bg-green-50');
-                uploadTextPembaruan.innerHTML = `
-                    <p class="text-sm font-semibold text-green-700">✓ File dipilih</p>
-                    <p class="text-xs text-green-600 mt-1">${file.name}</p>
-                    <p class="text-xs text-slate-400 mt-1">${size}</p>
-                    <p class="text-xs text-indigo-500 mt-2 hover:underline cursor-pointer">Klik untuk mengganti file</p>
+                zone.classList.remove('border-slate-300', 'bg-slate-50', 'hover:border-indigo-400', 'hover:bg-indigo-50');
+                zone.classList.add('border-green-400', 'bg-green-50');
+                text.innerHTML = `
+                    <p class="text-xs font-bold text-green-700">✓ File Dipilih</p>
+                    <p class="text-[11px] text-green-600 truncate max-w-[150px] mx-auto mt-0.5" title="${file.name}">${file.name}</p>
+                    <p class="text-[10px] text-slate-400 mt-0.5">${size}</p>
                 `;
             }
         });
 
-        // Drag & Drop
-        uploadZonePembaruan.addEventListener('dragover', (e) => {
+        zone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            uploadZonePembaruan.classList.add('border-indigo-400', 'bg-indigo-50');
+            zone.classList.add('border-indigo-400', 'bg-indigo-50');
         });
 
-        uploadZonePembaruan.addEventListener('dragleave', () => {
-            if (!inputBukti.files.length) {
-                uploadZonePembaruan.classList.remove('border-indigo-400', 'bg-indigo-50');
+        zone.addEventListener('dragleave', () => {
+            if (!input.files.length) {
+                zone.classList.remove('border-indigo-400', 'bg-indigo-50');
             }
         });
 
-        uploadZonePembaruan.addEventListener('drop', (e) => {
+        zone.addEventListener('drop', (e) => {
             e.preventDefault();
-            inputBukti.files = e.dataTransfer.files;
-            inputBukti.dispatchEvent(new Event('change'));
+            if (e.dataTransfer.files.length) {
+                input.files = e.dataTransfer.files;
+                input.dispatchEvent(new Event('change'));
+            }
         });
     }
+
+    setupFileUpload('surat_permohonan', 'upload-zone-permohonan', 'upload-text-permohonan');
+    setupFileUpload('surat_rekomendasi', 'upload-zone-rekomendasi', 'upload-text-rekomendasi');
+    setupFileUpload('foto_ktp', 'upload-zone-ktp', 'upload-text-ktp');
 
     // ------------------------------------------------------------------
     // LOADING STATE pada Tombol Submit

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Penerbitan;
 use App\Models\Pembaruan;
+use App\Models\Helpdesk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -85,94 +86,77 @@ class CertificationController extends Controller
         // Validasi semua field yang dikirimkan dari form penerbitan.
         // -----------------------------------------------------------
         $validated = $request->validate([
-            'nama_lengkap'   => 'required|string|max:255|min:3',
-            'nik'            => 'required|numeric|digits:16',
-            'nip'            => 'required|numeric|digits:18',
-            'email'          => 'required|email|max:255',
-            'no_telepon'     => 'required|string|max:13|min:10',
-            'instansi'       => 'required|string|max:255',
-            'jabatan'        => 'required|string|max:255',
-            'alasan'         => 'required|string|max:2000',
-            'dokumen'        => 'required|file|mimes:pdf|max:10240', // Maks 10MB
-            'persetujuan'    => 'accepted',
+            'nama_lengkap'      => 'required|string|max:255|min:3',
+            'nik'               => 'required|numeric|digits:16',
+            'nip'               => 'required|numeric|digits:18',
+            'email'             => 'required|email|max:255',
+            'no_telepon'        => 'required|string|max:13|min:10',
+            'instansi'          => 'required|string|max:255',
+            'jabatan'           => 'required|string|max:255',
+            'alasan'            => 'required|string|max:2000',
+            'surat_permohonan'  => 'required|file|mimes:pdf|max:10240', // PDF saja, maks 10MB
+            'surat_rekomendasi' => 'required|file|mimes:pdf|max:10240', // PDF saja, maks 10MB
+            'foto_ktp'          => 'required|file|mimes:jpg,jpeg,png|max:10240', // JPG/JPEG/PNG, maks 10MB
+            'persetujuan'       => 'accepted',
         ], [
             // Pesan validasi dalam Bahasa Indonesia
-            'nama_lengkap.required'  => 'Nama lengkap wajib diisi.',
-            'nama_lengkap.min'       => 'Nama lengkap minimal 3 karakter.',
-            'nik.required'           => 'NIK wajib diisi.',
-            'nik.numeric'            => 'NIK harus berupa angka 16 digit.',
-            'nik.digits'             => 'NIK harus terdiri dari 16 digit.',
-            'nip.required'           => 'NIP wajib diisi.',
-            'nip.numeric'            => 'NIP harus berupa angka 18 digit.',
-            'nip.digits'             => 'NIP harus terdiri dari 18 digit.',
-            'email.required'         => 'Alamat email wajib diisi.',
-            'email.email'            => 'Format alamat email tidak valid.',
-            'no_telepon.required'    => 'Nomor telepon wajib diisi.',
-            'no_telepon.max'         => 'Nomor telepon tidak boleh lebih dari 13 karakter.',
-            'no_telepon.min'         => 'Nomor telepon tidak boleh kurang dari 10 karakter.',
-            'instansi.required'      => 'Nama Instansi wajib diisi.',
-            'jabatan.required'       => 'Jabatan wajib diisi.',
-            'alasan.required'        => 'Alasan pengajuan wajib diisi.',
-            'dokumen.required'       => 'Dokumen pendukung wajib diunggah.',
-            'dokumen.mimes'          => 'Format dokumen harus berupa PDF.',
-            'dokumen.max'            => 'Ukuran dokumen tidak boleh lebih dari 10MB.',
-            'persetujuan.accepted'   => 'Anda harus menyetujui pernyataan ini sebelum mengirim pengajuan.',
+            'nama_lengkap.required'     => 'Nama lengkap wajib diisi.',
+            'nama_lengkap.min'          => 'Nama lengkap minimal 3 karakter.',
+            'nik.required'              => 'NIK wajib diisi.',
+            'nik.numeric'               => 'NIK harus berupa angka 16 digit.',
+            'nik.digits'                => 'NIK harus terdiri dari 16 digit.',
+            'nip.required'              => 'NIP wajib diisi.',
+            'nip.numeric'               => 'NIP harus berupa angka 18 digit.',
+            'nip.digits'                => 'NIP harus terdiri dari 18 digit.',
+            'email.required'            => 'Alamat email wajib diisi.',
+            'email.email'               => 'Format alamat email tidak valid.',
+            'no_telepon.required'       => 'Nomor telepon wajib diisi.',
+            'no_telepon.max'            => 'Nomor telepon tidak boleh lebih dari 13 karakter.',
+            'no_telepon.min'            => 'Nomor telepon tidak boleh kurang dari 10 karakter.',
+            'instansi.required'         => 'Unit Kerja wajib diisi.',
+            'jabatan.required'          => 'Jabatan wajib diisi.',
+            'alasan.required'           => 'Alasan pengajuan wajib diisi.',
+            'surat_permohonan.required' => 'Surat permohonan wajib diunggah.',
+            'surat_permohonan.mimes'    => 'Format surat permohonan harus berupa PDF.',
+            'surat_permohonan.max'      => 'Ukuran surat permohonan tidak boleh lebih dari 10MB.',
+            'surat_rekomendasi.required'=> 'Surat rekomendasi unit kerja wajib diunggah.',
+            'surat_rekomendasi.mimes'   => 'Format surat rekomendasi unit kerja harus berupa PDF.',
+            'surat_rekomendasi.max'     => 'Ukuran surat rekomendasi unit kerja tidak boleh lebih dari 10MB.',
+            'foto_ktp.required'         => 'Foto KTP wajib diunggah.',
+            'foto_ktp.mimes'            => 'Format foto KTP harus berupa JPG, JPEG, atau PNG.',
+            'foto_ktp.max'              => 'Ukuran foto KTP tidak boleh lebih dari 10MB.',
+            'persetujuan.accepted'      => 'Anda harus menyetujui pernyataan ini sebelum mengirim pengajuan.',
         ]);
 
         // -----------------------------------------------------------
         // STEP 2: UPLOAD FILE DOKUMEN
-        // Simpan file ke direktori 'dokumen/penerbitan' di dalam storage.
-        // File dapat diakses melalui Storage::url() atau link simbolis.
         // -----------------------------------------------------------
-        $dokumenPath = null;
-        if ($request->hasFile('dokumen')) {
-            // Nama file akan di-hash secara otomatis untuk keamanan
-            $dokumenPath = $request->file('dokumen')->store('dokumen/penerbitan', 'public');
-        }
+        $suratPermohonanPath = $request->file('surat_permohonan')->store('dokumen/penerbitan/surat_permohonan', 'public');
+        $suratRekomendasiPath = $request->file('surat_rekomendasi')->store('dokumen/penerbitan/surat_rekomendasi', 'public');
+        $fotoKtpPath = $request->file('foto_ktp')->store('dokumen/penerbitan/foto_ktp', 'public');
 
         // -----------------------------------------------------------
         // STEP 3: SIMPAN DATA KE DATABASE MYSQL
         // -----------------------------------------------------------
         $penerbitan = Penerbitan::create([
-            'nama_lengkap' => $validated['nama_lengkap'],
-            'nik'          => $validated['nik'],
-            'nip'          => $validated['nip'],
-            'email'        => $validated['email'],
-            'no_telepon'   => $validated['no_telepon'],
-            'instansi'     => $validated['instansi'],
-            'jabatan'      => $validated['jabatan'],
-            'alasan'       => $validated['alasan'],
-            'dokumen'      => $dokumenPath,
-            'status'       => 'Pending',
+            'nama_lengkap'      => $validated['nama_lengkap'],
+            'nik'               => $validated['nik'],
+            'nip'               => $validated['nip'],
+            'email'             => $validated['email'],
+            'no_telepon'        => $validated['no_telepon'],
+            'instansi'          => $validated['instansi'],
+            'jabatan'           => $validated['jabatan'],
+            'alasan'            => $validated['alasan'],
+            'surat_permohonan'  => $suratPermohonanPath,
+            'surat_rekomendasi' => $suratRekomendasiPath,
+            'foto_ktp'          => $fotoKtpPath,
+            'dokumen'           => $suratPermohonanPath, // Fallback legacy
+            'status'            => 'Pending',
         ]);
 
         // -----------------------------------------------------------
         // STEP 4: NOTIFIKASI WHATSAPP KE ADMIN
-        //
-        // TODO: Integrasikan dengan API WhatsApp (misalnya: Fonnte, Wablas, Twilio).
-        // Aktifkan setelah data berhasil disimpan ke database ($penerbitan dibuat).
-        //
-        // Contoh integrasi menggunakan service class WhatsAppService:
         // -----------------------------------------------------------
-        // try {
-        //     $nomorAdmin = config('app.whatsapp_admin_number'); // Simpan di .env & config/app.php
-        //     $pesan = "📋 *Pengajuan Penerbitan Sertifikat Baru*\n\n"
-        //            . "Nama     : {$validated['nama_lengkap']}\n"
-        //            . "NIK      : {$validated['nik']}\n"
-        //            . "Email    : {$validated['email']}\n"
-        //            . "No Telp  : {$validated['no_telepon']}\n"
-        //            . "Instansi : {$validated['instansi']}\n"
-        //            . "Alasan   : {$validated['alasan']}\n\n"
-        //            . "Silakan review pengajuan ini di dashboard admin.";
-        //
-        //     // Kirim via layanan pihak ketiga (contoh: Fonnte API)
-        //     \App\Services\WhatsAppService::send($nomorAdmin, $pesan);
-        // } catch (\Exception $e) {
-        //     // Jangan hentikan proses jika notifikasi gagal, cukup log error-nya
-        //     Log::error('Gagal mengirim notifikasi WhatsApp: ' . $e->getMessage());
-        // }
-
-        // Log aktivitas untuk audit trail
         Log::info('Pengajuan penerbitan baru', [
             'nama'       => $validated['nama_lengkap'],
             'email'      => $validated['email'],
@@ -191,32 +175,27 @@ class CertificationController extends Controller
     /**
      * Memproses dan menyimpan pengajuan Pembaruan Sertifikat.
      *
-     * Alur proses:
-     * 1. Validasi input dari user.
-     * 2. Menyimpan file bukti sertifikat lama ke storage.
-     * 3. (TODO) Simpan data ke database.
-     * 4. (TODO) Kirim notifikasi WhatsApp ke admin.
-     * 5. Redirect dengan pesan sukses.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function storePembaruan(Request $request)
     {
         // -----------------------------------------------------------
-        // STEP 1: VALIDASI INPUT
-        // -----------------------------------------------------------
         // STEP 1: VALIDASI DATA INPUT
-        // Validasi field yang ada di form pembaruan sertifikat.
         // -----------------------------------------------------------
         $validated = $request->validate([
-            'nama_lengkap'     => 'required|string|max:255|min:3',
-            'nik'              => 'required|numeric|digits:16',
-            'email'            => 'required|email|max:255',
-            'no_telepon'       => 'required|string|max:13|min:10',
-            'instansi'         => 'required|string|max:255',
-            'bukti_sertifikat' => 'required|file|mimes:pdf|max:10240', // Maks 10MB
-            'persetujuan'      => 'accepted',
+            'nama_lengkap'      => 'required|string|max:255|min:3',
+            'nik'               => 'required|numeric|digits:16',
+            'nip'               => 'required|numeric|digits:18',
+            'email'             => 'required|email|max:255',
+            'no_telepon'        => 'required|string|max:13|min:10',
+            'instansi'          => 'required|string|max:255',
+            'jabatan'           => 'required|string|max:255',
+            'alasan'            => 'required|string|max:2000',
+            'surat_permohonan'  => 'required|file|mimes:pdf|max:10240', // PDF saja, maks 10MB
+            'surat_rekomendasi' => 'required|file|mimes:pdf|max:10240', // PDF saja, maks 10MB
+            'foto_ktp'          => 'required|file|mimes:jpg,jpeg,png|max:10240', // JPG/JPEG/PNG, maks 10MB
+            'persetujuan'       => 'accepted',
         ], [
             // Pesan validasi dalam Bahasa Indonesia
             'nama_lengkap.required'     => 'Nama lengkap wajib diisi.',
@@ -224,25 +203,35 @@ class CertificationController extends Controller
             'nik.required'              => 'NIK wajib diisi.',
             'nik.numeric'               => 'NIK harus berupa angka 16 digit.',
             'nik.digits'                => 'NIK harus terdiri dari 16 digit.',
+            'nip.required'              => 'NIP wajib diisi.',
+            'nip.numeric'               => 'NIP harus berupa angka 18 digit.',
+            'nip.digits'                => 'NIP harus terdiri dari 18 digit.',
             'email.required'            => 'Alamat email wajib diisi.',
             'email.email'               => 'Format alamat email tidak valid.',
             'no_telepon.required'       => 'Nomor telepon wajib diisi.',
             'no_telepon.max'            => 'Nomor telepon tidak boleh lebih dari 13 karakter.',
             'no_telepon.min'            => 'Nomor telepon tidak boleh kurang dari 10 karakter.',
-            'instansi.required'         => 'Instansi wajib diisi.',
-            'bukti_sertifikat.required' => 'Surat rekomendasi permohonan pembaruan sertifikat elektronik wajib diunggah.',
-            'bukti_sertifikat.mimes'    => 'Format file harus berupa PDF.',
-            'bukti_sertifikat.max'      => 'Ukuran file tidak boleh lebih dari 10MB.',
+            'instansi.required'         => 'Unit Kerja wajib diisi.',
+            'jabatan.required'          => 'Jabatan wajib diisi.',
+            'alasan.required'           => 'Alasan pengajuan wajib diisi.',
+            'surat_permohonan.required' => 'Surat permohonan wajib diunggah.',
+            'surat_permohonan.mimes'    => 'Format surat permohonan harus berupa PDF.',
+            'surat_permohonan.max'      => 'Ukuran surat permohonan tidak boleh lebih dari 10MB.',
+            'surat_rekomendasi.required'=> 'Surat rekomendasi unit kerja wajib diunggah.',
+            'surat_rekomendasi.mimes'   => 'Format surat rekomendasi unit kerja harus berupa PDF.',
+            'surat_rekomendasi.max'     => 'Ukuran surat rekomendasi unit kerja tidak boleh lebih dari 10MB.',
+            'foto_ktp.required'         => 'Foto KTP wajib diunggah.',
+            'foto_ktp.mimes'            => 'Format foto KTP harus berupa JPG, JPEG, atau PNG.',
+            'foto_ktp.max'              => 'Ukuran foto KTP tidak boleh lebih dari 10MB.',
             'persetujuan.accepted'      => 'Anda harus menyetujui pernyataan ini sebelum mengirim pengajuan.',
         ]);
 
         // -----------------------------------------------------------
-        // STEP 2: UPLOAD FILE SURAT REKOMENDASI
+        // STEP 2: UPLOAD FILE DOKUMEN
         // -----------------------------------------------------------
-        $buktiPath = null;
-        if ($request->hasFile('bukti_sertifikat')) {
-            $buktiPath = $request->file('bukti_sertifikat')->store('dokumen/pembaruan', 'public');
-        }
+        $suratPermohonanPath = $request->file('surat_permohonan')->store('dokumen/pembaruan/surat_permohonan', 'public');
+        $suratRekomendasiPath = $request->file('surat_rekomendasi')->store('dokumen/pembaruan/surat_rekomendasi', 'public');
+        $fotoKtpPath = $request->file('foto_ktp')->store('dokumen/pembaruan/foto_ktp', 'public');
 
         // -----------------------------------------------------------
         // STEP 3: SIMPAN DATA KE DATABASE MYSQL
@@ -250,10 +239,15 @@ class CertificationController extends Controller
         $pembaruan = Pembaruan::create([
             'nama_lengkap'      => $validated['nama_lengkap'],
             'nik'               => $validated['nik'],
+            'nip'               => $validated['nip'],
             'email'             => $validated['email'],
             'no_telepon'        => $validated['no_telepon'],
             'instansi'          => $validated['instansi'],
-            'surat_rekomendasi' => $buktiPath,
+            'jabatan'           => $validated['jabatan'],
+            'alasan'            => $validated['alasan'],
+            'surat_permohonan'  => $suratPermohonanPath,
+            'surat_rekomendasi' => $suratRekomendasiPath,
+            'foto_ktp'          => $fotoKtpPath,
             'status'            => 'Pending',
         ]);
 
@@ -291,5 +285,34 @@ class CertificationController extends Controller
         return redirect()->route('home')
             ->with('success', 'Pengajuan pembaruan sertifikat Anda berhasil dikirim! Kami akan segera menghubungi Anda melalui email yang terdaftar.')
             ->with('whatsapp_url', 'https://wa.me/6282312293928?text=Form%20pembaruan%20telah%20diisi');
+    }
+
+    /**
+     * Memproses dan menyimpan data pertanyaan helpdesk ke database.
+     */
+    public function storeHelpdesk(Request $request)
+    {
+        $validated = $request->validate([
+            'nama'       => 'required|string|max:255',
+            'nip'        => 'required|string|max:18',
+            'nik'        => 'required|string|max:16',
+            'unit_kerja' => 'required|string|max:255',
+            'keterangan' => 'required|string|max:3000',
+        ]);
+
+        $helpdesk = Helpdesk::create([
+            'nama'       => $validated['nama'],
+            'nip'        => $validated['nip'],
+            'nik'        => $validated['nik'],
+            'unit_kerja' => $validated['unit_kerja'],
+            'keterangan' => $validated['keterangan'],
+            'status'     => 'Baru',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data pertanyaan Helpdesk berhasil disimpan ke database.',
+            'data'    => $helpdesk,
+        ]);
     }
 }

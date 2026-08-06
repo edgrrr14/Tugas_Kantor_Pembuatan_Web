@@ -85,12 +85,25 @@
                 <span>2. Dashboard Pembaruan</span>
             </button>
 
+            <button onclick="switchTab('helpdesk')" id="tab-btn-helpdesk"
+                class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-left transition-all duration-200 cursor-pointer hover:bg-slate-800 hover:text-white text-slate-400">
+                <svg class="w-5 h-5 shrink-0 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                <div class="flex items-center justify-between flex-1">
+                    <span>3. Pertanyaan Helpdesk</span>
+                    @if(($stats['helpdeskBaru'] ?? 0) > 0)
+                        <span class="px-2 py-0.5 bg-emerald-500 text-white font-bold text-[10px] rounded-full animate-pulse">{{ $stats['helpdeskBaru'] }} Baru</span>
+                    @endif
+                </div>
+            </button>
+
             <button onclick="switchTab('statistik')" id="tab-btn-statistik"
                 class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-left transition-all duration-200 cursor-pointer hover:bg-slate-800 hover:text-white text-slate-400">
                 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                <span>3. Infografis & Statistik</span>
+                <span>4. Infografis & Statistik</span>
             </button>
         </nav>
     </aside>
@@ -221,10 +234,11 @@
                                 <th class="p-4">Pemohon</th>
                                 <th class="p-4">NIK</th>
                                 <th class="p-4">NIP</th>
-                                <th class="p-4">Kontak & Instansi</th>
+                                <th class="p-4">Kontak & Unit Kerja</th>
                                 <th class="p-4">Jabatan</th>
+                                <th class="p-4">Alasan Pengajuan</th>
                                 <th class="p-4">Waktu Pengajuan</th>
-                                <th class="p-4 text-center">Dokumen</th>
+                                <th class="p-4 text-center">Dokumen Pendukung</th>
                                 <th class="p-4 text-center">Status</th>
                             </tr>
                         </thead>
@@ -241,19 +255,62 @@
                                     <div class="text-slate-400 font-medium">{{ $item['instansi'] }}</div>
                                 </td>
                                 <td class="p-4 text-xs font-semibold text-slate-600">{{ $item['jabatan'] }}</td>
-                                <td class="p-4 text-xs text-slate-400 font-mono">{{ $item->created_at ? $item->created_at->format('d/m/Y H:i') : '-' }}</td>
-                                <td class="p-4 text-center">
-                                    @if(!empty($item['dokumen']))
-                                        <a href="{{ asset('storage/' . $item['dokumen']) }}" target="_blank"
-                                            class="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-bold bg-indigo-50 hover:bg-indigo-100/80 px-2.5 py-1.5 rounded-lg transition-colors">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                            </svg>
-                                            <span>Lihat PDF</span>
-                                        </a>
+                                <td class="p-4 text-xs max-w-xs">
+                                    @if(!empty($item['alasan']))
+                                        <div class="p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-slate-700 text-[11px] leading-relaxed max-h-24 overflow-y-auto" title="{{ $item['alasan'] }}">
+                                            {{ $item['alasan'] }}
+                                        </div>
                                     @else
-                                        <span class="text-xs text-slate-400 font-medium">-</span>
+                                        <span class="text-slate-400 font-medium text-xs">-</span>
                                     @endif
+                                </td>
+                                <td class="p-4 text-xs text-slate-400 font-mono">{{ $item->created_at ? $item->created_at->format('d/m/Y H:i') : '-' }}</td>
+                                <td class="p-4">
+                                    <div class="flex flex-wrap gap-1.5 justify-center">
+                                        @if(!empty($item['surat_permohonan']))
+                                            <a href="{{ asset('storage/' . $item['surat_permohonan']) }}" target="_blank"
+                                                title="Surat Permohonan"
+                                                class="inline-flex items-center gap-1 text-[11px] text-blue-700 font-semibold bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-1 rounded-md transition-colors">
+                                                <svg class="w-3 h-3 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                </svg>
+                                                <span>Permohonan</span>
+                                            </a>
+                                        @endif
+
+                                        @if(!empty($item['surat_rekomendasi']))
+                                            <a href="{{ asset('storage/' . $item['surat_rekomendasi']) }}" target="_blank"
+                                                title="Surat Rekomendasi Unit Kerja"
+                                                class="inline-flex items-center gap-1 text-[11px] text-purple-700 font-semibold bg-purple-50 hover:bg-purple-100 border border-purple-200 px-2 py-1 rounded-md transition-colors">
+                                                <svg class="w-3 h-3 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                </svg>
+                                                <span>Rekomendasi</span>
+                                            </a>
+                                        @endif
+
+                                        @if(!empty($item['foto_ktp']))
+                                            <a href="{{ asset('storage/' . $item['foto_ktp']) }}" target="_blank"
+                                                title="Foto KTP"
+                                                class="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-semibold bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-1 rounded-md transition-colors">
+                                                <svg class="w-3 h-3 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                                <span>Foto KTP</span>
+                                            </a>
+                                        @endif
+
+                                        @if(empty($item['surat_permohonan']) && empty($item['surat_rekomendasi']) && empty($item['foto_ktp']) && !empty($item['dokumen']))
+                                            <a href="{{ asset('storage/' . $item['dokumen']) }}" target="_blank"
+                                                class="inline-flex items-center gap-1 text-[11px] text-slate-700 font-semibold bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded-md transition-colors">
+                                                <span>Dokumen Legacy</span>
+                                            </a>
+                                        @endif
+
+                                        @if(empty($item['surat_permohonan']) && empty($item['surat_rekomendasi']) && empty($item['foto_ktp']) && empty($item['dokumen']))
+                                            <span class="text-xs text-slate-400 font-medium">-</span>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="p-4 text-center">
                                     <form action="{{ route('admin.penerbitan.status', $item['id']) }}" method="POST" class="inline-block">
@@ -279,7 +336,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="9" class="p-8 text-center text-slate-400">Tidak ada data laporan masuk.</td>
+                                <td colspan="10" class="p-8 text-center text-slate-400">Tidak ada data laporan masuk.</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -365,9 +422,12 @@
                                 <th class="p-4 w-12 text-center">No</th>
                                 <th class="p-4">Pemohon</th>
                                 <th class="p-4">NIK</th>
-                                <th class="p-4">Kontak & Instansi</th>
+                                <th class="p-4">NIP</th>
+                                <th class="p-4">Kontak & Unit Kerja</th>
+                                <th class="p-4">Jabatan</th>
+                                <th class="p-4">Alasan Pengajuan</th>
                                 <th class="p-4">Waktu Pengajuan</th>
-                                <th class="p-4 text-center">Surat Rekomendasi</th>
+                                <th class="p-4 text-center">Dokumen Pendukung</th>
                                 <th class="p-4 text-center">Status</th>
                             </tr>
                         </thead>
@@ -377,24 +437,62 @@
                                 <td class="p-4 text-center text-slate-400 font-mono">{{ $index + 1 }}</td>
                                 <td class="p-4 font-bold text-slate-900 nama-pemohon">{{ $item['nama_lengkap'] }}</td>
                                 <td class="p-4 font-mono text-slate-600 text-xs">{{ $item['nik'] ?? '-' }}</td>
+                                <td class="p-4 font-mono text-slate-600 text-xs">{{ $item['nip'] ?? '-' }}</td>
                                 <td class="p-4 text-xs space-y-1">
                                     <div class="font-semibold text-slate-900">{{ $item['email'] }}</div>
                                     <div class="text-slate-400 font-mono text-[11px]">{{ $item['no_telepon'] ?? '-' }}</div>
                                     <div class="text-slate-400 font-medium">{{ $item['instansi'] ?? '-' }}</div>
                                 </td>
-                                <td class="p-4 text-xs text-slate-400 font-mono">{{ $item->created_at ? $item->created_at->format('d/m/Y H:i') : '-' }}</td>
-                                <td class="p-4 text-center">
-                                    @if(!empty($item['surat_rekomendasi']))
-                                        <a href="{{ asset('storage/' . $item['surat_rekomendasi']) }}" target="_blank"
-                                            class="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-bold bg-indigo-50 hover:bg-indigo-100/80 px-2.5 py-1.5 rounded-lg transition-colors">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                            </svg>
-                                            <span>Lihat Surat</span>
-                                        </a>
+                                <td class="p-4 text-xs font-semibold text-slate-600">{{ $item['jabatan'] ?? '-' }}</td>
+                                <td class="p-4 text-xs max-w-xs">
+                                    @if(!empty($item['alasan']))
+                                        <div class="p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-slate-700 text-[11px] leading-relaxed max-h-24 overflow-y-auto" title="{{ $item['alasan'] }}">
+                                            {{ $item['alasan'] }}
+                                        </div>
                                     @else
-                                        <span class="text-xs text-slate-400 font-medium">-</span>
+                                        <span class="text-slate-400 font-medium text-xs">-</span>
                                     @endif
+                                </td>
+                                <td class="p-4 text-xs text-slate-400 font-mono">{{ $item->created_at ? $item->created_at->format('d/m/Y H:i') : '-' }}</td>
+                                <td class="p-4">
+                                    <div class="flex flex-wrap gap-1.5 justify-center">
+                                        @if(!empty($item['surat_permohonan']))
+                                            <a href="{{ asset('storage/' . $item['surat_permohonan']) }}" target="_blank"
+                                                title="Surat Permohonan"
+                                                class="inline-flex items-center gap-1 text-[11px] text-blue-700 font-semibold bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-1 rounded-md transition-colors">
+                                                <svg class="w-3 h-3 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                </svg>
+                                                <span>Permohonan</span>
+                                            </a>
+                                        @endif
+
+                                        @if(!empty($item['surat_rekomendasi']))
+                                            <a href="{{ asset('storage/' . $item['surat_rekomendasi']) }}" target="_blank"
+                                                title="Surat Rekomendasi Unit Kerja"
+                                                class="inline-flex items-center gap-1 text-[11px] text-purple-700 font-semibold bg-purple-50 hover:bg-purple-100 border border-purple-200 px-2 py-1 rounded-md transition-colors">
+                                                <svg class="w-3 h-3 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                </svg>
+                                                <span>Rekomendasi</span>
+                                            </a>
+                                        @endif
+
+                                        @if(!empty($item['foto_ktp']))
+                                            <a href="{{ asset('storage/' . $item['foto_ktp']) }}" target="_blank"
+                                                title="Foto KTP"
+                                                class="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-semibold bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-1 rounded-md transition-colors">
+                                                <svg class="w-3 h-3 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                                <span>Foto KTP</span>
+                                            </a>
+                                        @endif
+
+                                        @if(empty($item['surat_permohonan']) && empty($item['surat_rekomendasi']) && empty($item['foto_ktp']))
+                                            <span class="text-xs text-slate-400 font-medium">-</span>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="p-4 text-center">
                                     <form action="{{ route('admin.pembaruan.status', $item['id']) }}" method="POST" class="inline-block">
@@ -420,7 +518,154 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="7" class="p-8 text-center text-slate-400">Tidak ada data pembaruan masuk.</td>
+                                <td colspan="10" class="p-8 text-center text-slate-400">Tidak ada data pembaruan masuk.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {{-- ============================================================
+            TAB PANEL 3: DASHBOARD PERTANYAAN HELPDESK
+        ============================================================ --}}
+        <div id="panel-helpdesk" class="tab-panel space-y-6 hidden">
+            
+            {{-- Stat Header Bar Helpdesk --}}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 font-bold shrink-0">
+                        💬
+                    </div>
+                    <div>
+                        <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Pertanyaan Helpdesk</span>
+                        <span class="block text-xl font-black text-slate-800 font-mono mt-0.5">{{ $stats['totalHelpdesk'] ?? 0 }}</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 font-bold shrink-0">
+                        📅
+                    </div>
+                    <div>
+                        <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Pertanyaan Hari Ini</span>
+                        <span class="block text-xl font-black text-slate-800 font-mono mt-0.5">{{ $stats['helpdeskHariIni'] ?? 0 }}</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center text-amber-600 font-bold shrink-0">
+                        ⚡
+                    </div>
+                    <div>
+                        <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Status Belum Direspons</span>
+                        <span class="block text-xl font-black text-amber-600 font-mono mt-0.5">{{ $stats['helpdeskBaru'] ?? 0 }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Table Card Helpdesk --}}
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3 no-print">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-base">Daftar Pertanyaan User (Diurutkan dari Terbaru)</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Pertanyaan dan masukan user yang masuk melalui formulir Helpdesk.</p>
+                    </div>
+
+                    {{-- Search Input Helpdesk --}}
+                    <div class="relative min-w-[220px]">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </span>
+                        <input type="text" id="helpdesk-search-input" onkeyup="filterHelpdeskTable()"
+                            placeholder="Cari nama, NIP, atau OPD..."
+                            class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+
+                {{-- Table Body Helpdesk --}}
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse" id="table-helpdesk">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
+                                <th class="p-4 w-12 text-center">No</th>
+                                <th class="p-4 w-36">Waktu Pengajuan</th>
+                                <th class="p-4">Nama Pemohon</th>
+                                <th class="p-4">NIP & NIK</th>
+                                <th class="p-4">Unit Kerja / OPD</th>
+                                <th class="p-4 min-w-[250px]">Keterangan / Pertanyaan</th>
+                                <th class="p-4 w-36 text-center">Status</th>
+                                <th class="p-4 w-40 text-center no-print">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-700">
+                            @forelse($helpdeskData as $index => $item)
+                            <tr class="hover:bg-slate-50/80 transition-colors row-helpdesk">
+                                <td class="p-4 text-center font-bold text-slate-400">{{ $index + 1 }}</td>
+                                <td class="p-4 whitespace-nowrap font-mono text-[11px] text-slate-500">
+                                    {{ $item->created_at ? $item->created_at->format('d M Y, H:i') : '-' }}
+                                </td>
+                                <td class="p-4 font-bold text-slate-900 nama-pemohon">
+                                    {{ $item->nama }}
+                                </td>
+                                <td class="p-4 font-mono text-[11px] text-slate-600">
+                                    <div class="font-semibold text-slate-800">NIP: {{ $item->nip }}</div>
+                                    <div class="text-slate-400 text-[10px]">NIK: {{ $item->nik }}</div>
+                                </td>
+                                <td class="p-4 text-slate-700 font-medium">
+                                    {{ $item->unit_kerja }}
+                                </td>
+                                <td class="p-4">
+                                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-slate-800 text-xs leading-relaxed max-w-md">
+                                        "{{ $item->keterangan }}"
+                                    </div>
+                                </td>
+                                <td class="p-4 text-center">
+                                    @if($item->status == 'Baru')
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full font-bold text-[10px]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
+                                            Baru
+                                        </span>
+                                    @elseif($item->status == 'Sudah Direspons')
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-full font-bold text-[10px]">
+                                            ✓ Sudah Direspons
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full font-bold text-[10px]">
+                                            ✓ Selesai
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="p-4 no-print">
+                                    <div class="flex flex-col gap-2 items-center">
+                                        {{-- Form Update Status --}}
+                                        <form action="{{ route('admin.helpdesk.status', $item->id) }}" method="POST" class="w-full">
+                                            @csrf
+                                            <select name="status" onchange="this.form.submit()"
+                                                class="w-full px-2 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] font-bold text-slate-700 focus:ring-2 focus:ring-emerald-500 cursor-pointer">
+                                                <option value="Baru" {{ $item->status == 'Baru' ? 'selected' : '' }}>● Baru</option>
+                                                <option value="Sudah Direspons" {{ $item->status == 'Sudah Direspons' ? 'selected' : '' }}>✓ Sudah Direspons</option>
+                                                <option value="Selesai" {{ $item->status == 'Selesai' ? 'selected' : '' }}>✓ Selesai</option>
+                                            </select>
+                                        </form>
+
+                                        {{-- Delete Button --}}
+                                        <form action="{{ route('admin.helpdesk.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus data pertanyaan helpdesk ini?');" class="w-full">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="w-full px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-lg text-[10px] font-bold transition-colors cursor-pointer">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="8" class="p-8 text-center text-slate-400">Belum ada pertanyaan helpdesk yang dikirim oleh pengguna.</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -646,6 +891,7 @@
         const titles = {
             'penerbitan': 'Dashboard Penerbitan',
             'pembaruan': 'Dashboard Pembaruan',
+            'helpdesk': 'Dashboard Pertanyaan Helpdesk',
             'statistik': 'Menu Infografis & Statistik'
         };
         document.getElementById('current-title-section').textContent = titles[tabId];
@@ -792,6 +1038,21 @@
         if (document.getElementById('pembaruan-start-date')) document.getElementById('pembaruan-start-date').value = "";
         if (document.getElementById('pembaruan-end-date')) document.getElementById('pembaruan-end-date').value = "";
         filterPembaruanTable();
+    }
+
+    function filterHelpdeskTable() {
+        const input = document.getElementById('helpdesk-search-input');
+        const filter = input ? input.value.toLowerCase() : '';
+        const rows = document.querySelectorAll('#table-helpdesk tbody .row-helpdesk');
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            if (text.indexOf(filter) > -1) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
     }
 
     function sortPembaruanTable() {

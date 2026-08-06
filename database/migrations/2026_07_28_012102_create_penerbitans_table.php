@@ -21,7 +21,10 @@ return new class extends Migration
         $table->string('instansi');
         $table->string('jabatan');
         $table->text('alasan')->nullable();
-        $table->string('dokumen')->nullable(); // Path/nama file upload
+        $table->string('dokumen')->nullable(); // Path/nama file upload legacy
+        $table->string('surat_permohonan')->nullable(); // Path file Surat Permohonan
+        $table->string('surat_rekomendasi')->nullable(); // Path file Surat Rekomendasi Unit Kerja
+        $table->string('foto_ktp')->nullable(); // Path file Foto KTP
         $table->enum('status', ['Pending', 'Disetujui', 'Ditolak'])->default('Pending');
         $table->timestamps();
     });

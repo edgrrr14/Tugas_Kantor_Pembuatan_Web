@@ -72,23 +72,23 @@
             ============================================================ --}}
             <aside class="lg:w-64 shrink-0">
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:sticky lg:top-24">
-                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-widest mb-4">Daftar Isi</h3>
+                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-widest mb-4" data-i18n="toc_title">Daftar Isi</h3>
                     <nav class="space-y-2">
                         <a href="#dasar-hukum" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
                             <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">1</span>
-                            Dasar Hukum
+                            <span data-i18n="toc_1">Dasar Hukum</span>
                         </a>
                         <a href="#prosedur" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
                             <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">2</span>
-                            Prosedur Pengajuan
+                            <span data-i18n="toc_2">Prosedur Pengajuan</span>
                         </a>
                         <a href="#persyaratan" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
                             <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">3</span>
-                            Persyaratan Dokumen
+                            <span data-i18n="toc_3">Persyaratan Dokumen</span>
                         </a>
                         <a href="#faq" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
                             <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">4</span>
-                            FAQ
+                            <span data-i18n="toc_4">FAQ</span>
                         </a>
                     </nav>
 
@@ -128,7 +128,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
                                 </svg>
                             </div>
-                            <h2 class="text-xl font-bold text-slate-800">Dasar Hukum</h2>
+                            <h2 class="text-xl font-bold text-slate-800" data-i18n="toc_1">Dasar Hukum</h2>
                         </div>
 
                         <p class="text-slate-600 leading-relaxed text-base mb-5">
@@ -167,15 +167,15 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                                 </svg>
                             </div>
-                            <h2 class="text-xl font-bold text-slate-800">Prosedur Pengajuan</h2>
+                            <h2 class="text-xl font-bold text-slate-800" data-i18n="toc_2">Prosedur Pengajuan</h2>
                         </div>
 
                         <div class="space-y-4">
                             @foreach([
-                                ['num' => '1', 'title' => 'Persiapkan Dokumen', 'desc' => 'Siapkan dokumen identitas (KTP/NIK), foto diri terbaru, dan dokumen pendukung lainnya sesuai jenis pengajuan.'],
-                                ['num' => '2', 'title' => 'Isi Formulir Online', 'desc' => 'Akses formulir pengajuan melalui menu "Form Penerbitan" atau "Form Pembaruan". Isi semua field dan unggah dokumen yang diperlukan.'],
-                                ['num' => '3', 'title' => 'Verifikasi Admin & Update Status', 'desc' => 'Setelah pengajuan dikirim, tim admin akan memverifikasi dokumen. Informasi status tentang perkembangan sertifikasi elektronik akan selalu diperbarui.'],
-                                ['num' => '4', 'title' => 'Notifikasi Selesai', 'desc' => 'Sistem akan mengirimkan notifikasi kepada user atau pemohon bahwa seluruh proses permohonan telah selesai.'],
+                                ['num' => '1', 'title' => 'Isi Formulir', 'desc' => 'Lengkapi data diri dan unggah dokumen pendukung yang diperlukan.'],
+                                ['num' => '2', 'title' => 'Verifikasi Admin', 'desc' => 'Tim admin kami akan memeriksa kelengkapan dan keabsahan dokumen Anda.'],
+                                ['num' => '3', 'title' => 'Update Status', 'desc' => 'Setelah pengajuan, informasi status tentang perkembangan sertifikasi elektronik akan diperbarui.'],
+                                ['num' => '4', 'title' => 'Notifikasi Selesai', 'desc' => 'Sistem akan mengirimkan notifikasi kepada pemohon bahwa proses telah selesai.'],
                             ] as $step)
                             <div class="flex gap-5">
                                 <div class="flex flex-col items-center">
@@ -203,60 +203,46 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                             </div>
-                            <h2 class="text-xl font-bold text-slate-800">Persyaratan Dokumen</h2>
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-800">Persyaratan Dokumen</h2>
+                                <p class="text-xs text-slate-500 mt-0.5">Persyaratan dokumen berlaku sama untuk pengajuan Penerbitan Baru maupun Pembaruan Sertifikat</p>
+                            </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            {{-- Untuk Penerbitan Baru --}}
-                            <div class="bg-blue-50 rounded-xl border border-blue-100 p-5">
-                                <div class="flex items-center gap-2 mb-4">
-                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        {{-- Card Bersatu untuk Penerbitan & Pembaruan --}}
+                        <div class="bg-gradient-to-br from-blue-50/80 to-indigo-50/80 rounded-2xl border border-blue-100 p-6 sm:p-8">
+                            <div class="flex items-center gap-3 mb-6 pb-4 border-b border-blue-200/60">
+                                <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center shrink-0 shadow-sm">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <h4 class="font-bold text-blue-800 text-sm">Penerbitan Baru</h4>
                                 </div>
-                                <ul class="space-y-2.5">
-                                    @foreach([
-                                        'Kartu Tanda Penduduk (KTP) yang masih berlaku',
-                                        'Nomor Induk Kependudukan (NIK)',
-                                        'Nomor Induk Pegawai (NIP)',
-                                        'Alamat email aktif',
-                                        'Surat keterangan dari instansi/perusahaan',
-                                        'Dokumen pendukung sesuai kebutuhan (PDF, maks 10MB)',
-                                    ] as $item)
-                                    <li class="flex items-start gap-2 text-sm text-blue-700">
-                                        <svg class="w-4 h-4 text-blue-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        {{ $item }}
-                                    </li>
-                                    @endforeach
-                                </ul>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 text-base">Persyaratan Pengajuan (Penerbitan Baru & Pembaruan)</h4>
+                                    <p class="text-xs text-slate-600 mt-0.5">Seluruh berkas dan data di bawah ini wajib dilengkapi saat mengisi formulir pengajuan</p>
+                                </div>
                             </div>
 
-                            {{-- Untuk Pembaruan --}}
-                            <div class="bg-indigo-50 rounded-xl border border-indigo-100 p-5">
-                                <div class="flex items-center gap-2 mb-4">
-                                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                    </svg>
-                                    <h4 class="font-bold text-indigo-800 text-sm">Pembaruan Sertifikat</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                @foreach([
+                                    ['title' => 'Surat Permohonan', 'desc' => 'Surat permohonan resmi (Format: PDF • Maksimal 10MB)'],
+                                    ['title' => 'Surat Rekomendasi Unit Kerja', 'desc' => 'Surat rekomendasi resmi dari Unit Kerja (Format: PDF • Maksimal 10MB)'],
+                                    ['title' => 'Foto KTP', 'desc' => 'Foto KTP asli (Format: JPG, JPEG, atau PNG • Maksimal 10MB)'],
+                                    ['title' => 'NIK & NIP', 'desc' => '16 digit NIK (KTP) dan 18 digit NIP pegawai'],
+                                    ['title' => 'Email & Nomor Telepon', 'desc' => 'Alamat email aktif & nomor telepon WhatsApp yang dapat dihubungi'],
+                                    ['title' => 'Unit Kerja & Jabatan', 'desc' => 'Nama Unit Kerja dan Jabatan resmi pemohon'],
+                                    ['title' => 'Alasan Pengajuan', 'desc' => 'Penjelasan singkat alasan pengajuan sertifikat'],
+                                ] as $item)
+                                <div class="flex items-start gap-3 p-4 bg-white/90 rounded-xl border border-blue-100/80 shadow-xs">
+                                    <div class="w-6 h-6 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
+                                        ✓
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-bold text-slate-800">{{ $item['title'] }}</div>
+                                        <div class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{{ $item['desc'] }}</div>
+                                    </div>
                                 </div>
-                                <ul class="space-y-2.5">
-                                    @foreach([
-                                        'Nama lengkap pemegang sertifikat',
-                                        'Nomor Induk Kependudukan (NIK)',
-                                        'Alamat email aktif yang terdaftar',
-                                        'Surat rekomendasi permohonan pembaruan (PDF, maks 10MB)',
-                                    ] as $item)
-                                    <li class="flex items-start gap-2 text-sm text-indigo-700">
-                                        <svg class="w-4 h-4 text-indigo-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        {{ $item }}
-                                    </li>
-                                    @endforeach
-                                </ul>
+                                @endforeach
                             </div>
                         </div>
                     </article>
@@ -298,22 +284,6 @@
                             @endforeach
                         </div>
                     </article>
-
-                    {{-- ===== CTA BAWAH ===== --}}
-                    <div class="bg-gradient-to-r from-blue-700 to-blue-800 rounded-2xl p-8 text-center">
-                        <h3 class="text-xl font-bold text-white mb-2">Butuh Bantuan Lebih Lanjut?</h3>
-                        <p class="text-blue-200 text-sm mb-6">Jika Anda memiliki pertanyaan lain seputar sertifikasi elektronik, jangan ragu untuk menghubungi kami.</p>
-                        <div class="flex justify-center">
-                            <a href="https://wa.me/6282312293928?text=Halo%2C%20saya%20ingin%20bertanya%20tentang%20sertifikasi%20elektronik."
-                                target="_blank" rel="noopener noreferrer"
-                                class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-md shadow-green-950/20 hover:shadow-lg text-sm">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                                </svg>
-                                Tanya Admin
-                            </a>
-                        </div>
-                    </div>
 
                 </div>
             </main>

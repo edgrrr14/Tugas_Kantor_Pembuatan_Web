@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Penerbitan;
 use App\Models\Pembaruan;
+use App\Models\Helpdesk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -73,11 +74,17 @@ class AdminController extends Controller
 
         $penerbitanData = Penerbitan::latest()->get();
         $pembaruanData  = Pembaruan::latest()->get();
+        $helpdeskData   = Helpdesk::latest()->get();
 
         // Total metrik utama real
         $totalPenerbitan = $penerbitanData->count();
         $totalPembaruan  = $pembaruanData->count();
         $totalSelesai    = $penerbitanData->where('status', 'Disetujui')->count() + $pembaruanData->where('status', 'Disetujui')->count();
+
+        // Helpdesk Stats
+        $totalHelpdesk   = $helpdeskData->count();
+        $helpdeskHariIni = Helpdesk::whereDate('created_at', date('Y-m-d'))->count();
+        $helpdeskBaru    = $helpdeskData->where('status', 'Baru')->count();
 
         // Distribusi Status Real
         $statusDisetujui = $totalSelesai;
@@ -97,6 +104,9 @@ class AdminController extends Controller
             'totalPenerbitan'   => $totalPenerbitan,
             'totalPembaruan'    => $totalPembaruan,
             'totalSelesai'      => $totalSelesai,
+            'totalHelpdesk'     => $totalHelpdesk,
+            'helpdeskHariIni'   => $helpdeskHariIni,
+            'helpdeskBaru'      => $helpdeskBaru,
             'statusDisetujui'   => $statusDisetujui,
             'statusPending'     => $statusPending,
             'statusDitolak'     => $statusDitolak,
@@ -105,7 +115,7 @@ class AdminController extends Controller
             'currentYear'       => $currentYear,
         ];
 
-        return view('admin.dashboard', compact('penerbitanData', 'pembaruanData', 'stats'));
+        return view('admin.dashboard', compact('penerbitanData', 'pembaruanData', 'helpdeskData', 'stats'));
     }
 
     /**
@@ -147,6 +157,40 @@ class AdminController extends Controller
     }
 
     /**
+     * Mengubah status entri Helpdesk pada database MySQL.
+     */
+    public function updateStatusHelpdesk(Request $request, $id)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('admin.login');
+        }
+
+        $request->validate([
+            'status' => 'required|in:Baru,Sudah Direspons,Selesai',
+        ]);
+
+        $helpdesk = Helpdesk::findOrFail($id);
+        $helpdesk->update(['status' => $request->status]);
+
+        return back()->with('success', 'Status helpdesk berhasil diubah menjadi: ' . $request->status);
+    }
+
+    /**
+     * Menghapus entri Helpdesk.
+     */
+    public function destroyHelpdesk($id)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('admin.login');
+        }
+
+        $helpdesk = Helpdesk::findOrFail($id);
+        $helpdesk->delete();
+
+        return back()->with('success', 'Data pertanyaan helpdesk berhasil dihapus.');
+    }
+
+    /**
      * Ekspor data Penerbitan dari database MySQL ke Excel (format CSV).
      */
     public function exportPenerbitanCSV()
@@ -174,7 +218,7 @@ class AdminController extends Controller
             fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
 
             // Judul Kolom
-            fputcsv($file, ['No', 'Nama Lengkap', 'NIK', 'NIP', 'Email', 'No Telepon', 'Instansi', 'Jabatan', 'Alasan', 'Status', 'Tanggal Pengajuan']);
+            fputcsv($file, ['No', 'Nama Lengkap', 'NIK', 'NIP', 'Email', 'No Telepon', 'Unit Kerja', 'Jabatan', 'Alasan', 'Surat Permohonan', 'Surat Rekomendasi', 'Foto KTP', 'Status', 'Tanggal Pengajuan']);
 
             foreach ($data as $index => $row) {
                 fputcsv($file, [
@@ -187,6 +231,9 @@ class AdminController extends Controller
                     $row->instansi,
                     $row->jabatan,
                     $row->alasan,
+                    $row->surat_permohonan ? asset('storage/' . $row->surat_permohonan) : ($row->dokumen ? asset('storage/' . $row->dokumen) : '-'),
+                    $row->surat_rekomendasi ? asset('storage/' . $row->surat_rekomendasi) : '-',
+                    $row->foto_ktp ? asset('storage/' . $row->foto_ktp) : '-',
                     $row->status,
                     $row->created_at->format('Y-m-d H:i:s'),
                 ]);

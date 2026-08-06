@@ -16,6 +16,9 @@ class Penerbitan extends Model
         'jabatan',
         'alasan',
         'dokumen',
+        'surat_permohonan',
+        'surat_rekomendasi',
+        'foto_ktp',
         'status',
     ];
 }

@@ -74,7 +74,7 @@
 <body class="font-sans antialiased bg-slate-50 text-slate-800">
 
     {{-- Skip link untuk pengguna keyboard & screen reader (Spesifikasi 1) --}}
-    <a href="#main-content" class="skip-link">Lompati ke Konten Utama</a>
+    <a href="#main-content" class="skip-link" data-i18n="skip_content">Lompati ke Konten Utama</a>
 
     {{-- Tombol Login Admin Melayang di Pojok Kanan Atas (Tampil hanya di Beranda utama saat belum login) --}}
     @if(request()->routeIs('home') && !session()->has('admin_logged_in'))
@@ -83,7 +83,7 @@
                 <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
-                <span>Login Admin</span>
+                <span data-i18n="admin_login">Login Admin</span>
             </a>
         </div>
     @endif
@@ -188,27 +188,27 @@
                 <div>
                     <div class="flex items-center gap-3 mb-4">
                         <img src="{{ asset('images/logo-mamasa.png') }}" alt="Logo Kabupaten Mamasa" class="h-10 w-auto object-contain">
-                        <span class="text-white font-bold">Sertifikasi Elektronik</span>
+                        <span class="text-white font-bold" data-i18n="hero_title_1">Sertifikasi Elektronik</span>
                     </div>
-                    <p class="text-sm leading-relaxed">
+                    <p class="text-sm leading-relaxed" data-i18n="footer_desc">
                         Portal resmi layanan sertifikasi elektronik yang cepat, aman, dan dapat diandalkan untuk kebutuhan Anda.
                     </p>
                 </div>
 
                 {{-- Kolom 2: Tautan Cepat --}}
                 <div>
-                    <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Tautan Cepat</h4>
+                    <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider" data-i18n="footer_quick_links">Tautan Cepat</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('home') }}" class="hover:text-blue-400 transition-colors duration-200">Beranda</a></li>
-                        <li><a href="{{ route('penerbitan') }}" class="hover:text-blue-400 transition-colors duration-200">Form Penerbitan</a></li>
-                        <li><a href="{{ route('pembaruan') }}" class="hover:text-blue-400 transition-colors duration-200">Form Pembaruan</a></li>
-                        <li><a href="{{ route('informasi') }}" class="hover:text-blue-400 transition-colors duration-200">Informasi Web</a></li>
+                        <li><a href="{{ route('home') }}" class="hover:text-blue-400 transition-colors duration-200" data-i18n="home">Beranda</a></li>
+                        <li><a href="{{ route('penerbitan') }}" class="hover:text-blue-400 transition-colors duration-200" data-i18n="penerbitan">Form Penerbitan</a></li>
+                        <li><a href="{{ route('pembaruan') }}" class="hover:text-blue-400 transition-colors duration-200" data-i18n="pembaruan">Form Pembaruan</a></li>
+                        <li><a href="{{ route('informasi') }}" class="hover:text-blue-400 transition-colors duration-200" data-i18n="informasi">Informasi Web</a></li>
                     </ul>
                 </div>
 
                 {{-- Kolom 3: Kontak --}}
                 <div>
-                    <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Bantuan</h4>
+                    <h4 class="text-white font-semibold mb-4 text-sm uppercase tracking-wider" data-i18n="footer_help">Bantuan</h4>
                     <ul class="space-y-2 text-sm">
                         <li class="flex items-center gap-2">
                             <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +229,7 @@
 
             {{-- Garis pemisah & Copyright --}}
             <div class="border-t border-slate-800 pt-6 text-center text-xs">
-                <p>&copy; {{ date('Y') }} Dinas Komunikasi Informatika dan Persandian &mdash; Portal Resmi Sertifikasi Elektronik. Seluruh hak cipta dilindungi.</p>
+                <p>&copy; {{ date('Y') }} <span data-i18n="footer_copy">Dinas Komunikasi Informatika dan Persandian &mdash; Portal Resmi Sertifikasi Elektronik. Seluruh hak cipta dilindungi.</span></p>
             </div>
         </div>
     </footer>
@@ -274,8 +274,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-bold text-base leading-tight">Fitur Aksesibilitas</h3>
-                        <p class="text-xs text-blue-100">Setelan alat bantu visual & penglihatan</p>
+                        <h3 class="font-bold text-base leading-tight" data-i18n="a11y_title">Fitur Aksesibilitas</h3>
+                        <p class="text-xs text-blue-100" data-i18n="a11y_subtitle">Setelan alat bantu visual & penglihatan</p>
                     </div>
                 </div>
                 <button id="a11y-close-btn" aria-label="Tutup Menu Aksesibilitas" class="text-white/80 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer">
@@ -652,6 +652,7 @@
                 localStorage.removeItem('a11y_large_cursor');
                 localStorage.removeItem('a11y_text_spacing');
                 localStorage.removeItem('a11y_underline');
+                localStorage.removeItem('a11y_lang');
 
                 announce('Semua 9 fitur aksesibilitas direset ke default.');
             });

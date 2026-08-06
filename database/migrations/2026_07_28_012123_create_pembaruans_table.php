@@ -15,10 +15,15 @@ return new class extends Migration
         $table->id();
         $table->string('nama_lengkap');
         $table->string('nik', 16);
+        $table->string('nip', 18)->nullable();
         $table->string('email');
         $table->string('no_telepon')->nullable();
         $table->string('instansi');
-        $table->string('surat_rekomendasi'); // Path/nama file upload Surat Rekomendasi
+        $table->string('jabatan')->nullable();
+        $table->text('alasan')->nullable(); // Alasan permohonan pembaruan
+        $table->string('surat_permohonan')->nullable(); // Path file Surat Permohonan
+        $table->string('surat_rekomendasi')->nullable(); // Path file Surat Rekomendasi Unit Kerja
+        $table->string('foto_ktp')->nullable(); // Path file Foto KTP
         $table->enum('status', ['Pending', 'Disetujui', 'Ditolak'])->default('Pending');
         $table->timestamps();
     });

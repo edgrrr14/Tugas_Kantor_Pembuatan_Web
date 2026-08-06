@@ -67,6 +67,12 @@ Route::post('/pembaruan', [CertificationController::class, 'storePembaruan'])->n
  */
 Route::get('/informasi', [CertificationController::class, 'informasi'])->name('informasi');
 
+/**
+ * Route: POST /helpdesk
+ * Memproses dan menyimpan data pertanyaan helpdesk user.
+ */
+Route::post('/helpdesk', [CertificationController::class, 'storeHelpdesk'])->name('helpdesk.store');
+
 // =============================================================
 // ADMIN ROLE & PANEL ROUTES (Flowchart Utama Admin)
 // =============================================================
@@ -83,6 +89,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     // Kelola Status Pengajuan
     Route::post('/penerbitan/{id}/status', [AdminController::class, 'updateStatusPenerbitan'])->name('penerbitan.status');
     Route::post('/pembaruan/{id}/status', [AdminController::class, 'updateStatusPembaruan'])->name('pembaruan.status');
+    Route::post('/helpdesk/{id}/status', [AdminController::class, 'updateStatusHelpdesk'])->name('helpdesk.status');
+    Route::delete('/helpdesk/{id}', [AdminController::class, 'destroyHelpdesk'])->name('helpdesk.destroy');
 
     // Ekspor Data Laporan
     Route::get('/export/penerbitan/csv', [AdminController::class, 'exportPenerbitanCSV'])->name('export.penerbitan.csv');
