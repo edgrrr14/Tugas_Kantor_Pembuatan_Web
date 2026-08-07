@@ -105,6 +105,14 @@
                 </svg>
                 <span>4. Infografis & Statistik</span>
             </button>
+
+            <button onclick="switchTab('dokumen_syarat')" id="tab-btn-dokumen_syarat"
+                class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-left transition-all duration-200 cursor-pointer hover:bg-slate-800 hover:text-white text-slate-400">
+                <svg class="w-5 h-5 shrink-0 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span>5. Kelola Dokumen Syarat</span>
+            </button>
         </nav>
     </aside>
 
@@ -805,6 +813,176 @@
 
         </div>
 
+        {{-- ============================================================
+            TAB PANEL 5: KELOLA DOKUMEN SYARAT (PENERBITAN & PEMBARUAN)
+        ============================================================ --}}
+        <div id="panel-dokumen_syarat" class="tab-panel space-y-6 hidden">
+            
+            {{-- Header Action Bar --}}
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-base">Kelola Dokumen Persyaratan</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Unggah, perbarui, atau hapus dokumen templat formulir rekomendasi dan surat permohonan untuk Penerbitan dan Pembaruan.</p>
+                </div>
+                
+                <button type="button" onclick="openTambahDokumenModal()"
+                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-sm hover:shadow-indigo-200 cursor-pointer shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>Tambah Dokumen Syarat</span>
+                </button>
+            </div>
+
+            {{-- Grid 2 Kolom: Dokumen Penerbitan & Dokumen Pembaruan --}}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                {{-- KOLOM 1: PENERBITAN --}}
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div class="p-5 border-b border-slate-100 bg-blue-50/50 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center font-bold text-xs shrink-0">
+                                📄
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-sm">Dokumen Syarat Penerbitan</h4>
+                                <span class="text-[11px] text-blue-600 font-medium">Templat untuk Pengajuan Baru</span>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-extrabold rounded-full">
+                            {{ $dokumenSyaratData->where('kategori', 'penerbitan')->count() }} File
+                        </span>
+                    </div>
+
+                    <div class="p-5 space-y-3 flex-1">
+                        @forelse($dokumenSyaratData->where('kategori', 'penerbitan') as $doc)
+                            @php
+                                $fileUrl = str_starts_with($doc->file_path, 'templates/') 
+                                    ? asset($doc->file_path) 
+                                    : asset('storage/' . $doc->file_path);
+                            @endphp
+                            <div class="p-4 border border-slate-200 rounded-xl hover:border-blue-300 transition-all flex items-start justify-between gap-3 bg-slate-50/30">
+                                <div class="flex items-start gap-3 flex-1 min-w-0">
+                                    <div class="w-9 h-9 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center font-black text-xs shrink-0 mt-0.5">
+                                        {{ strtoupper($doc->tipe_file ?? 'DOCX') }}
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <h5 class="font-bold text-slate-800 text-xs truncate" title="{{ $doc->nama_dokumen }}">{{ $doc->nama_dokumen }}</h5>
+                                        <p class="text-[11px] text-slate-500 mt-0.5 line-clamp-2">{{ $doc->deskripsi ?? 'Tidak ada deskripsi' }}</p>
+                                        <div class="mt-2 flex items-center gap-3">
+                                            <a href="{{ $fileUrl }}" target="_blank" download
+                                                class="inline-flex items-center gap-1 text-[11px] text-blue-600 font-bold hover:underline">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                                </svg>
+                                                <span>Unduh / Preview</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-1 shrink-0">
+                                    <button type="button" onclick="openEditDokumenModal({{ json_encode($doc) }})"
+                                        class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Edit Dokumen">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </button>
+
+                                    <form action="{{ route('admin.dokumen_syarat.destroy', $doc->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen syarat ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus Dokumen">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-6 text-center text-slate-400 text-xs border border-dashed border-slate-200 rounded-xl">
+                                Belum ada dokumen syarat penerbitan.
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+
+                {{-- KOLOM 2: PEMBARUAN --}}
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div class="p-5 border-b border-slate-100 bg-indigo-50/50 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 bg-indigo-100 text-indigo-700 rounded-lg flex items-center justify-center font-bold text-xs shrink-0">
+                                🔄
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-sm">Dokumen Syarat Pembaruan</h4>
+                                <span class="text-[11px] text-indigo-600 font-medium">Templat untuk Perpanjangan / Pembaruan</span>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 bg-indigo-100 text-indigo-800 text-xs font-extrabold rounded-full">
+                            {{ $dokumenSyaratData->where('kategori', 'pembaruan')->count() }} File
+                        </span>
+                    </div>
+
+                    <div class="p-5 space-y-3 flex-1">
+                        @forelse($dokumenSyaratData->where('kategori', 'pembaruan') as $doc)
+                            @php
+                                $fileUrl = str_starts_with($doc->file_path, 'templates/') 
+                                    ? asset($doc->file_path) 
+                                    : asset('storage/' . $doc->file_path);
+                            @endphp
+                            <div class="p-4 border border-slate-200 rounded-xl hover:border-indigo-300 transition-all flex items-start justify-between gap-3 bg-slate-50/30">
+                                <div class="flex items-start gap-3 flex-1 min-w-0">
+                                    <div class="w-9 h-9 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center font-black text-xs shrink-0 mt-0.5">
+                                        {{ strtoupper($doc->tipe_file ?? 'DOCX') }}
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <h5 class="font-bold text-slate-800 text-xs truncate" title="{{ $doc->nama_dokumen }}">{{ $doc->nama_dokumen }}</h5>
+                                        <p class="text-[11px] text-slate-500 mt-0.5 line-clamp-2">{{ $doc->deskripsi ?? 'Tidak ada deskripsi' }}</p>
+                                        <div class="mt-2 flex items-center gap-3">
+                                            <a href="{{ $fileUrl }}" target="_blank" download
+                                                class="inline-flex items-center gap-1 text-[11px] text-indigo-600 font-bold hover:underline">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                                </svg>
+                                                <span>Unduh / Preview</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-1 shrink-0">
+                                    <button type="button" onclick="openEditDokumenModal({{ json_encode($doc) }})"
+                                        class="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Edit Dokumen">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </button>
+
+                                    <form action="{{ route('admin.dokumen_syarat.destroy', $doc->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen syarat ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus Dokumen">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-6 text-center text-slate-400 text-xs border border-dashed border-slate-200 rounded-xl">
+                                Belum ada dokumen syarat pembaruan.
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
     </main>
 
 </div>
@@ -846,6 +1024,116 @@
         </div>
     </div>
 </div>
+
+{{-- ================================================================
+    MODAL TAMBAH DOKUMEN SYARAT
+================================================================ --}}
+<div id="modal-tambah-dokumen" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200 no-print">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 transform transition-all animate-fade-in mx-4">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <h3 class="text-base font-extrabold text-slate-800">Tambah Dokumen Syarat Baru</h3>
+            <button type="button" onclick="closeTambahDokumenModal()" class="text-slate-400 hover:text-slate-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <form action="{{ route('admin.dokumen_syarat.store') }}" method="POST" enctype="multipart/form-data" class="py-4 space-y-4">
+            @csrf
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Dokumen <span class="text-red-500">*</span></label>
+                <select name="kategori" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 font-bold focus:ring-2 focus:ring-indigo-500">
+                    <option value="penerbitan">📄 Dokumen Persyaratan Penerbitan</option>
+                    <option value="pembaruan">🔄 Dokumen Persyaratan Pembaruan</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Dokumen <span class="text-red-500">*</span></label>
+                <input type="text" name="nama_dokumen" placeholder="Contoh: Formulir Rekomendasi (.docx)" required
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi Dokumen / Petunjuk</label>
+                <textarea name="deskripsi" rows="3" placeholder="Contoh: Format Microsoft Word • Wajib diisi untuk pengajuan"
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">File Dokumen Templat <span class="text-red-500">*</span></label>
+                <input type="file" name="file_dokumen" accept=".docx,.doc,.pdf,.zip,.rar" required
+                    class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs text-slate-700 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                <span class="text-[11px] text-slate-400 mt-1 block">Format: DOCX, DOC, PDF, ZIP, RAR. Maksimal 10MB.</span>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="closeTambahDokumenModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl">
+                    Batal
+                </button>
+                <button type="submit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md">
+                    Simpan Dokumen
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- ================================================================
+    MODAL EDIT DOKUMEN SYARAT
+================================================================ --}}
+<div id="modal-edit-dokumen" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200 no-print">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 transform transition-all animate-fade-in mx-4">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <h3 class="text-base font-extrabold text-slate-800">Edit Dokumen Syarat</h3>
+            <button type="button" onclick="closeEditDokumenModal()" class="text-slate-400 hover:text-slate-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <form id="form-edit-dokumen" method="POST" enctype="multipart/form-data" class="py-4 space-y-4">
+            @csrf
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Dokumen <span class="text-red-500">*</span></label>
+                <select name="kategori" id="edit_dokumen_kategori" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 font-bold focus:ring-2 focus:ring-indigo-500">
+                    <option value="penerbitan">📄 Dokumen Persyaratan Penerbitan</option>
+                    <option value="pembaruan">🔄 Dokumen Persyaratan Pembaruan</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Dokumen <span class="text-red-500">*</span></label>
+                <input type="text" name="nama_dokumen" id="edit_dokumen_nama" required
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Deskripsi Dokumen / Petunjuk</label>
+                <textarea name="deskripsi" id="edit_dokumen_deskripsi" rows="3"
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Ganti File Dokumen (Opsional)</label>
+                <input type="file" name="file_dokumen" accept=".docx,.doc,.pdf,.zip,.rar"
+                    class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs text-slate-700 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                <span class="text-[11px] text-slate-400 mt-1 block">Biarkan kosong jika tidak ingin mengganti file. Format: DOCX, DOC, PDF, ZIP, RAR.</span>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="closeEditDokumenModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl">
+                    Batal
+                </button>
+                <button type="submit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -862,6 +1150,30 @@
 
     function closeLogoutModal() {
         document.getElementById('logout-modal').classList.add('hidden');
+    }
+
+    // ------------------------------------------------------------------
+    // DOKUMEN SYARAT MODALS HANDLER
+    // ------------------------------------------------------------------
+    function openTambahDokumenModal() {
+        document.getElementById('modal-tambah-dokumen').classList.remove('hidden');
+    }
+
+    function closeTambahDokumenModal() {
+        document.getElementById('modal-tambah-dokumen').classList.add('hidden');
+    }
+
+    function openEditDokumenModal(doc) {
+        const form = document.getElementById('form-edit-dokumen');
+        form.action = "{{ url('/admin/dokumen-syarat') }}/" + doc.id;
+        document.getElementById('edit_dokumen_kategori').value = doc.kategori;
+        document.getElementById('edit_dokumen_nama').value = doc.nama_dokumen;
+        document.getElementById('edit_dokumen_deskripsi').value = doc.deskripsi || '';
+        document.getElementById('modal-edit-dokumen').classList.remove('hidden');
+    }
+
+    function closeEditDokumenModal() {
+        document.getElementById('modal-edit-dokumen').classList.add('hidden');
     }
 
     // ------------------------------------------------------------------
@@ -884,17 +1196,23 @@
 
         // Buat tombol panel terpilih menjadi aktif
         const activeBtn = document.getElementById('tab-btn-' + tabId);
-        activeBtn.classList.remove('text-slate-400');
-        activeBtn.classList.add('bg-slate-800', 'text-white');
+        if (activeBtn) {
+            activeBtn.classList.remove('text-slate-400');
+            activeBtn.classList.add('bg-slate-800', 'text-white');
+        }
 
         // Update Title Section
         const titles = {
             'penerbitan': 'Dashboard Penerbitan',
             'pembaruan': 'Dashboard Pembaruan',
             'helpdesk': 'Dashboard Pertanyaan Helpdesk',
-            'statistik': 'Menu Infografis & Statistik'
+            'statistik': 'Menu Infografis & Statistik',
+            'dokumen_syarat': 'Kelola Dokumen Persyaratan'
         };
-        document.getElementById('current-title-section').textContent = titles[tabId];
+        const titleEl = document.getElementById('current-title-section');
+        if (titleEl && titles[tabId]) {
+            titleEl.textContent = titles[tabId];
+        }
 
         // Jika pindah ke tab infografis/statistik, trigger update data & chart resize
         if (tabId === 'statistik' && typeof updateInfografisData === 'function') {

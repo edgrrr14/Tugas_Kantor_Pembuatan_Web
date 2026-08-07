@@ -92,6 +92,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::post('/helpdesk/{id}/status', [AdminController::class, 'updateStatusHelpdesk'])->name('helpdesk.status');
     Route::delete('/helpdesk/{id}', [AdminController::class, 'destroyHelpdesk'])->name('helpdesk.destroy');
 
+    // Kelola Dokumen Syarat (Penerbitan & Pembaruan)
+    Route::post('/dokumen-syarat', [AdminController::class, 'storeDokumenSyarat'])->name('dokumen_syarat.store');
+    Route::post('/dokumen-syarat/{id}', [AdminController::class, 'updateDokumenSyarat'])->name('dokumen_syarat.update');
+    Route::delete('/dokumen-syarat/{id}', [AdminController::class, 'destroyDokumenSyarat'])->name('dokumen_syarat.destroy');
+
     // Ekspor Data Laporan
     Route::get('/export/penerbitan/csv', [AdminController::class, 'exportPenerbitanCSV'])->name('export.penerbitan.csv');
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Penerbitan;
 use App\Models\Pembaruan;
 use App\Models\Helpdesk;
+use App\Models\DokumenSyarat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +30,10 @@ class CertificationController extends Controller
      */
     public function index()
     {
-        return view('index');
+        $dokumenPenerbitan = DokumenSyarat::where('kategori', 'penerbitan')->latest()->get();
+        $dokumenPembaruan  = DokumenSyarat::where('kategori', 'pembaruan')->latest()->get();
+
+        return view('index', compact('dokumenPenerbitan', 'dokumenPembaruan'));
     }
 
     /**
@@ -69,13 +73,6 @@ class CertificationController extends Controller
     /**
      * Memproses dan menyimpan pengajuan Penerbitan Sertifikat baru.
      *
-     * Alur proses:
-     * 1. Validasi input dari user.
-     * 2. Menyimpan file dokumen ke storage.
-     * 3. (TODO) Simpan data ke database.
-     * 4. (TODO) Kirim notifikasi WhatsApp ke admin.
-     * 5. Redirect dengan pesan sukses.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -83,7 +80,6 @@ class CertificationController extends Controller
     {
         // -----------------------------------------------------------
         // STEP 1: VALIDASI INPUT
-        // Validasi semua field yang dikirimkan dari form penerbitan.
         // -----------------------------------------------------------
         $validated = $request->validate([
             'nama_lengkap'      => 'required|string|max:255|min:3',
@@ -94,12 +90,11 @@ class CertificationController extends Controller
             'instansi'          => 'required|string|max:255',
             'jabatan'           => 'required|string|max:255',
             'alasan'            => 'required|string|max:2000',
-            'surat_permohonan'  => 'required|file|mimes:pdf|max:10240', // PDF saja, maks 10MB
-            'surat_rekomendasi' => 'required|file|mimes:pdf|max:10240', // PDF saja, maks 10MB
-            'foto_ktp'          => 'required|file|mimes:jpg,jpeg,png|max:10240', // JPG/JPEG/PNG, maks 10MB
+            'surat_permohonan'  => 'required|file|mimes:pdf|max:10240',
+            'surat_rekomendasi' => 'required|file|mimes:pdf|max:10240',
+            'foto_ktp'          => 'required|file|mimes:jpg,jpeg,png|max:10240',
             'persetujuan'       => 'accepted',
         ], [
-            // Pesan validasi dalam Bahasa Indonesia
             'nama_lengkap.required'     => 'Nama lengkap wajib diisi.',
             'nama_lengkap.min'          => 'Nama lengkap minimal 3 karakter.',
             'nik.required'              => 'NIK wajib diisi.',
@@ -150,13 +145,10 @@ class CertificationController extends Controller
             'surat_permohonan'  => $suratPermohonanPath,
             'surat_rekomendasi' => $suratRekomendasiPath,
             'foto_ktp'          => $fotoKtpPath,
-            'dokumen'           => $suratPermohonanPath, // Fallback legacy
+            'dokumen'           => $suratPermohonanPath,
             'status'            => 'Pending',
         ]);
 
-        // -----------------------------------------------------------
-        // STEP 4: NOTIFIKASI WHATSAPP KE ADMIN
-        // -----------------------------------------------------------
         Log::info('Pengajuan penerbitan baru', [
             'nama'       => $validated['nama_lengkap'],
             'email'      => $validated['email'],
@@ -164,9 +156,6 @@ class CertificationController extends Controller
             'instansi'   => $validated['instansi'],
         ]);
 
-        // -----------------------------------------------------------
-        // STEP 5: REDIRECT DENGAN PESAN SUKSES
-        // -----------------------------------------------------------
         return redirect()->route('home')
             ->with('success', 'Pengajuan penerbitan sertifikat Anda berhasil dikirim! Kami akan segera menghubungi Anda kembali.')
             ->with('whatsapp_url', 'https://wa.me/6282312293928?text=Form%20penerbitan%20telah%20diisi');
@@ -192,12 +181,11 @@ class CertificationController extends Controller
             'instansi'          => 'required|string|max:255',
             'jabatan'           => 'required|string|max:255',
             'alasan'            => 'required|string|max:2000',
-            'surat_permohonan'  => 'required|file|mimes:pdf|max:10240', // PDF saja, maks 10MB
-            'surat_rekomendasi' => 'required|file|mimes:pdf|max:10240', // PDF saja, maks 10MB
-            'foto_ktp'          => 'required|file|mimes:jpg,jpeg,png|max:10240', // JPG/JPEG/PNG, maks 10MB
+            'surat_permohonan'  => 'required|file|mimes:pdf|max:10240',
+            'surat_rekomendasi' => 'required|file|mimes:pdf|max:10240',
+            'foto_ktp'          => 'required|file|mimes:jpg,jpeg,png|max:10240',
             'persetujuan'       => 'accepted',
         ], [
-            // Pesan validasi dalam Bahasa Indonesia
             'nama_lengkap.required'     => 'Nama lengkap wajib diisi.',
             'nama_lengkap.min'          => 'Nama lengkap minimal 3 karakter.',
             'nik.required'              => 'NIK wajib diisi.',
@@ -251,26 +239,6 @@ class CertificationController extends Controller
             'status'            => 'Pending',
         ]);
 
-        // -----------------------------------------------------------
-        // STEP 4: NOTIFIKASI WHATSAPP KE ADMIN
-        //
-        // TODO: Aktifkan setelah data disimpan ke database.
-        // -----------------------------------------------------------
-        // try {
-        //     $nomorAdmin = config('app.whatsapp_admin_number');
-        //     $pesan = "🔄 *Pengajuan Pembaruan Sertifikat*\n\n"
-        //            . "Nama              : {$validated['nama_lengkap']}\n"
-        //            . "NIK               : {$validated['nik']}\n"
-        //            . "Email             : {$validated['email']}\n"
-        //            . "No Telepon        : {$validated['no_telepon']}\n"
-        //            . "Instansi          : {$validated['instansi']}\n\n"
-        //            . "Silakan review pengajuan pembaruan ini di dashboard admin.";
-        //
-        //     \App\Services\WhatsAppService::send($nomorAdmin, $pesan);
-        // } catch (\Exception $e) {
-        //     Log::error('Gagal mengirim notifikasi WhatsApp: ' . $e->getMessage());
-        // }
-
         Log::info('Pengajuan pembaruan baru', [
             'nama'       => $validated['nama_lengkap'],
             'nik'        => $validated['nik'],
@@ -279,9 +247,6 @@ class CertificationController extends Controller
             'instansi'   => $validated['instansi'],
         ]);
 
-        // -----------------------------------------------------------
-        // STEP 5: REDIRECT DENGAN PESAN SUKSES
-        // -----------------------------------------------------------
         return redirect()->route('home')
             ->with('success', 'Pengajuan pembaruan sertifikat Anda berhasil dikirim! Kami akan segera menghubungi Anda melalui email yang terdaftar.')
             ->with('whatsapp_url', 'https://wa.me/6282312293928?text=Form%20pembaruan%20telah%20diisi');

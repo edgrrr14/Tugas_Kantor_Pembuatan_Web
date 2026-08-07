@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Penerbitan;
 use App\Models\Pembaruan;
 use App\Models\Helpdesk;
+use App\Models\DokumenSyarat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * AdminController
@@ -72,9 +74,10 @@ class AdminController extends Controller
             return redirect()->route('admin.login')->withErrors(['login_error' => 'Silakan login terlebih dahulu untuk mengakses dashboard admin.']);
         }
 
-        $penerbitanData = Penerbitan::latest()->get();
-        $pembaruanData  = Pembaruan::latest()->get();
-        $helpdeskData   = Helpdesk::latest()->get();
+        $penerbitanData    = Penerbitan::latest()->get();
+        $pembaruanData     = Pembaruan::latest()->get();
+        $helpdeskData      = Helpdesk::latest()->get();
+        $dokumenSyaratData = DokumenSyarat::latest()->get();
 
         // Total metrik utama real
         $totalPenerbitan = $penerbitanData->count();
@@ -115,7 +118,7 @@ class AdminController extends Controller
             'currentYear'       => $currentYear,
         ];
 
-        return view('admin.dashboard', compact('penerbitanData', 'pembaruanData', 'helpdeskData', 'stats'));
+        return view('admin.dashboard', compact('penerbitanData', 'pembaruanData', 'helpdeskData', 'dokumenSyaratData', 'stats'));
     }
 
     /**
@@ -188,6 +191,115 @@ class AdminController extends Controller
         $helpdesk->delete();
 
         return back()->with('success', 'Data pertanyaan helpdesk berhasil dihapus.');
+    }
+
+    // =============================================================
+    // KELOLA DOKUMEN SYARAT (PENERBITAN & PEMBARUAN)
+    // =============================================================
+
+    /**
+     * Menyimpan Dokumen Syarat Baru (Upload File Templat Syarat).
+     */
+    public function storeDokumenSyarat(Request $request)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('admin.login');
+        }
+
+        $request->validate([
+            'kategori'     => 'required|in:penerbitan,pembaruan',
+            'nama_dokumen' => 'required|string|max:255',
+            'deskripsi'    => 'nullable|string|max:1000',
+            'file_dokumen' => 'required|file|mimes:docx,doc,pdf,zip,rar|max:10240',
+        ], [
+            'kategori.required'     => 'Kategori dokumen wajib dipilih.',
+            'nama_dokumen.required' => 'Nama dokumen wajib diisi.',
+            'file_dokumen.required' => 'File dokumen wajib diunggah.',
+            'file_dokumen.mimes'    => 'Format file harus berupa DOCX, DOC, PDF, ZIP, atau RAR.',
+            'file_dokumen.max'      => 'Ukuran file tidak boleh lebih dari 10MB.',
+        ]);
+
+        $file = $request->file('file_dokumen');
+        $filePath = $file->store('dokumen_syarat', 'public');
+        $tipeFile = strtolower($file->getClientOriginalExtension());
+
+        DokumenSyarat::create([
+            'kategori'     => $request->kategori,
+            'nama_dokumen' => $request->nama_dokumen,
+            'deskripsi'    => $request->deskripsi,
+            'file_path'    => $filePath,
+            'tipe_file'    => $tipeFile,
+        ]);
+
+        return back()->with('success', 'Dokumen syarat baru berhasil ditambahkan!');
+    }
+
+    /**
+     * Memperbarui Dokumen Syarat yang Sudah Ada.
+     */
+    public function updateDokumenSyarat(Request $request, $id)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('admin.login');
+        }
+
+        $dokumen = DokumenSyarat::findOrFail($id);
+
+        $request->validate([
+            'kategori'     => 'required|in:penerbitan,pembaruan',
+            'nama_dokumen' => 'required|string|max:255',
+            'deskripsi'    => 'nullable|string|max:1000',
+            'file_dokumen' => 'nullable|file|mimes:docx,doc,pdf,zip,rar|max:10240',
+        ], [
+            'kategori.required'     => 'Kategori dokumen wajib dipilih.',
+            'nama_dokumen.required' => 'Nama dokumen wajib diisi.',
+            'file_dokumen.mimes'    => 'Format file harus berupa DOCX, DOC, PDF, ZIP, atau RAR.',
+            'file_dokumen.max'      => 'Ukuran file tidak boleh lebih dari 10MB.',
+        ]);
+
+        $updateData = [
+            'kategori'     => $request->kategori,
+            'nama_dokumen' => $request->nama_dokumen,
+            'deskripsi'    => $request->deskripsi,
+        ];
+
+        if ($request->hasFile('file_dokumen')) {
+            // Hapus file lama jika disimpan di storage public
+            if ($dokumen->file_path && !str_starts_with($dokumen->file_path, 'templates/')) {
+                Storage::disk('public')->delete($dokumen->file_path);
+            }
+
+            $file = $request->file('file_dokumen');
+            $filePath = $file->store('dokumen_syarat', 'public');
+            $tipeFile = strtolower($file->getClientOriginalExtension());
+
+            $updateData['file_path'] = $filePath;
+            $updateData['tipe_file'] = $tipeFile;
+        }
+
+        $dokumen->update($updateData);
+
+        return back()->with('success', 'Dokumen syarat berhasil diperbarui!');
+    }
+
+    /**
+     * Menghapus Dokumen Syarat.
+     */
+    public function destroyDokumenSyarat($id)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('admin.login');
+        }
+
+        $dokumen = DokumenSyarat::findOrFail($id);
+
+        if ($dokumen->file_path && !str_starts_with($dokumen->file_path, 'templates/')) {
+            Storage::disk('public')->delete($dokumen->file_path);
+        }
+
+        $dokumen->delete();
+
+        return back()->with('success', 'Dokumen syarat berhasil dihapus.');
     }
 
     /**

@@ -207,7 +207,7 @@
                         Unduh Persyaratan & Templat
                     </h4>
                     <p class="text-slate-500 text-xs leading-relaxed">
-                        Dapatkan dokumen templat surat rekomendasi permohonan pembaruan sertifikat.
+                        Dapatkan dokumen templat surat permohonan & rekomendasi untuk pengajuan penerbitan dan pembaruan.
                     </p>
                 </div>
                 <div class="text-slate-400 group-hover:text-indigo-600 transition-colors duration-200 mr-1">
@@ -271,7 +271,7 @@
 @endif
 
 {{-- ================================================================
-    MODAL DOWNLOAD PERSYARATAN
+    MODAL DOWNLOAD PERSYARATAN (DROPDOWN PENERBITAN & PEMBARUAN)
 ================================================================ --}}
 <div id="modal-download" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     {{-- Backdrop blur --}}
@@ -285,57 +285,116 @@
         <div class="relative inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-slate-100">
             {{-- Header --}}
             <div class="bg-gradient-to-r from-indigo-700 to-indigo-800 px-6 py-4 flex items-center justify-between text-white">
-                <h3 class="text-base font-bold" id="modal-title">Unduh Dokumen Persyaratan</h3>
+                <div class="flex items-center gap-2.5">
+                    <svg class="w-5 h-5 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <h3 class="text-base font-bold" id="modal-title">Unduh Dokumen Persyaratan</h3>
+                </div>
             </div>
 
             {{-- Body --}}
             <div class="p-6">
-                <p class="text-slate-600 text-sm leading-relaxed mb-6">
-                    Berikut adalah templat formulir rekomendasi dan surat permohonan yang harus Anda lengkapi untuk pengajuan sertifikat elektronik. Silakan unduh dokumen di bawah ini:
+                {{-- Dropdown Pemilihan Kategori Pengajuan --}}
+                <div class="mb-6">
+                    <label for="select-kategori-dokumen" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                        Pilih Kategori Dokumen Pengajuan:
+                    </label>
+                    <div class="relative">
+                        <select id="select-kategori-dokumen" onchange="switchDokumenKategori(this.value)"
+                            class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all cursor-pointer shadow-xs appearance-none">
+                            <option value="penerbitan" selected>📄 Dokumen Persyaratan Penerbitan</option>
+                            <option value="pembaruan">🔄 Dokumen Persyaratan Pembaruan</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Deskripsi Panduan Singkat --}}
+                <p class="text-slate-600 text-xs leading-relaxed mb-4" id="text-kategori-desc">
+                    Silakan unduh dokumen templat permohonan & rekomendasi penerbitan baru di bawah ini:
                 </p>
 
-                <div class="space-y-3">
-                    {{-- Option 1: Formulir Rekomendasi --}}
-                    <a href="{{ asset('templates/FORMULIR-REKOMENDASI-PENERBITAN-SERTIFIKAT-ELEKTRONIK-OPD.docx') }}" download
-                        class="flex items-center gap-4 p-4 border border-slate-200 hover:border-blue-500 hover:bg-blue-50/30 rounded-xl transition-all duration-200 group">
-                        <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shrink-0">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                        </div>
-                        <div class="flex-1">
-                            <div class="text-sm font-bold text-slate-800 group-hover:text-blue-700 transition-colors">
-                                Formulir Rekomendasi (.docx)
+                {{-- Container 1: Dokumen Penerbitan --}}
+                <div id="container-penerbitan" class="space-y-3">
+                    @forelse($dokumenPenerbitan ?? [] as $item)
+                        @php
+                            $downloadUrl = str_starts_with($item->file_path, 'templates/') 
+                                ? asset($item->file_path) 
+                                : asset('storage/' . $item->file_path);
+                            $ext = strtoupper($item->tipe_file ?? 'DOCX');
+                        @endphp
+                        <a href="{{ $downloadUrl }}" download
+                            class="flex items-center gap-4 p-4 border border-slate-200 hover:border-blue-500 hover:bg-blue-50/30 rounded-xl transition-all duration-200 group">
+                            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shrink-0 font-extrabold text-xs">
+                                @if(in_array(strtolower($item->tipe_file), ['pdf']))
+                                    <span class="text-red-600">PDF</span>
+                                @else
+                                    <span>DOCX</span>
+                                @endif
                             </div>
-                            <div class="text-xs text-slate-400 mt-0.5">Format Microsoft Word &bull; Wajib dilengkapi untuk pengajuan</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm font-bold text-slate-800 group-hover:text-blue-700 transition-colors truncate">
+                                    {{ $item->nama_dokumen }}
+                                </div>
+                                <div class="text-xs text-slate-400 mt-0.5 leading-tight">
+                                    {{ $item->deskripsi ?? 'Format ' . $ext . ' • Wajib diisi' }}
+                                </div>
+                            </div>
+                            <div class="text-slate-400 group-hover:text-blue-600 shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </div>
+                        </a>
+                    @empty
+                        <div class="p-4 bg-slate-50 rounded-xl text-center text-slate-400 text-xs font-semibold border border-dashed border-slate-200">
+                            Belum ada dokumen syarat penerbitan yang diunggah.
                         </div>
-                        <div class="text-slate-400 group-hover:text-blue-600">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                        </div>
-                    </a>
+                    @endforelse
+                </div>
 
-                    {{-- Option 2: Surat Permohonan --}}
-                    <a href="{{ asset('templates/SURAT-PERMOHONAN-PENERBITAN-SERTIFIKAT-ELEKTRONIK-OPD.docx') }}" download
-                        class="flex items-center gap-4 p-4 border border-slate-200 hover:border-blue-500 hover:bg-blue-50/30 rounded-xl transition-all duration-200 group">
-                        <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center shrink-0">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                        </div>
-                        <div class="flex-1">
-                            <div class="text-sm font-bold text-slate-800 group-hover:text-blue-700 transition-colors">
-                                Surat Permohonan (.docx)
+                {{-- Container 2: Dokumen Pembaruan --}}
+                <div id="container-pembaruan" class="space-y-3 hidden">
+                    @forelse($dokumenPembaruan ?? [] as $item)
+                        @php
+                            $downloadUrl = str_starts_with($item->file_path, 'templates/') 
+                                ? asset($item->file_path) 
+                                : asset('storage/' . $item->file_path);
+                            $ext = strtoupper($item->tipe_file ?? 'DOCX');
+                        @endphp
+                        <a href="{{ $downloadUrl }}" download
+                            class="flex items-center gap-4 p-4 border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/30 rounded-xl transition-all duration-200 group">
+                            <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center shrink-0 font-extrabold text-xs">
+                                @if(in_array(strtolower($item->tipe_file), ['pdf']))
+                                    <span class="text-red-600">PDF</span>
+                                @else
+                                    <span>DOCX</span>
+                                @endif
                             </div>
-                            <div class="text-xs text-slate-400 mt-0.5">Format Microsoft Word &bull; Surat pengantar resmi dari OPD</div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm font-bold text-slate-800 group-hover:text-indigo-700 transition-colors truncate">
+                                    {{ $item->nama_dokumen }}
+                                </div>
+                                <div class="text-xs text-slate-400 mt-0.5 leading-tight">
+                                    {{ $item->deskripsi ?? 'Format ' . $ext . ' • Wajib diisi' }}
+                                </div>
+                            </div>
+                            <div class="text-slate-400 group-hover:text-indigo-600 shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </div>
+                        </a>
+                    @empty
+                        <div class="p-4 bg-slate-50 rounded-xl text-center text-slate-400 text-xs font-semibold border border-dashed border-slate-200">
+                            Belum ada dokumen syarat pembaruan yang diunggah.
                         </div>
-                        <div class="text-slate-400 group-hover:text-blue-600">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                            </svg>
-                        </div>
-                    </a>
+                    @endforelse
                 </div>
             </div>
 
@@ -453,6 +512,23 @@
 
 @push('scripts')
 <script>
+    // Toggle Kategori Dokumen Persyaratan (Penerbitan vs Pembaruan)
+    function switchDokumenKategori(kategori) {
+        const containerPenerbitan = document.getElementById('container-penerbitan');
+        const containerPembaruan  = document.getElementById('container-pembaruan');
+        const textDesc            = document.getElementById('text-kategori-desc');
+
+        if (kategori === 'pembaruan') {
+            if (containerPenerbitan) containerPenerbitan.classList.add('hidden');
+            if (containerPembaruan)  containerPembaruan.classList.remove('hidden');
+            if (textDesc) textDesc.textContent = 'Silakan unduh dokumen templat permohonan & rekomendasi pembaruan sertifikat di bawah ini:';
+        } else {
+            if (containerPembaruan)  containerPembaruan.classList.add('hidden');
+            if (containerPenerbitan) containerPenerbitan.classList.remove('hidden');
+            if (textDesc) textDesc.textContent = 'Silakan unduh dokumen templat permohonan & rekomendasi penerbitan baru di bawah ini:';
+        }
+    }
+
     // Modal Download Logic
     const btnDownload = document.getElementById('btn-download-persyaratan');
     const modalDownload = document.getElementById('modal-download');
