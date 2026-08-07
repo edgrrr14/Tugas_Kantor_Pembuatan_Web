@@ -261,12 +261,12 @@
 
 @if(session('whatsapp_url'))
     <script>
-        // Membuka tab WhatsApp secara otomatis setelah form berhasil disubmit
-        window.onload = function() {
+        // Membuka tab WhatsApp Admin secara otomatis dengan isi pengajuan lengkap setelah form disubmit
+        window.addEventListener('load', function() {
             setTimeout(function() {
-                window.open("{{ session('whatsapp_url') }}", "_blank");
-            }, 500); // Penundaan sedikit agar tidak diblokir oleh popup blocker
-        };
+                window.open("{!! session('whatsapp_url') !!}", "_blank");
+            }, 600);
+        });
     </script>
 @endif
 

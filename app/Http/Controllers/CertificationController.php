@@ -149,16 +149,23 @@ class CertificationController extends Controller
             'status'            => 'Pending',
         ]);
 
-        Log::info('Pengajuan penerbitan baru', [
-            'nama'       => $validated['nama_lengkap'],
-            'email'      => $validated['email'],
-            'no_telepon' => $validated['no_telepon'],
-            'instansi'   => $validated['instansi'],
-        ]);
+        $waMessage = "Halo Admin, terdapat *PENGAJUAN PENERBITAN SERTIFIKAT BARU*.\n\n"
+            . "📋 *Data Pemohon:*\n"
+            . "• Nama Lengkap: " . $validated['nama_lengkap'] . "\n"
+            . "• NIK: " . $validated['nik'] . "\n"
+            . "• NIP: " . $validated['nip'] . "\n"
+            . "• Email: " . $validated['email'] . "\n"
+            . "• No HP/WA: " . $validated['no_telepon'] . "\n"
+            . "• Unit Kerja: " . $validated['instansi'] . "\n"
+            . "• Jabatan: " . $validated['jabatan'] . "\n\n"
+            . "📝 *Alasan Pengajuan:*\n" . $validated['alasan'] . "\n\n"
+            . "Mohon untuk segera diperiksa dan diverifikasi melalui Dashboard Admin. Terima kasih.";
+
+        $waUrl = 'https://wa.me/6282312293928?text=' . urlencode($waMessage);
 
         return redirect()->route('home')
             ->with('success', 'Pengajuan penerbitan sertifikat Anda berhasil dikirim! Kami akan segera menghubungi Anda kembali.')
-            ->with('whatsapp_url', 'https://wa.me/6282312293928?text=Form%20penerbitan%20telah%20diisi');
+            ->with('whatsapp_url', $waUrl);
     }
 
     /**
@@ -239,17 +246,23 @@ class CertificationController extends Controller
             'status'            => 'Pending',
         ]);
 
-        Log::info('Pengajuan pembaruan baru', [
-            'nama'       => $validated['nama_lengkap'],
-            'nik'        => $validated['nik'],
-            'email'      => $validated['email'],
-            'no_telepon' => $validated['no_telepon'],
-            'instansi'   => $validated['instansi'],
-        ]);
+        $waMessage = "Halo Admin, terdapat *PENGAJUAN PEMBARUAN SERTIFIKAT*.\n\n"
+            . "📋 *Data Pemohon:*\n"
+            . "• Nama Lengkap: " . $validated['nama_lengkap'] . "\n"
+            . "• NIK: " . $validated['nik'] . "\n"
+            . "• NIP: " . $validated['nip'] . "\n"
+            . "• Email: " . $validated['email'] . "\n"
+            . "• No HP/WA: " . $validated['no_telepon'] . "\n"
+            . "• Unit Kerja: " . $validated['instansi'] . "\n"
+            . "• Jabatan: " . $validated['jabatan'] . "\n\n"
+            . "📝 *Alasan Pembaruan:*\n" . $validated['alasan'] . "\n\n"
+            . "Mohon untuk segera diperiksa dan diverifikasi melalui Dashboard Admin. Terima kasih.";
+
+        $waUrl = 'https://wa.me/6282312293928?text=' . urlencode($waMessage);
 
         return redirect()->route('home')
             ->with('success', 'Pengajuan pembaruan sertifikat Anda berhasil dikirim! Kami akan segera menghubungi Anda melalui email yang terdaftar.')
-            ->with('whatsapp_url', 'https://wa.me/6282312293928?text=Form%20pembaruan%20telah%20diisi');
+            ->with('whatsapp_url', $waUrl);
     }
 
     /**

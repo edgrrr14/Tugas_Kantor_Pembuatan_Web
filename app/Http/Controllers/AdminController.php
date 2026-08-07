@@ -8,6 +8,7 @@ use App\Models\Helpdesk;
 use App\Models\DokumenSyarat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -129,7 +130,7 @@ class AdminController extends Controller
         $penerbitan = Penerbitan::findOrFail($id);
         $penerbitan->update(['status' => $request->status]);
 
-        return back()->with('success', 'Status pengajuan penerbitan berhasil diubah menjadi: ' . $request->status);
+        return back()->with('active_tab', 'penerbitan')->with('success', 'Status pengajuan penerbitan berhasil diubah menjadi: ' . $request->status);
     }
 
     /**
@@ -144,7 +145,7 @@ class AdminController extends Controller
         $pembaruan = Pembaruan::findOrFail($id);
         $pembaruan->update(['status' => $request->status]);
 
-        return back()->with('success', 'Status pengajuan pembaruan berhasil diubah menjadi: ' . $request->status);
+        return back()->with('active_tab', 'pembaruan')->with('success', 'Status pengajuan pembaruan berhasil diubah menjadi: ' . $request->status);
     }
 
     /**
@@ -159,7 +160,7 @@ class AdminController extends Controller
         $helpdesk = Helpdesk::findOrFail($id);
         $helpdesk->update(['status' => $request->status]);
 
-        return back()->with('success', 'Status helpdesk berhasil diubah menjadi: ' . $request->status);
+        return back()->with('active_tab', 'helpdesk')->with('success', 'Status helpdesk berhasil diubah menjadi: ' . $request->status);
     }
 
     /**
@@ -170,7 +171,7 @@ class AdminController extends Controller
         $helpdesk = Helpdesk::findOrFail($id);
         $helpdesk->delete();
 
-        return back()->with('success', 'Data pertanyaan helpdesk berhasil dihapus.');
+        return back()->with('active_tab', 'helpdesk')->with('success', 'Data pertanyaan helpdesk berhasil dihapus.');
     }
 
     // =============================================================
@@ -207,7 +208,7 @@ class AdminController extends Controller
             'tipe_file'    => $tipeFile,
         ]);
 
-        return back()->with('success', 'Dokumen syarat baru berhasil ditambahkan!');
+        return back()->with('active_tab', 'dokumen_syarat')->with('success', 'Dokumen syarat baru berhasil ditambahkan!');
     }
 
     /**
@@ -251,7 +252,7 @@ class AdminController extends Controller
 
         $dokumen->update($updateData);
 
-        return back()->with('success', 'Dokumen syarat berhasil diperbarui!');
+        return back()->with('active_tab', 'dokumen_syarat')->with('success', 'Dokumen syarat berhasil diperbarui!');
     }
 
     /**
@@ -267,7 +268,7 @@ class AdminController extends Controller
 
         $dokumen->delete();
 
-        return back()->with('success', 'Dokumen syarat berhasil dihapus.');
+        return back()->with('active_tab', 'dokumen_syarat')->with('success', 'Dokumen syarat berhasil dihapus.');
     }
 
     /**
@@ -319,5 +320,45 @@ class AdminController extends Controller
         };
 
         return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Memproses penggantian password akun Admin.
+     */
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'password_lama' => 'required',
+            'password_baru' => [
+                'required',
+                'string',
+                'min:8',
+                'max:12',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*?&#^()_+\-=\[\]{};\':"\\\\|,.<>\/?]/',
+                'confirmed',
+            ],
+        ], [
+            'password_lama.required'  => 'Password lama wajib diisi.',
+            'password_baru.required'  => 'Password baru wajib diisi.',
+            'password_baru.min'       => 'Password baru minimal harus 8 karakter.',
+            'password_baru.max'       => 'Password baru maksimal 12 karakter.',
+            'password_baru.regex'     => 'Password baru wajib berupa kombinasi huruf besar (A-Z), huruf kecil (a-z), angka (0-9), dan simbol/karakter khusus (misal: @, !, #, $, %).',
+            'password_baru.confirmed' => 'Konfirmasi password baru tidak cocok.',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->password_lama, $user->password)) {
+            return back()->withErrors(['password_lama' => 'Password lama yang Anda masukkan tidak sesuai!']);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password_baru),
+        ]);
+
+        return back()->with('success', 'Password akun Administrator berhasil diperbarui! Gunakan password baru untuk login berikutnya.');
     }
 }

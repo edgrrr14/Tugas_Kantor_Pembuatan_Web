@@ -57,14 +57,23 @@
         </div>
 
         {{-- Profil Singkat --}}
-        <div class="px-6 py-5 border-b border-slate-800/60 bg-slate-900/50 flex items-center gap-3">
-            <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center font-bold text-white border border-slate-600">
-                AD
+        <div class="px-6 py-5 border-b border-slate-800/60 bg-slate-900/50 flex flex-col gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center font-bold text-white border border-slate-600 shrink-0">
+                    AD
+                </div>
+                <div class="overflow-hidden">
+                    <span class="block text-sm font-semibold text-slate-200 truncate">Administrator</span>
+                    <span class="block text-xs text-slate-500 truncate">admin@sertifikasiel.go.id</span>
+                </div>
             </div>
-            <div class="overflow-hidden">
-                <span class="block text-sm font-semibold text-slate-200 truncate">Administrator</span>
-                <span class="block text-xs text-slate-500 truncate">admin@sertifikasiel.go.id</span>
-            </div>
+            <button type="button" onclick="openGantiPasswordModal()" 
+                class="w-full flex items-center justify-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-indigo-300 hover:text-white rounded-xl text-xs font-bold transition-all duration-200 border border-slate-700/80 cursor-pointer">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 0121 9z" />
+                </svg>
+                <span>Ganti Password Admin</span>
+            </button>
         </div>
 
         {{-- Navigasi Menu/Tab --}}
@@ -263,11 +272,21 @@
                                     <div class="text-slate-400 font-medium">{{ $item['instansi'] }}</div>
                                 </td>
                                 <td class="p-4 text-xs font-semibold text-slate-600">{{ $item['jabatan'] }}</td>
-                                <td class="p-4 text-xs max-w-xs">
+                                <td class="p-4 text-xs max-w-[210px]">
                                     @if(!empty($item['alasan']))
-                                        <div class="p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-slate-700 text-[11px] leading-relaxed max-h-24 overflow-y-auto" title="{{ $item['alasan'] }}">
-                                            {{ $item['alasan'] }}
-                                        </div>
+                                        <button type="button" 
+                                            onclick="openDetailAlasanModal({{ json_encode($item['nama_lengkap']) }}, 'Penerbitan Sertifikat', {{ json_encode($item['alasan']) }})"
+                                            class="group w-full text-left p-2.5 bg-slate-50 hover:bg-indigo-50/80 border border-slate-200/90 hover:border-indigo-300 rounded-xl transition-all duration-200 cursor-pointer shadow-2xs hover:shadow-xs">
+                                            <p class="text-slate-700 text-[11px] leading-relaxed line-clamp-2 font-normal">
+                                                {{ $item['alasan'] }}
+                                            </p>
+                                            <span class="inline-flex items-center gap-1 text-[10px] font-bold text-indigo-600 group-hover:text-indigo-700 mt-1">
+                                                <span>Klik untuk detail lengkap</span>
+                                                <svg class="w-3 h-3 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </span>
+                                        </button>
                                     @else
                                         <span class="text-slate-400 font-medium text-xs">-</span>
                                     @endif
@@ -452,11 +471,21 @@
                                     <div class="text-slate-400 font-medium">{{ $item['instansi'] ?? '-' }}</div>
                                 </td>
                                 <td class="p-4 text-xs font-semibold text-slate-600">{{ $item['jabatan'] ?? '-' }}</td>
-                                <td class="p-4 text-xs max-w-xs">
+                                <td class="p-4 text-xs max-w-[210px]">
                                     @if(!empty($item['alasan']))
-                                        <div class="p-2.5 bg-slate-50 border border-slate-200/80 rounded-xl text-slate-700 text-[11px] leading-relaxed max-h-24 overflow-y-auto" title="{{ $item['alasan'] }}">
-                                            {{ $item['alasan'] }}
-                                        </div>
+                                        <button type="button" 
+                                            onclick="openDetailAlasanModal({{ json_encode($item['nama_lengkap']) }}, 'Pembaruan Sertifikat', {{ json_encode($item['alasan']) }})"
+                                            class="group w-full text-left p-2.5 bg-slate-50 hover:bg-indigo-50/80 border border-slate-200/90 hover:border-indigo-300 rounded-xl transition-all duration-200 cursor-pointer shadow-2xs hover:shadow-xs">
+                                            <p class="text-slate-700 text-[11px] leading-relaxed line-clamp-2 font-normal">
+                                                {{ $item['alasan'] }}
+                                            </p>
+                                            <span class="inline-flex items-center gap-1 text-[10px] font-bold text-indigo-600 group-hover:text-indigo-700 mt-1">
+                                                <span>Klik untuk detail lengkap</span>
+                                                <svg class="w-3 h-3 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </span>
+                                        </button>
                                     @else
                                         <span class="text-slate-400 font-medium text-xs">-</span>
                                     @endif
@@ -1134,6 +1163,119 @@
         </form>
     </div>
 </div>
+
+{{-- ================================================================
+    MODAL DETAIL ALASAN PENGAJUAN
+================================================================ --}}
+<div id="modal-detail-alasan" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200 no-print">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 transform transition-all animate-fade-in mx-4">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-indigo-100 text-indigo-700 rounded-xl flex items-center justify-center font-bold shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-base font-extrabold text-slate-800">Detail Alasan Pengajuan</h3>
+                    <span id="detail-alasan-kategori" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200"></span>
+                </div>
+            </div>
+            <button type="button" onclick="closeDetailAlasanModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="py-4 space-y-3">
+            <div>
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Nama Pemohon</span>
+                <span id="detail-alasan-pemohon" class="text-sm font-bold text-slate-900 block mt-0.5"></span>
+            </div>
+
+            <div>
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Isi Alasan Pengajuan Lengkap</span>
+                <div id="detail-alasan-content" class="p-4 bg-slate-50 border border-slate-200/90 rounded-xl text-slate-800 text-xs leading-relaxed max-h-64 overflow-y-auto whitespace-pre-line font-medium shadow-inner">
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end pt-4 border-t border-slate-100">
+            <button type="button" onclick="closeDetailAlasanModal()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-md cursor-pointer">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+
+{{-- ================================================================
+    MODAL GANTI PASSWORD ADMIN
+================================================================ --}}
+<div id="modal-ganti-password" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200 no-print">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 transform transition-all animate-fade-in mx-4">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-indigo-100 text-indigo-700 rounded-xl flex items-center justify-center font-bold shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 0121 9z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-base font-extrabold text-slate-800">Ganti Password Admin</h3>
+                    <p class="text-[11px] text-slate-500">Perbarui kata sandi akun Administrator secara berkala</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeGantiPasswordModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <form action="{{ route('admin.change_password') }}" method="POST" class="py-4 space-y-4">
+            @csrf
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Password Saat Ini <span class="text-red-500">*</span></label>
+                <input type="password" name="password_lama" required placeholder="Masukkan password lama Anda"
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500">
+                @error('password_lama')
+                    <span class="text-[11px] text-red-500 mt-1 block font-semibold">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Password Baru <span class="text-red-500">*</span></label>
+                <input type="password" name="password_baru" required placeholder="Minimal 8-12 karakter (huruf, angka, simbol)"
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500">
+                @error('password_baru')
+                    <span class="text-[11px] text-red-500 mt-1 block font-semibold">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Konfirmasi Password Baru <span class="text-red-500">*</span></label>
+                <input type="password" name="password_baru_confirmation" required placeholder="Ulangi password baru Anda"
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-800 leading-relaxed font-medium">
+                <span class="font-bold block mb-1">🔒 Ketentuan Kata Sandi:</span>
+                • Panjang <strong>8 - 12 karakter</strong>.<br>
+                • Wajib gabungan <strong>Huruf Besar (A-Z)</strong>, <strong>Huruf Kecil (a-z)</strong>, <strong>Angka (0-9)</strong>, dan <strong>Simbol (@, !, #, $, %)</strong>.
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="closeGantiPasswordModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all duration-200">
+                    Batal
+                </button>
+                <button type="submit" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition-all duration-200 cursor-pointer">
+                    Simpan Password Baru
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -1142,10 +1284,32 @@
 
 <script>
     // ------------------------------------------------------------------
-    // LOGOUT MODAL HANDLER
+    // LOGOUT & GANTI PASSWORD MODAL HANDLERS
     // ------------------------------------------------------------------
     function openLogoutModal() {
         document.getElementById('logout-modal').classList.remove('hidden');
+    }
+
+    function openGantiPasswordModal() {
+        document.getElementById('modal-ganti-password').classList.remove('hidden');
+    }
+
+    function closeGantiPasswordModal() {
+        document.getElementById('modal-ganti-password').classList.add('hidden');
+    }
+
+    // ------------------------------------------------------------------
+    // DETAIL ALASAN MODAL HANDLER
+    // ------------------------------------------------------------------
+    function openDetailAlasanModal(pemohon, kategori, alasan) {
+        document.getElementById('detail-alasan-pemohon').textContent = pemohon || '-';
+        document.getElementById('detail-alasan-kategori').textContent = kategori || 'Pengajuan';
+        document.getElementById('detail-alasan-content').textContent = alasan || '-';
+        document.getElementById('modal-detail-alasan').classList.remove('hidden');
+    }
+
+    function closeDetailAlasanModal() {
+        document.getElementById('modal-detail-alasan').classList.add('hidden');
     }
 
     function closeLogoutModal() {
@@ -1180,6 +1344,8 @@
     // TAB NAVIGATION SWITCHER
     // ------------------------------------------------------------------
     function switchTab(tabId) {
+        if (!document.getElementById('panel-' + tabId)) return;
+
         // Sembunyikan semua panel
         document.querySelectorAll('.tab-panel').forEach(panel => {
             panel.classList.add('hidden');
@@ -1200,6 +1366,16 @@
             activeBtn.classList.remove('text-slate-400');
             activeBtn.classList.add('bg-slate-800', 'text-white');
         }
+
+        // Simpan status tab aktif di localStorage & URL hash
+        try {
+            localStorage.setItem('admin_active_tab', tabId);
+            if (history.replaceState) {
+                history.replaceState(null, null, '#' + tabId);
+            } else {
+                window.location.hash = tabId;
+            }
+        } catch (e) {}
 
         // Update Title Section
         const titles = {
@@ -1687,6 +1863,20 @@
 
         // Inisialisasi awal ke mode keseluruhan waktu
         setInfografisMode('keseluruhan');
+
+        // Restore tab aktif dari session Laravel, URL Hash, atau localStorage
+        const sessionActiveTab = "{{ session('active_tab') }}";
+        const urlHashTab = window.location.hash ? window.location.hash.replace('#', '') : '';
+        const storedTab = localStorage.getItem('admin_active_tab');
+
+        const activeTabToLoad = sessionActiveTab || urlHashTab || storedTab;
+        if (activeTabToLoad && document.getElementById('panel-' + activeTabToLoad)) {
+            switchTab(activeTabToLoad);
+        }
+
+        @if($errors->has('password_lama') || $errors->has('password_baru'))
+            openGantiPasswordModal();
+        @endif
 
         // Observer untuk merespon perubahan class high-contrast secara real-time
         const observer = new MutationObserver(() => {

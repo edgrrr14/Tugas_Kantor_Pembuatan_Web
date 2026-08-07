@@ -18,7 +18,7 @@ class AdminSeeder extends Seeder
             ['email' => 'admin@sertifikasiel.go.id'],
             [
                 'name' => 'Administrator',
-                'password' => Hash::make('admin123'),
+                'password' => Hash::make('Admin@2026!'),
             ]
         );
     }
