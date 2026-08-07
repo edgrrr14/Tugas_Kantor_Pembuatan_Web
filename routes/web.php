@@ -78,25 +78,29 @@ Route::post('/helpdesk', [CertificationController::class, 'storeHelpdesk'])->nam
 // =============================================================
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
-    // Auth Rute
+    // Rute Akses Publik Admin (Login)
     Route::get('/login', [AdminController::class, 'login'])->name('login');
     Route::post('/login', [AdminController::class, 'authenticate'])->name('authenticate');
-    Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 
-    // Dashboard Rute (dengan validasi login di controller/middleware)
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    // Rute Terproteksi Admin (Wajib Login Admin)
+    Route::middleware(['auth'])->group(function () {
+        Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
 
-    // Kelola Status Pengajuan
-    Route::post('/penerbitan/{id}/status', [AdminController::class, 'updateStatusPenerbitan'])->name('penerbitan.status');
-    Route::post('/pembaruan/{id}/status', [AdminController::class, 'updateStatusPembaruan'])->name('pembaruan.status');
-    Route::post('/helpdesk/{id}/status', [AdminController::class, 'updateStatusHelpdesk'])->name('helpdesk.status');
-    Route::delete('/helpdesk/{id}', [AdminController::class, 'destroyHelpdesk'])->name('helpdesk.destroy');
+        // Dashboard Utama Admin
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
-    // Kelola Dokumen Syarat (Penerbitan & Pembaruan)
-    Route::post('/dokumen-syarat', [AdminController::class, 'storeDokumenSyarat'])->name('dokumen_syarat.store');
-    Route::post('/dokumen-syarat/{id}', [AdminController::class, 'updateDokumenSyarat'])->name('dokumen_syarat.update');
-    Route::delete('/dokumen-syarat/{id}', [AdminController::class, 'destroyDokumenSyarat'])->name('dokumen_syarat.destroy');
+        // Kelola Status Pengajuan
+        Route::post('/penerbitan/{id}/status', [AdminController::class, 'updateStatusPenerbitan'])->name('penerbitan.status');
+        Route::post('/pembaruan/{id}/status', [AdminController::class, 'updateStatusPembaruan'])->name('pembaruan.status');
+        Route::post('/helpdesk/{id}/status', [AdminController::class, 'updateStatusHelpdesk'])->name('helpdesk.status');
+        Route::delete('/helpdesk/{id}', [AdminController::class, 'destroyHelpdesk'])->name('helpdesk.destroy');
 
-    // Ekspor Data Laporan
-    Route::get('/export/penerbitan/csv', [AdminController::class, 'exportPenerbitanCSV'])->name('export.penerbitan.csv');
+        // Kelola Dokumen Syarat (Penerbitan & Pembaruan)
+        Route::post('/dokumen-syarat', [AdminController::class, 'storeDokumenSyarat'])->name('dokumen_syarat.store');
+        Route::post('/dokumen-syarat/{id}', [AdminController::class, 'updateDokumenSyarat'])->name('dokumen_syarat.update');
+        Route::delete('/dokumen-syarat/{id}', [AdminController::class, 'destroyDokumenSyarat'])->name('dokumen_syarat.destroy');
+
+        // Ekspor Data Laporan
+        Route::get('/export/penerbitan/csv', [AdminController::class, 'exportPenerbitanCSV'])->name('export.penerbitan.csv');
+    });
 });

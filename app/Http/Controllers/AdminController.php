@@ -70,10 +70,6 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        if (!Auth::check()) {
-            return redirect()->route('admin.login')->withErrors(['login_error' => 'Silakan login terlebih dahulu untuk mengakses dashboard admin.']);
-        }
-
         $penerbitanData    = Penerbitan::latest()->get();
         $pembaruanData     = Pembaruan::latest()->get();
         $helpdeskData      = Helpdesk::latest()->get();
@@ -126,10 +122,6 @@ class AdminController extends Controller
      */
     public function updateStatusPenerbitan(Request $request, $id)
     {
-        if (!Auth::check()) {
-            return redirect()->route('admin.login');
-        }
-
         $request->validate([
             'status' => 'required|in:Disetujui,Ditolak,Pending',
         ]);
@@ -145,10 +137,6 @@ class AdminController extends Controller
      */
     public function updateStatusPembaruan(Request $request, $id)
     {
-        if (!Auth::check()) {
-            return redirect()->route('admin.login');
-        }
-
         $request->validate([
             'status' => 'required|in:Disetujui,Ditolak,Pending',
         ]);
@@ -164,10 +152,6 @@ class AdminController extends Controller
      */
     public function updateStatusHelpdesk(Request $request, $id)
     {
-        if (!Auth::check()) {
-            return redirect()->route('admin.login');
-        }
-
         $request->validate([
             'status' => 'required|in:Baru,Sudah Direspons,Selesai',
         ]);
@@ -183,10 +167,6 @@ class AdminController extends Controller
      */
     public function destroyHelpdesk($id)
     {
-        if (!Auth::check()) {
-            return redirect()->route('admin.login');
-        }
-
         $helpdesk = Helpdesk::findOrFail($id);
         $helpdesk->delete();
 
@@ -202,10 +182,6 @@ class AdminController extends Controller
      */
     public function storeDokumenSyarat(Request $request)
     {
-        if (!Auth::check()) {
-            return redirect()->route('admin.login');
-        }
-
         $request->validate([
             'kategori'     => 'required|in:penerbitan,pembaruan',
             'nama_dokumen' => 'required|string|max:255',
@@ -239,10 +215,6 @@ class AdminController extends Controller
      */
     public function updateDokumenSyarat(Request $request, $id)
     {
-        if (!Auth::check()) {
-            return redirect()->route('admin.login');
-        }
-
         $dokumen = DokumenSyarat::findOrFail($id);
 
         $request->validate([
@@ -287,10 +259,6 @@ class AdminController extends Controller
      */
     public function destroyDokumenSyarat($id)
     {
-        if (!Auth::check()) {
-            return redirect()->route('admin.login');
-        }
-
         $dokumen = DokumenSyarat::findOrFail($id);
 
         if ($dokumen->file_path && !str_starts_with($dokumen->file_path, 'templates/')) {
@@ -307,10 +275,6 @@ class AdminController extends Controller
      */
     public function exportPenerbitanCSV()
     {
-        if (!Auth::check()) {
-            return redirect()->route('admin.login');
-        }
-
         $data = Penerbitan::latest()->get();
 
         $filename = 'laporan_penerbitan_sertifikat_' . date('Ymd_His') . '.csv';
