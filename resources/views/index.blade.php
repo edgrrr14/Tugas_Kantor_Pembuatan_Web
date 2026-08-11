@@ -23,14 +23,45 @@
     Empat kartu menu yang responsif, masing-masing mengarah ke
     fungsi utama website.
 ================================================================ --}}
-<section id="menu-utama" class="pt-10 pb-14 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section id="menu-utama" class="relative pt-10 pb-14 bg-slate-50 overflow-hidden">
+    {{-- Background Slideshow Bergantian (Bupati/Wakil & 3 Pemandangan Mamasa) --}}
+    <div id="hero-bg-slider" class="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
+        {{-- Slide 1: Foto Bupati & Wakil Bupati --}}
+        <div class="hero-bg-slide absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 filter blur-[2px] opacity-65 transition-opacity duration-1000 ease-in-out"
+             style="background-image: url('{{ asset('images/bupati-wakil.jpg') }}');">
+        </div>
+        {{-- Slide 2: Air Terjun --}}
+        <div class="hero-bg-slide absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 filter blur-[2px] opacity-0 transition-opacity duration-1000 ease-in-out"
+             style="background-image: url('{{ asset('images/pemandangan-1.jpg') }}');">
+        </div>
+        {{-- Slide 3: Sawah & Pegunungan --}}
+        <div class="hero-bg-slide absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 filter blur-[2px] opacity-0 transition-opacity duration-1000 ease-in-out"
+             style="background-image: url('{{ asset('images/pemandangan-2.jpg') }}');">
+        </div>
+        {{-- Slide 4: Hutan Pinus --}}
+        <div class="hero-bg-slide absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 filter blur-[2px] opacity-0 transition-opacity duration-1000 ease-in-out"
+             style="background-image: url('{{ asset('images/pemandangan-3.jpg') }}');">
+        </div>
+
+        {{-- Lapisan Gradien Halus --}}
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-50/70 via-slate-50/40 to-slate-50/75 z-10"></div>
+    </div>
+
+    {{-- Indikator Slideshow Melayang Halus di Pojok Kanan Atas --}}
+    <div class="absolute top-4 right-4 sm:top-6 sm:right-6 z-20 flex items-center gap-1.5 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-slate-200/80 shadow-sm">
+        <button type="button" class="bg-indicator-dot w-6 h-2.5 rounded-full bg-blue-600 transition-all duration-300 cursor-pointer shadow-xs" onclick="goToBgSlide(0)" title="Foto Bupati & Wakil"></button>
+        <button type="button" class="bg-indicator-dot w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer" onclick="goToBgSlide(1)" title="Air Terjun"></button>
+        <button type="button" class="bg-indicator-dot w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer" onclick="goToBgSlide(2)" title="Sawah & Pegunungan"></button>
+        <button type="button" class="bg-indicator-dot w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer" onclick="goToBgSlide(3)" title="Hutan Pinus"></button>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {{-- ============================================================
             FLASH MESSAGE (Pesan Sukses)
         ============================================================ --}}
         @if (session('success'))
-            <div id="flash-message" class="max-w-3xl mx-auto flex items-start gap-4 bg-green-50 border border-green-200 text-green-800 rounded-2xl p-5 mb-10 shadow-sm transition-all duration-500 relative">
+            <div id="flash-message" class="max-w-3xl mx-auto flex items-start gap-4 bg-green-50/95 backdrop-blur-md border border-green-200 text-green-800 rounded-2xl p-5 mb-10 shadow-sm transition-all duration-500 relative">
                 <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center shrink-0">
                     <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -55,15 +86,15 @@
                 <img src="{{ asset('images/logo-mamasa.png') }}" alt="Logo Kabupaten Mamasa" class="h-28 sm:h-32 w-auto object-contain drop-shadow-md hover:scale-105 transition-transform duration-300">
             </div>
             {{-- Identitas Pemerintah --}}
-            <div class="inline-block px-4 py-1.5 bg-blue-50 border border-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider mb-3" data-i18n="hero_title_2">
+            <div class="inline-block px-4 py-1.5 bg-blue-50/90 backdrop-blur-sm border border-blue-200/80 text-blue-800 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider mb-3" data-i18n="hero_title_2">
                 Pemerintah Kabupaten Mamasa
             </div>
             {{-- Judul utama H1 --}}
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-800 mb-3 leading-tight">
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 mb-3 leading-tight" style="text-shadow: 0 2px 12px rgba(255, 255, 255, 0.95), 0 2px 4px rgba(0, 0, 0, 0.25);">
                 Portal <span class="text-blue-700" data-i18n="hero_title_1">Sertifikasi Elektronik</span>
             </h1>
-            <p class="text-slate-500 text-base max-w-xl mx-auto leading-relaxed" data-i18n="hero_desc">
-                Layanan penerbitan dan pembaruan sertifikat digital <strong class="text-slate-700">Pemerintah Kabupaten Mamasa</strong> yang <strong class="text-slate-700">cepat, aman, dan terpercaya</strong>.
+            <p class="text-slate-800 text-base max-w-xl mx-auto leading-relaxed font-bold" style="text-shadow: 0 2px 8px rgba(255, 255, 255, 0.95), 0 1px 3px rgba(0, 0, 0, 0.2);" data-i18n="hero_desc">
+                Layanan penerbitan dan pembaruan sertifikat digital <strong class="text-slate-950 font-black">Pemerintah Kabupaten Mamasa</strong> yang <strong class="text-slate-950 font-black">cepat, aman, dan terpercaya</strong>.
             </p>
         </div>
 
@@ -72,7 +103,7 @@
 
             {{-- ===== KARTU 1: FORM PENERBITAN ===== --}}
             <a href="{{ route('penerbitan') }}" id="card-penerbitan"
-                class="group bg-white rounded-2xl p-7 shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-blue-100 hover:-translate-y-2 transition-all duration-300 cursor-pointer flex flex-col">
+                class="group bg-white/90 backdrop-blur-md rounded-2xl p-7 shadow-md border border-slate-200/70 hover:shadow-2xl hover:shadow-blue-200/50 hover:-translate-y-2 transition-all duration-300 cursor-pointer flex flex-col">
 
                 {{-- Ikon --}}
                 <div class="w-14 h-14 bg-blue-50 group-hover:bg-blue-100 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300">
@@ -103,7 +134,7 @@
 
             {{-- ===== KARTU 2: FORM PEMBARUAN ===== --}}
             <a href="{{ route('pembaruan') }}" id="card-pembaruan"
-                class="group bg-white rounded-2xl p-7 shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-indigo-100 hover:-translate-y-2 transition-all duration-300 cursor-pointer flex flex-col">
+                class="group bg-white/90 backdrop-blur-md rounded-2xl p-7 shadow-md border border-slate-200/70 hover:shadow-2xl hover:shadow-indigo-200/50 hover:-translate-y-2 transition-all duration-300 cursor-pointer flex flex-col">
 
                 {{-- Ikon --}}
                 <div class="w-14 h-14 bg-indigo-50 group-hover:bg-indigo-100 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300">
@@ -134,7 +165,7 @@
 
             {{-- ===== KARTU 3: INFORMASI WEB ===== --}}
             <a href="{{ route('informasi') }}" id="card-informasi"
-                class="group bg-white rounded-2xl p-7 shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-cyan-100 hover:-translate-y-2 transition-all duration-300 cursor-pointer flex flex-col">
+                class="group bg-white/90 backdrop-blur-md rounded-2xl p-7 shadow-md border border-slate-200/70 hover:shadow-2xl hover:shadow-cyan-200/50 hover:-translate-y-2 transition-all duration-300 cursor-pointer flex flex-col">
 
                 {{-- Ikon --}}
                 <div class="w-14 h-14 bg-cyan-50 group-hover:bg-cyan-100 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300">
@@ -165,7 +196,7 @@
 
             {{-- ===== KARTU 4: HELPDESK WHATSAPP ===== --}}
             <button type="button" id="btn-open-helpdesk"
-                class="group text-left bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-7 shadow-sm hover:shadow-xl hover:shadow-green-200 hover:-translate-y-2 transition-all duration-300 cursor-pointer flex flex-col focus:outline-none focus:ring-4 focus:ring-green-300">
+                class="group text-left bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-7 shadow-md hover:shadow-2xl hover:shadow-green-200/50 hover:-translate-y-2 transition-all duration-300 cursor-pointer flex flex-col focus:outline-none focus:ring-4 focus:ring-green-300">
 
                 {{-- Ikon --}}
                 <div class="w-14 h-14 bg-white/20 group-hover:bg-white/30 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300">
@@ -196,7 +227,7 @@
         {{-- Card Baru: Download Persyaratan / Surat Rekomendasi --}}
         <div class="mt-12 flex justify-center">
             <button id="btn-download-persyaratan" 
-                class="group flex items-center gap-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl p-5 max-w-xl w-full shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                class="group flex items-center gap-4 bg-white/90 backdrop-blur-md hover:bg-white border border-slate-200/80 rounded-2xl p-5 max-w-xl w-full shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <div class="w-12 h-12 bg-indigo-50 group-hover:bg-indigo-100 rounded-xl flex items-center justify-center shrink-0 transition-colors duration-300">
                     <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -512,18 +543,69 @@
 
 @push('scripts')
 <script>
+    // ----------------------------------------------------------
+    // Slideshow Background Latar Belakang Hero Section
+    // ----------------------------------------------------------
+    let currentBgIndex = 0;
+    let bgSlideTimer = null;
+
+    function goToBgSlide(index) {
+        const bgSlides = document.querySelectorAll('.hero-bg-slide');
+        const bgDots = document.querySelectorAll('.bg-indicator-dot');
+        if (!bgSlides.length) return;
+
+        currentBgIndex = index % bgSlides.length;
+
+        bgSlides.forEach((slide, i) => {
+            if (i === currentBgIndex) {
+                slide.classList.remove('opacity-0');
+                slide.classList.add('opacity-65');
+            } else {
+                slide.classList.remove('opacity-65');
+                slide.classList.add('opacity-0');
+            }
+        });
+
+        bgDots.forEach((dot, i) => {
+            if (i === currentBgIndex) {
+                dot.className = "bg-indicator-dot w-6 h-2.5 rounded-full bg-blue-600 transition-all duration-300 cursor-pointer shadow-xs";
+            } else {
+                dot.className = "bg-indicator-dot w-2.5 h-2.5 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer";
+            }
+        });
+
+        // Reset timer ketika diklik manual
+        if (bgSlideTimer) {
+            clearInterval(bgSlideTimer);
+            bgSlideTimer = setInterval(() => {
+                goToBgSlide(currentBgIndex + 1);
+            }, 10000);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const bgSlides = document.querySelectorAll('.hero-bg-slide');
+        if (bgSlides.length > 0) {
+            goToBgSlide(0);
+            bgSlideTimer = setInterval(() => {
+                goToBgSlide(currentBgIndex + 1);
+            }, 10000); // Ganti background otomatis setiap 10 detik
+        }
+    });
+
     // Toggle Kategori Dokumen Persyaratan (Penerbitan vs Pembaruan)
     function switchDokumenKategori(kategori) {
         const containerPenerbitan = document.getElementById('container-penerbitan');
         const containerPembaruan  = document.getElementById('container-pembaruan');
         const textDesc            = document.getElementById('text-kategori-desc');
 
+        if (containerPenerbitan) containerPenerbitan.classList.add('hidden');
+        if (containerPembaruan)  containerPembaruan.classList.add('hidden');
+
         if (kategori === 'pembaruan') {
-            if (containerPenerbitan) containerPenerbitan.classList.add('hidden');
-            if (containerPembaruan)  containerPembaruan.classList.remove('hidden');
+            if (containerPembaruan) containerPembaruan.classList.remove('hidden');
             if (textDesc) textDesc.textContent = 'Silakan unduh dokumen templat permohonan & rekomendasi pembaruan sertifikat di bawah ini:';
         } else {
-            if (containerPembaruan)  containerPembaruan.classList.add('hidden');
             if (containerPenerbitan) containerPenerbitan.classList.remove('hidden');
             if (textDesc) textDesc.textContent = 'Silakan unduh dokumen templat permohonan & rekomendasi penerbitan baru di bawah ini:';
         }

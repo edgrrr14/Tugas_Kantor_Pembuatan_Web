@@ -407,6 +407,24 @@
                         Reset
                     </button>
                 </div>
+
+                <div class="flex items-center gap-2.5 shrink-0">
+                    <a href="{{ route('admin.export.pembaruan.csv') }}" id="btn-export-pembaruan-excel"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span>Ekspor Excel (CSV)</span>
+                    </a>
+                    
+                    <button onclick="window.print()" id="btn-export-pembaruan-pdf"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer focus:outline-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-5a2 2 0 00-2-2H5a2 2 0 00-2 2v5a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                        <span>Cetak Laporan / PDF</span>
+                    </button>
+                </div>
             </div>
 
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -610,16 +628,34 @@
                         <p class="text-xs text-slate-500 mt-0.5">Pertanyaan dan masukan user yang masuk melalui formulir Helpdesk.</p>
                     </div>
 
-                    {{-- Search Input Helpdesk --}}
-                    <div class="relative min-w-[220px]">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    {{-- Search & Export Controls Helpdesk --}}
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <div class="relative min-w-[200px]">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </span>
+                            <input type="text" id="helpdesk-search-input" onkeyup="filterHelpdeskTable()"
+                                placeholder="Cari nama, NIP, atau OPD..."
+                                class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+
+                        <a href="{{ route('admin.export.helpdesk.csv') }}" id="btn-export-helpdesk-excel"
+                            class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
-                        </span>
-                        <input type="text" id="helpdesk-search-input" onkeyup="filterHelpdeskTable()"
-                            placeholder="Cari nama, NIP, atau OPD..."
-                            class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <span>Ekspor Excel (CSV)</span>
+                        </a>
+                        
+                        <button onclick="window.print()" id="btn-export-helpdesk-pdf"
+                            class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer focus:outline-none">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-5a2 2 0 00-2-2H5a2 2 0 00-2 2v5a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            <span>Cetak Laporan / PDF</span>
+                        </button>
                     </div>
                 </div>
 

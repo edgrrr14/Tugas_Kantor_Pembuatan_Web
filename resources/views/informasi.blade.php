@@ -86,8 +86,12 @@
                             <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">3</span>
                             <span data-i18n="toc_3">Persyaratan Dokumen</span>
                         </a>
-                        <a href="#faq" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
+                        <a href="#sop" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
                             <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">4</span>
+                            <span>SOP Layanan</span>
+                        </a>
+                        <a href="#faq" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
+                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">5</span>
                             <span data-i18n="toc_4">FAQ</span>
                         </a>
                     </nav>
@@ -247,6 +251,97 @@
                         </div>
                     </article>
 
+                    {{-- ===== SECTION: Standar Operasional Prosedur (SOP) ===== --}}
+                    <article id="sop" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 scroll-mt-24">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-800">Standar Operasional Prosedur (SOP)</h2>
+                                <p class="text-xs text-slate-500 mt-0.5">Dokumen panduan resmi prosedur pengajuan Sertifikat Elektronik</p>
+                            </div>
+                        </div>
+
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                            Berikut adalah dokumen resmi Standar Operasional Prosedur (SOP) untuk layanan Penerbitan dan Pembaruan Sertifikat Elektronik.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {{-- Card SOP 1: SOP Penerbitan --}}
+                            <div class="bg-gradient-to-br from-blue-50 to-slate-50 border border-blue-100 rounded-2xl p-6 flex flex-col justify-between shadow-xs hover:shadow-md transition-all">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <div class="w-10 h-10 bg-red-100 text-red-600 rounded-xl flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+                                            PDF
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-slate-800 text-sm">SOP Penerbitan Sertifikat Elektronik</h3>
+                                            <span class="inline-block px-2.5 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded-full mt-0.5">Penerbitan Baru</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-4">
+                                        Panduan teknis dan alur operasional resmi untuk pengajuan penerbitan sertifikat elektronik baru.
+                                    </p>
+                                </div>
+                                <div class="flex items-center gap-2 pt-3 border-t border-slate-200/60">
+                                    <button type="button" onclick="openPdfModal('{{ asset('templates/SOP PENERBITAN SERTIFIKAT ELEKTRONIK.pdf') }}', 'SOP Penerbitan Sertifikat Elektronik')"
+                                        class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-semibold transition-colors shadow-xs cursor-pointer">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        <span>Lihat SOP</span>
+                                    </button>
+                                    <a href="{{ asset('templates/SOP PENERBITAN SERTIFIKAT ELEKTRONIK.pdf') }}" download
+                                        class="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-semibold transition-colors shadow-xs">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        <span>Unduh</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            {{-- Card SOP 2: SOP Pembaruan --}}
+                            <div class="bg-gradient-to-br from-indigo-50 to-slate-50 border border-indigo-100 rounded-2xl p-6 flex flex-col justify-between shadow-xs hover:shadow-md transition-all">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-3">
+                                        <div class="w-10 h-10 bg-red-100 text-red-600 rounded-xl flex items-center justify-center font-black text-xs shrink-0 shadow-xs">
+                                            PDF
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-slate-800 text-sm">SOP Pembaruan Sertifikat Elektronik</h3>
+                                            <span class="inline-block px-2.5 py-0.5 bg-indigo-100 text-indigo-700 text-[10px] font-bold rounded-full mt-0.5">Pembaruan / Perpanjangan</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-slate-500 leading-relaxed mb-4">
+                                        Panduan teknis dan alur operasional resmi untuk pengajuan pembaruan atau perpanjangan masa berlaku sertifikat elektronik.
+                                    </p>
+                                </div>
+                                <div class="flex items-center gap-2 pt-3 border-t border-slate-200/60">
+                                    <button type="button" onclick="openPdfModal('{{ asset('templates/SOP PEMBAHARUAN SERTIFIKAT ELEKTRONIK.pdf') }}', 'SOP Pembaruan Sertifikat Elektronik')"
+                                        class="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-indigo-700 hover:bg-indigo-800 text-white rounded-xl text-xs font-semibold transition-colors shadow-xs cursor-pointer">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        <span>Lihat SOP</span>
+                                    </button>
+                                    <a href="{{ asset('templates/SOP PEMBAHARUAN SERTIFIKAT ELEKTRONIK.pdf') }}" download
+                                        class="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-semibold transition-colors shadow-xs">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        <span>Unduh</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
                     {{-- ===== SECTION 6: FAQ ===== --}}
                     <article id="faq" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 scroll-mt-24">
                         <div class="flex items-center gap-3 mb-6">
@@ -291,10 +386,74 @@
     </div>
 </section>
 
+{{-- ================================================================
+    MODAL PREVIEW PDF SOP
+================================================================ --}}
+<div id="modal-pdf-viewer" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-pdf-title" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity bg-slate-900/75 backdrop-blur-sm" onclick="closePdfModal()"></div>
+
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+        <div class="relative inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full border border-slate-200">
+            <div class="bg-slate-900 px-6 py-4 flex items-center justify-between text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center font-black text-xs shrink-0">PDF</div>
+                    <h3 class="text-sm font-bold truncate text-white" id="modal-pdf-title">Dokumen SOP</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a id="btn-modal-pdf-download" href="#" download class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        <span>Unduh File</span>
+                    </a>
+                    <button type="button" onclick="closePdfModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="p-2 bg-slate-100 h-[75vh]">
+                <iframe id="iframe-pdf" src="" class="w-full h-full rounded-xl border border-slate-200 bg-white" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
 <script>
+    // ------------------------------------------------------------------
+    // MODAL PREVIEW PDF SOP
+    // ------------------------------------------------------------------
+    function openPdfModal(pdfUrl, title) {
+        const modal = document.getElementById('modal-pdf-viewer');
+        const iframe = document.getElementById('iframe-pdf');
+        const titleEl = document.getElementById('modal-pdf-title');
+        const downloadBtn = document.getElementById('btn-modal-pdf-download');
+
+        if (modal && iframe) {
+            titleEl.textContent = title;
+            iframe.src = pdfUrl;
+            downloadBtn.href = pdfUrl;
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+    }
+
+    function closePdfModal() {
+        const modal = document.getElementById('modal-pdf-viewer');
+        const iframe = document.getElementById('iframe-pdf');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+            if (iframe) iframe.src = '';
+        }
+    }
+
     // ------------------------------------------------------------------
     // FAQ ACCORDION
     // Mengontrol expand/collapse pertanyaan FAQ.

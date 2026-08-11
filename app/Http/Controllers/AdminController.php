@@ -323,6 +323,102 @@ class AdminController extends Controller
     }
 
     /**
+     * Ekspor data Pembaruan dari database MySQL ke Excel (format CSV).
+     */
+    public function exportPembaruanCSV()
+    {
+        $data = Pembaruan::latest()->get();
+
+        $filename = 'laporan_pembaruan_sertifikat_' . date('Ymd_His') . '.csv';
+
+        $headers = [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () use ($data) {
+            $file = fopen('php://output', 'w');
+            
+            // UTF-8 BOM untuk kompatibilitas Excel Bahasa Indonesia
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // Judul Kolom
+            fputcsv($file, ['No', 'Nama Lengkap', 'NIK', 'NIP', 'Email', 'No Telepon', 'Unit Kerja', 'Jabatan', 'Alasan Pengajuan', 'Surat Permohonan', 'Surat Rekomendasi', 'Foto KTP', 'Status', 'Tanggal Pengajuan']);
+
+            foreach ($data as $index => $row) {
+                fputcsv($file, [
+                    $index + 1,
+                    $row->nama_lengkap,
+                    "\t" . ($row->nik ?? '-'),
+                    "\t" . ($row->nip ?? '-'),
+                    $row->email,
+                    "\t" . ($row->no_telepon ?? '-'),
+                    $row->instansi ?? '-',
+                    $row->jabatan ?? '-',
+                    $row->alasan ?? '-',
+                    $row->surat_permohonan ? asset('storage/' . $row->surat_permohonan) : '-',
+                    $row->surat_rekomendasi ? asset('storage/' . $row->surat_rekomendasi) : '-',
+                    $row->foto_ktp ? asset('storage/' . $row->foto_ktp) : '-',
+                    $row->status,
+                    $row->created_at ? $row->created_at->format('Y-m-d H:i:s') : '-',
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Ekspor data Helpdesk dari database MySQL ke Excel (format CSV).
+     */
+    public function exportHelpdeskCSV()
+    {
+        $data = Helpdesk::latest()->get();
+
+        $filename = 'laporan_pertanyaan_helpdesk_' . date('Ymd_His') . '.csv';
+
+        $headers = [
+            'Content-Type'        => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () use ($data) {
+            $file = fopen('php://output', 'w');
+            
+            // UTF-8 BOM untuk kompatibilitas Excel Bahasa Indonesia
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // Judul Kolom
+            fputcsv($file, ['No', 'Nama Pemohon', 'NIP', 'NIK', 'Unit Kerja / OPD', 'Pertanyaan / Keterangan', 'Status', 'Tanggal Masuk']);
+
+            foreach ($data as $index => $row) {
+                fputcsv($file, [
+                    $index + 1,
+                    $row->nama,
+                    "\t" . $row->nip,
+                    "\t" . $row->nik,
+                    $row->unit_kerja,
+                    $row->keterangan,
+                    $row->status,
+                    $row->created_at ? $row->created_at->format('Y-m-d H:i:s') : '-',
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
      * Memproses penggantian password akun Admin.
      */
     public function changePassword(Request $request)

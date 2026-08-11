@@ -102,6 +102,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
         // Ekspor Data Laporan
         Route::get('/export/penerbitan/csv', [AdminController::class, 'exportPenerbitanCSV'])->name('export.penerbitan.csv');
+        Route::get('/export/pembaruan/csv', [AdminController::class, 'exportPembaruanCSV'])->name('export.pembaruan.csv');
+        Route::get('/export/helpdesk/csv', [AdminController::class, 'exportHelpdeskCSV'])->name('export.helpdesk.csv');
 
         // Ganti Password Admin
         Route::post('/change-password', [AdminController::class, 'changePassword'])->name('change_password');
