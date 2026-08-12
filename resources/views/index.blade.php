@@ -27,19 +27,19 @@
     {{-- Background Slideshow Bergantian (Bupati/Wakil & 3 Pemandangan Mamasa) --}}
     <div id="hero-bg-slider" class="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
         {{-- Slide 1: Foto Bupati & Wakil Bupati --}}
-        <div class="hero-bg-slide absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 filter blur-[2px] opacity-65 transition-opacity duration-1000 ease-in-out"
+        <div class="hero-bg-slide absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 filter blur-[1.5px] opacity-75 transition-opacity duration-1000 ease-in-out"
              style="background-image: url('{{ asset('images/bupati-wakil.jpg') }}');">
         </div>
         {{-- Slide 2: Air Terjun --}}
-        <div class="hero-bg-slide absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 filter blur-[2px] opacity-0 transition-opacity duration-1000 ease-in-out"
+        <div class="hero-bg-slide absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 filter blur-[1.5px] opacity-0 transition-opacity duration-1000 ease-in-out"
              style="background-image: url('{{ asset('images/pemandangan-1.jpg') }}');">
         </div>
         {{-- Slide 3: Sawah & Pegunungan --}}
-        <div class="hero-bg-slide absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 filter blur-[2px] opacity-0 transition-opacity duration-1000 ease-in-out"
+        <div class="hero-bg-slide absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 filter blur-[1.5px] opacity-0 transition-opacity duration-1000 ease-in-out"
              style="background-image: url('{{ asset('images/pemandangan-2.jpg') }}');">
         </div>
         {{-- Slide 4: Hutan Pinus --}}
-        <div class="hero-bg-slide absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 filter blur-[2px] opacity-0 transition-opacity duration-1000 ease-in-out"
+        <div class="hero-bg-slide absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 filter blur-[1.5px] opacity-0 transition-opacity duration-1000 ease-in-out"
              style="background-image: url('{{ asset('images/pemandangan-3.jpg') }}');">
         </div>
 
@@ -559,9 +559,9 @@
         bgSlides.forEach((slide, i) => {
             if (i === currentBgIndex) {
                 slide.classList.remove('opacity-0');
-                slide.classList.add('opacity-65');
+                slide.classList.add('opacity-75');
             } else {
-                slide.classList.remove('opacity-65');
+                slide.classList.remove('opacity-75');
                 slide.classList.add('opacity-0');
             }
         });

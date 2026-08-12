@@ -52,9 +52,14 @@
 
                 {{-- Field: Password --}}
                 <div>
-                    <label for="password" class="block text-sm font-semibold text-slate-700 mb-2">
-                        Password
-                    </label>
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="password" class="block text-sm font-semibold text-slate-700">
+                            Password
+                        </label>
+                        <a href="{{ route('admin.forgot_password') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline transition-colors">
+                            Lupa Password?
+                        </a>
+                    </div>
                     <input id="password" name="password" type="password" autocomplete="current-password" required
                         placeholder="••••••••"
                         class="w-full px-4 py-3 border rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200

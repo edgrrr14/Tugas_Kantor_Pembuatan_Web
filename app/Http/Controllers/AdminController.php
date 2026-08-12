@@ -6,10 +6,13 @@ use App\Models\Penerbitan;
 use App\Models\Pembaruan;
 use App\Models\Helpdesk;
 use App\Models\DokumenSyarat;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 /**
  * AdminController
@@ -456,5 +459,190 @@ class AdminController extends Controller
         ]);
 
         return back()->with('success', 'Password akun Administrator berhasil diperbarui! Gunakan password baru untuk login berikutnya.');
+    }
+
+    // =============================================================
+    // FITUR LUPA PASSWORD ADMIN VIA OTP WHATSAPP
+    // =============================================================
+
+    /**
+     * Menampilkan Form Step 1: Request OTP Lupa Password.
+     */
+    public function showForgotPassword()
+    {
+        if (Auth::check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return view('admin.lupa-password', ['step' => 1]);
+    }
+
+    /**
+     * Memproses permintaan Kode OTP & Membuat URL Pengiriman ke WhatsApp Admin.
+     */
+    public function sendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ], [
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email'    => 'Format email tidak valid.',
+            'email.exists'   => 'Alamat email admin tidak terdaftar dalam sistem.',
+        ]);
+
+        // Generate 6 digit angka OTP acak
+        $otpCode = (string) random_int(100000, 999999);
+
+        // Simpan/Replace data OTP di database MySQL (kadaluarsa 5 menit)
+        DB::table('admin_password_otps')->where('email', $request->email)->delete();
+        DB::table('admin_password_otps')->insert([
+            'email'       => $request->email,
+            'otp_code'    => $otpCode,
+            'expires_at'  => Carbon::now()->addMinutes(5),
+            'is_verified' => false,
+            'created_at'  => Carbon::now(),
+            'updated_at'  => Carbon::now(),
+        ]);
+
+        // Nomor WA Admin Helpdesk resmi
+        $adminWaNumber = '6282312293928';
+
+        // Format Pesan WhatsApp OTP
+        $waMessage = "Halo Admin, berikut adalah *Kode OTP Reset Password* akun Administrator Sertifikasi Elektronik Kabupaten Mamasa:\n\n"
+            . "🔑 *KODE OTP: {$otpCode}*\n\n"
+            . "⚠️ Kode ini berlaku selama *5 menit*. Mohon jangan bagikan kode ini kepada siapa pun.";
+
+        $waUrl = 'https://wa.me/' . $adminWaNumber . '?text=' . urlencode($waMessage);
+
+        // Simpan state di session
+        session([
+            'reset_email' => $request->email,
+            'wa_otp_url'  => $waUrl,
+            'otp_sent'    => true,
+        ]);
+
+        return redirect()->route('admin.verify_otp_view')
+            ->with('success', 'Kode OTP 6-digit telah dibuat! Silakan klik tombol "Buka WhatsApp Admin" untuk menerima kode.');
+    }
+
+    /**
+     * Menampilkan Form Step 2: Verifikasi Kode OTP.
+     */
+    public function showVerifyOtp()
+    {
+        if (!session('reset_email')) {
+            return redirect()->route('admin.forgot_password')->withErrors(['email' => 'Silakan masukkan email Anda terlebih dahulu.']);
+        }
+
+        return view('admin.lupa-password', ['step' => 2, 'email' => session('reset_email')]);
+    }
+
+    /**
+     * Memvalidasi Kode OTP 6-digit.
+     */
+    public function verifyOtp(Request $request)
+    {
+        $email = session('reset_email');
+        if (!$email) {
+            return redirect()->route('admin.forgot_password');
+        }
+
+        $request->validate([
+            'otp_code' => 'required|string|size:6',
+        ], [
+            'otp_code.required' => 'Kode OTP 6-digit wajib diisi.',
+            'otp_code.size'     => 'Kode OTP harus terdiri dari 6 digit angka.',
+        ]);
+
+        $otpRecord = DB::table('admin_password_otps')
+            ->where('email', $email)
+            ->where('is_verified', false)
+            ->first();
+
+        if (!$otpRecord) {
+            return back()->withErrors(['otp_error' => 'Kode OTP tidak ditemukan atau sudah pernah digunakan. Silakan minta OTP baru.']);
+        }
+
+        if (Carbon::now()->isAfter($otpRecord->expires_at)) {
+            return back()->withErrors(['otp_error' => 'Kode OTP telah kadaluarsa (lebih dari 5 menit). Silakan klik "Kirim Ulang OTP".']);
+        }
+
+        if ($otpRecord->otp_code !== trim($request->otp_code)) {
+            return back()->withErrors(['otp_error' => 'Kode OTP 6-digit yang Anda masukkan salah. Periksa kembali WhatsApp Admin.']);
+        }
+
+        // OTP Valid -> Tandai terverifikasi
+        DB::table('admin_password_otps')
+            ->where('id', $otpRecord->id)
+            ->update([
+                'is_verified' => true,
+                'updated_at'  => Carbon::now(),
+            ]);
+
+        session(['otp_verified' => true]);
+
+        return redirect()->route('admin.reset_password_view')
+            ->with('success', 'Verifikasi OTP Berhasil! Silakan buat password baru untuk akun Administrator Anda.');
+    }
+
+    /**
+     * Menampilkan Form Step 3: Input Password Baru.
+     */
+    public function showResetPassword()
+    {
+        if (!session('reset_email') || !session('otp_verified')) {
+            return redirect()->route('admin.forgot_password')->withErrors(['email' => 'Sesi verifikasi telah berakhir. Silakan ulangi proses dari awal.']);
+        }
+
+        return view('admin.lupa-password', ['step' => 3, 'email' => session('reset_email')]);
+    }
+
+    /**
+     * Memproses Pengubahan Password Baru setelah OTP terverifikasi.
+     */
+    public function resetPassword(Request $request)
+    {
+        $email = session('reset_email');
+        if (!$email || !session('otp_verified')) {
+            return redirect()->route('admin.forgot_password');
+        }
+
+        $request->validate([
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'max:12',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*?&#^()_+\-=\[\]{};\':"\\\\|,.<>\/?]/',
+                'confirmed',
+            ],
+        ], [
+            'password.required'  => 'Password baru wajib diisi.',
+            'password.min'       => 'Password baru minimal 8 karakter.',
+            'password.max'       => 'Password baru maksimal 12 karakter.',
+            'password.regex'     => 'Password baru wajib kombinasi huruf besar (A-Z), huruf kecil (a-z), angka (0-9), dan simbol/karakter khusus.',
+            'password.confirmed' => 'Konfirmasi password baru tidak cocok.',
+        ]);
+
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return redirect()->route('admin.forgot_password')->withErrors(['email' => 'Akun admin tidak ditemukan.']);
+        }
+
+        // Update password baru di database
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Hapus data OTP dan sesi
+        DB::table('admin_password_otps')->where('email', $email)->delete();
+        session()->forget(['reset_email', 'otp_verified', 'wa_otp_url', 'otp_sent']);
+
+        return redirect()->route('admin.login')
+            ->with('success_auth', 'Password Admin berhasil di-reset! Silakan masuk menggunakan password baru Anda.');
     }
 }

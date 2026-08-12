@@ -78,9 +78,17 @@ Route::post('/helpdesk', [CertificationController::class, 'storeHelpdesk'])->nam
 // =============================================================
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
-    // Rute Akses Publik Admin (Login)
+    // Rute Akses Publik Admin (Login & Lupa Password OTP)
     Route::get('/login', [AdminController::class, 'login'])->name('login');
     Route::post('/login', [AdminController::class, 'authenticate'])->name('authenticate');
+
+    // Rute Lupa Password Admin via OTP WhatsApp
+    Route::get('/lupa-password', [AdminController::class, 'showForgotPassword'])->name('forgot_password');
+    Route::post('/lupa-password/send-otp', [AdminController::class, 'sendOtp'])->name('send_otp');
+    Route::get('/lupa-password/verifikasi-otp', [AdminController::class, 'showVerifyOtp'])->name('verify_otp_view');
+    Route::post('/lupa-password/verify-otp', [AdminController::class, 'verifyOtp'])->name('verify_otp');
+    Route::get('/lupa-password/reset', [AdminController::class, 'showResetPassword'])->name('reset_password_view');
+    Route::post('/lupa-password/reset', [AdminController::class, 'resetPassword'])->name('reset_password');
 
     // Rute Terproteksi Admin (Wajib Login Admin)
     Route::middleware(['auth'])->group(function () {
