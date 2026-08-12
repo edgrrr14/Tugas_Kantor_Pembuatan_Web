@@ -94,7 +94,7 @@
                 Portal <span class="text-blue-700" data-i18n="hero_title_1">Sertifikasi Elektronik</span>
             </h1>
             <p class="text-slate-800 text-base max-w-xl mx-auto leading-relaxed font-bold" style="text-shadow: 0 2px 8px rgba(255, 255, 255, 0.95), 0 1px 3px rgba(0, 0, 0, 0.2);" data-i18n="hero_desc">
-                Layanan penerbitan dan pembaruan sertifikat digital <strong class="text-slate-950 font-black">Pemerintah Kabupaten Mamasa</strong> yang <strong class="text-slate-950 font-black">cepat, aman, dan terpercaya</strong>.
+                Layanan resmi pengajuan dan perpanjangan <strong class="text-slate-950 font-black">Sertifikat Elektronik</strong> bagi ASN dan instansi di lingkungan <strong class="text-slate-950 font-black">Pemerintah Kabupaten Mamasa</strong>.
             </p>
         </div>
 
@@ -106,8 +106,8 @@
                 class="group bg-white/90 backdrop-blur-md rounded-2xl p-7 shadow-md border border-slate-200/70 hover:shadow-2xl hover:shadow-blue-200/50 hover:-translate-y-2 transition-all duration-300 cursor-pointer flex flex-col">
 
                 {{-- Ikon --}}
-                <div class="w-14 h-14 bg-blue-50 group-hover:bg-blue-100 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300">
-                    <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-14 h-14 bg-blue-100/90 border border-blue-200/80 group-hover:bg-blue-200/80 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300 shadow-xs">
+                    <svg class="w-7 h-7 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
@@ -116,16 +116,16 @@
                 {{-- Konten --}}
                 <div class="flex-1">
                     <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-700 transition-colors duration-200" data-i18n="penerbitan">
-                        Form Penerbitan
+                        Penerbitan Baru
                     </h3>
                     <p class="text-slate-500 text-sm leading-relaxed" data-i18n="card_penerbitan_desc">
-                        Ajukan permohonan penerbitan sertifikat elektronik baru untuk pertama kali.
+                        Layanan pengajuan Sertifikat Elektronik pertama kali bagi pegawai atau pejabat di lingkungan Pemkab Mamasa.
                     </p>
                 </div>
 
                 {{-- CTA Arrow --}}
                 <div class="flex items-center gap-2 mt-6 text-blue-600 text-sm font-semibold group-hover:gap-3 transition-all duration-200">
-                    <span data-i18n="card_penerbitan_btn">Mulai Sekarang</span>
+                    <span data-i18n="card_penerbitan_btn">Pengajuan Baru</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
@@ -137,8 +137,8 @@
                 class="group bg-white/90 backdrop-blur-md rounded-2xl p-7 shadow-md border border-slate-200/70 hover:shadow-2xl hover:shadow-indigo-200/50 hover:-translate-y-2 transition-all duration-300 cursor-pointer flex flex-col">
 
                 {{-- Ikon --}}
-                <div class="w-14 h-14 bg-indigo-50 group-hover:bg-indigo-100 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300">
-                    <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-14 h-14 bg-indigo-100/90 border border-indigo-200/80 group-hover:bg-indigo-200/80 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300 shadow-xs">
+                    <svg class="w-7 h-7 text-indigo-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
@@ -147,16 +147,16 @@
                 {{-- Konten --}}
                 <div class="flex-1">
                     <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-indigo-700 transition-colors duration-200" data-i18n="pembaruan">
-                        Form Pembaruan
+                        Pembaruan & Perpanjangan
                     </h3>
                     <p class="text-slate-500 text-sm leading-relaxed" data-i18n="card_pembaruan_desc">
-                        Perbarui atau perpanjang sertifikat elektronik Anda yang sudah ada atau akan habis masa berlakunya.
+                        Layanan perpanjangan masa berlaku atau pembaruan data Sertifikat Elektronik yang telah terdaftar.
                     </p>
                 </div>
 
                 {{-- CTA Arrow --}}
                 <div class="flex items-center gap-2 mt-6 text-indigo-600 text-sm font-semibold group-hover:gap-3 transition-all duration-200">
-                    <span data-i18n="card_pembaruan_btn">Perbarui Sekarang</span>
+                    <span data-i18n="card_pembaruan_btn">Pengajuan Pembaruan</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
@@ -168,8 +168,8 @@
                 class="group bg-white/90 backdrop-blur-md rounded-2xl p-7 shadow-md border border-slate-200/70 hover:shadow-2xl hover:shadow-cyan-200/50 hover:-translate-y-2 transition-all duration-300 cursor-pointer flex flex-col">
 
                 {{-- Ikon --}}
-                <div class="w-14 h-14 bg-cyan-50 group-hover:bg-cyan-100 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300">
-                    <svg class="w-7 h-7 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-14 h-14 bg-cyan-100/90 border border-cyan-200/80 group-hover:bg-cyan-200/80 rounded-2xl flex items-center justify-center mb-5 transition-colors duration-300 shadow-xs">
+                    <svg class="w-7 h-7 text-cyan-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -178,16 +178,16 @@
                 {{-- Konten --}}
                 <div class="flex-1">
                     <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-cyan-700 transition-colors duration-200" data-i18n="informasi">
-                        Informasi Web
+                        Panduan & Informasi
                     </h3>
                     <p class="text-slate-500 text-sm leading-relaxed">
-                        Pelajari tentang apa itu sertifikasi elektronik dan bagaimana prosedur pengajuannya.
+                        Pelajari dasar hukum, syarat dokumen, alur prosedur, hingga pertanyaan umum seputar layanan.
                     </p>
                 </div>
 
                 {{-- CTA Arrow --}}
                 <div class="flex items-center gap-2 mt-6 text-cyan-600 text-sm font-semibold group-hover:gap-3 transition-all duration-200">
-                    Selengkapnya
+                    Lihat Panduan
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
@@ -207,15 +207,15 @@
 
                 {{-- Konten --}}
                 <div class="flex-1">
-                    <h3 class="text-lg font-bold text-white mb-2">Helpdesk</h3>
+                    <h3 class="text-lg font-bold text-white mb-2">Layanan Bantuan</h3>
                     <p class="text-green-100 text-sm leading-relaxed">
-                        Butuh bantuan? Isi formulir pertanyaan untuk terhubung langsung dengan WA Admin.
+                        Mengalami kendala teknis? Hubungi admin melalui layanan WhatsApp.
                     </p>
                 </div>
 
                 {{-- CTA --}}
                 <div class="flex items-center gap-2 mt-6 text-white text-sm font-semibold group-hover:gap-3 transition-all duration-200">
-                    Buka Helpdesk
+                    Hubungi Admin WA
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
@@ -228,17 +228,17 @@
         <div class="mt-12 flex justify-center">
             <button id="btn-download-persyaratan" 
                 class="group flex items-center gap-4 bg-white/90 backdrop-blur-md hover:bg-white border border-slate-200/80 rounded-2xl p-5 max-w-xl w-full shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <div class="w-12 h-12 bg-indigo-50 group-hover:bg-indigo-100 rounded-xl flex items-center justify-center shrink-0 transition-colors duration-300">
-                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-12 h-12 bg-indigo-100/90 border border-indigo-200/80 group-hover:bg-indigo-200/80 rounded-xl flex items-center justify-center shrink-0 transition-colors duration-300 shadow-xs">
+                    <svg class="w-6 h-6 text-indigo-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                 </div>
                 <div class="flex-1">
                     <h4 class="text-slate-800 font-bold text-sm mb-1 group-hover:text-indigo-700 transition-colors duration-200">
-                        Unduh Persyaratan & Templat
+                        Unduh Templat Dokumen Syarat
                     </h4>
                     <p class="text-slate-500 text-xs leading-relaxed">
-                        Dapatkan dokumen templat surat permohonan & rekomendasi untuk pengajuan penerbitan dan pembaruan.
+                        Unduh format resmi Surat Permohonan dan Surat Rekomendasi sebagai kelengkapan berkas pengajuan.
                     </p>
                 </div>
                 <div class="text-slate-400 group-hover:text-indigo-600 transition-colors duration-200 mr-1">
@@ -260,8 +260,8 @@
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div class="text-center mb-14">
-            <h2 class="text-3xl sm:text-4xl font-bold text-white mt-2" data-i18n="flow_title">Alur Proses Pengajuan</h2>
-            <p class="text-blue-100 mt-4 text-base" data-i18n="flow_subtitle">Hanya 4 langkah mudah untuk mendapatkan sertifikat elektronik Anda.</p>
+            <h2 class="text-3xl sm:text-4xl font-bold text-white mt-2" data-i18n="flow_title">Alur Prosedur Pengajuan</h2>
+            <p class="text-blue-100 mt-4 text-base" data-i18n="flow_subtitle">Empat tahapan sederhana dalam proses pengajuan Sertifikat Elektronik.</p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
@@ -269,10 +269,10 @@
             <div class="hidden lg:block absolute top-10 left-[12.5%] right-[12.5%] h-0.5 bg-blue-500/50 z-0"></div>
 
             @foreach([
-                ['step' => '01', 'key' => 'flow_1', 'title' => 'Isi Formulir', 'desc' => 'Lengkapi data diri dan unggah dokumen pendukung yang diperlukan.', 'icon' => 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'],
-                ['step' => '02', 'key' => 'flow_2', 'title' => 'Verifikasi Admin', 'desc' => 'Tim admin kami akan memeriksa kelengkapan dan keabsahan dokumen Anda.', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'],
-                ['step' => '03', 'key' => 'flow_3', 'title' => 'Update Status', 'desc' => 'Setelah pengajuan, informasi status tentang perkembangan sertifikasi elektronik akan diperbarui.', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
-                ['step' => '04', 'key' => 'flow_4', 'title' => 'Notifikasi Selesai', 'desc' => 'Sistem akan mengirimkan notifikasi kepada pemohon bahwa proses telah selesai.', 'icon' => 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9'],
+                ['step' => '01', 'key' => 'flow_1', 'title' => 'Pengisian Formulir', 'desc' => 'Mengisi data diri, jabatan, serta melampirkan berkas persyaratan secara lengkap.', 'icon' => 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'],
+                ['step' => '02', 'key' => 'flow_2', 'title' => 'Verifikasi Berkas', 'desc' => 'Admin Dinas Kominfo memeriksa keabsahan dan kelengkapan dokumen.', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'],
+                ['step' => '03', 'key' => 'flow_3', 'title' => 'Pemrosesan Sertifikat', 'desc' => 'Pengajuan yang memenuhi syarat diproses untuk penerbitan Sertifikat Elektronik.', 'icon' => 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],
+                ['step' => '04', 'key' => 'flow_4', 'title' => 'Penerbitan & Notifikasi', 'desc' => 'Sertifikat diterbitkan dan pemberitahuan dikirimkan langsung ke kontak pemohon.', 'icon' => 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9'],
             ] as $index => $step)
             <div class="relative z-10 text-center">
                 <div class="w-20 h-20 bg-white border-2 border-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-300">

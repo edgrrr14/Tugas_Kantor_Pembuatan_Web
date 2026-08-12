@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 /**
  * AdminController
@@ -422,6 +424,78 @@ class AdminController extends Controller
     }
 
     /**
+     * Ekspor data Pengajuan Penerbitan ke PDF resmi.
+     */
+    public function exportPenerbitanPDF()
+    {
+        $data = Penerbitan::latest()->get();
+        $html = view('admin.pdf.penerbitan', compact('data'))->render();
+
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true);
+        $options->set('defaultFont', 'sans-serif');
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('a4', 'landscape');
+        $dompdf->render();
+
+        return response($dompdf->output(), 200, [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="laporan_penerbitan_sertifikat_' . date('Ymd_His') . '.pdf"',
+        ]);
+    }
+
+    /**
+     * Ekspor data Pengajuan Pembaruan ke PDF resmi.
+     */
+    public function exportPembaruanPDF()
+    {
+        $data = Pembaruan::latest()->get();
+        $html = view('admin.pdf.pembaruan', compact('data'))->render();
+
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true);
+        $options->set('defaultFont', 'sans-serif');
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('a4', 'landscape');
+        $dompdf->render();
+
+        return response($dompdf->output(), 200, [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="laporan_pembaruan_sertifikat_' . date('Ymd_His') . '.pdf"',
+        ]);
+    }
+
+    /**
+     * Ekspor data Helpdesk ke PDF resmi.
+     */
+    public function exportHelpdeskPDF()
+    {
+        $data = Helpdesk::latest()->get();
+        $html = view('admin.pdf.helpdesk', compact('data'))->render();
+
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true);
+        $options->set('defaultFont', 'sans-serif');
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('a4', 'landscape');
+        $dompdf->render();
+
+        return response($dompdf->output(), 200, [
+            'Content-Type'        => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="laporan_pertanyaan_helpdesk_' . date('Ymd_His') . '.pdf"',
+        ]);
+    }
+
+    /**
      * Memproses penggantian password akun Admin.
      */
     public function changePassword(Request $request)
@@ -458,7 +532,7 @@ class AdminController extends Controller
             'password' => Hash::make($request->password_baru),
         ]);
 
-        return back()->with('success', 'Password akun Administrator berhasil diperbarui! Gunakan password baru untuk login berikutnya.');
+        return back()->with('success', 'Password akun Admin berhasil diperbarui! Gunakan password baru untuk login berikutnya.');
     }
 
     // =============================================================
@@ -508,7 +582,7 @@ class AdminController extends Controller
         $adminWaNumber = '6282312293928';
 
         // Format Pesan WhatsApp OTP
-        $waMessage = "Halo Admin, berikut adalah *Kode OTP Reset Password* akun Administrator Sertifikasi Elektronik Kabupaten Mamasa:\n\n"
+        $waMessage = "Halo Admin, berikut adalah *Kode OTP Reset Password* akun Admin Sertifikasi Elektronik Kabupaten Mamasa:\n\n"
             . "🔑 *KODE OTP: {$otpCode}*\n\n"
             . "⚠️ Kode ini berlaku selama *5 menit*. Mohon jangan bagikan kode ini kepada siapa pun.";
 
@@ -568,7 +642,15 @@ class AdminController extends Controller
         }
 
         if ($otpRecord->otp_code !== trim($request->otp_code)) {
-            return back()->withErrors(['otp_error' => 'Kode OTP 6-digit yang Anda masukkan salah. Periksa kembali WhatsApp Admin.']);
+            $newAttempts = ($otpRecord->attempts ?? 0) + 1;
+            if ($newAttempts >= 5) {
+                DB::table('admin_password_otps')->where('id', $otpRecord->id)->delete();
+                return back()->withErrors(['otp_error' => 'Anda telah salah memasukkan kode OTP sebanyak 5 kali. Demi keamanan, kode ini dibatalkan. Silakan klik "Kirim Ulang OTP".']);
+            }
+
+            DB::table('admin_password_otps')->where('id', $otpRecord->id)->update(['attempts' => $newAttempts]);
+            $remaining = 5 - $newAttempts;
+            return back()->withErrors(['otp_error' => "Kode OTP 6-digit yang Anda masukkan salah (Sisa percobaan: {$remaining}x). Periksa kembali WhatsApp Admin."]);
         }
 
         // OTP Valid -> Tandai terverifikasi
@@ -582,7 +664,7 @@ class AdminController extends Controller
         session(['otp_verified' => true]);
 
         return redirect()->route('admin.reset_password_view')
-            ->with('success', 'Verifikasi OTP Berhasil! Silakan buat password baru untuk akun Administrator Anda.');
+            ->with('success', 'Verifikasi OTP Berhasil! Silakan buat password baru untuk akun Admin Anda.');
     }
 
     /**

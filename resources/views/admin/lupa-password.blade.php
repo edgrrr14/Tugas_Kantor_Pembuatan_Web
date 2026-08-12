@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Lupa Password Admin - OTP WhatsApp')
-@section('meta_description', 'Portal reset password akun administrator Sertifikasi Elektronik menggunakan verifikasi OTP WhatsApp.')
+@section('meta_description', 'Portal reset password akun admin Sertifikasi Elektronik menggunakan verifikasi OTP WhatsApp.')
 
 @section('content')
 <div class="min-h-screen bg-slate-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -76,7 +76,7 @@
 
                         <div>
                             <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">
-                                Email Administrator Terdaftar
+                                Email Admin Terdaftar
                             </label>
                             <input id="email" name="email" type="email" required autocomplete="email"
                                 value="{{ old('email') }}"

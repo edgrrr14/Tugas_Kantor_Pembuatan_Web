@@ -67,8 +67,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-white" data-i18n="form_penerbitan_head">Form Penerbitan Sertifikat</h1>
-                        <p class="text-blue-200 text-sm mt-0.5" data-i18n="form_penerbitan_sub">Pengajuan Sertifikat Elektronik Baru</p>
+                        <h1 class="text-xl font-bold text-white" data-i18n="form_penerbitan_head">Formulir Pengajuan Penerbitan Sertifikat Elektronik</h1>
+                        <p class="text-blue-200 text-sm mt-0.5" data-i18n="form_penerbitan_sub">Layanan Penerbitan Baru Bagi Pegawai Pemerintah Kabupaten Mamasa</p>
                     </div>
                 </div>
             </div>
@@ -80,9 +80,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p class="text-blue-700 text-sm leading-relaxed">
-                        Pastikan semua data yang Anda masukkan sudah benar dan sesuai dengan dokumen resmi.
-                        Tanda <span class="text-red-500 font-semibold">*</span> menandakan field yang wajib diisi.
-                        Dokumen yang diunggah harus berformat <strong>PDF</strong> dengan ukuran maksimal <strong>10MB</strong>.
+                        Mohon mengisi data identitas diri dan melampirkan berkas persyaratan secara teliti.
+                        Tanda <span class="text-red-500 font-semibold">*</span> menunjukkan kolom yang wajib diisi.
+                        Dokumen permohonan & rekomendasi berformat <strong>PDF</strong>, serta Foto KTP berformat <strong>JPG/PNG</strong> dengan ukuran maksimal <strong>10MB</strong> per berkas.
                     </p>
                 </div>
             </div>

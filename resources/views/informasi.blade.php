@@ -177,7 +177,7 @@
                         <div class="space-y-4">
                             @foreach([
                                 ['num' => '1', 'title' => 'Isi Formulir', 'desc' => 'Lengkapi data diri dan unggah dokumen pendukung yang diperlukan.'],
-                                ['num' => '2', 'title' => 'Verifikasi Admin', 'desc' => 'Tim admin kami akan memeriksa kelengkapan dan keabsahan dokumen Anda.'],
+                                ['num' => '2', 'title' => 'Verifikasi Admin', 'desc' => 'Admin akan memeriksa kelengkapan dan keabsahan dokumen Anda.'],
                                 ['num' => '3', 'title' => 'Update Status', 'desc' => 'Setelah pengajuan, informasi status tentang perkembangan sertifikasi elektronik akan diperbarui.'],
                                 ['num' => '4', 'title' => 'Notifikasi Selesai', 'desc' => 'Sistem akan mengirimkan notifikasi kepada pemohon bahwa proses telah selesai.'],
                             ] as $step)
@@ -361,7 +361,7 @@
                                 ['q' => 'Berapa masa berlaku sertifikat elektronik?', 'a' => 'Masa berlaku sertifikat elektronik umumnya adalah 2 (dua) tahun sejak tanggal penerbitan. Anda dapat mengajukan pembaruan sebelum atau setelah masa berlaku habis.'],
                                 ['q' => 'Apakah bisa mengajukan untuk lebih dari satu sertifikat?', 'a' => 'Ya, pengajuan dapat dilakukan untuk setiap kebutuhan yang berbeda. Setiap pengajuan akan diproses secara terpisah dengan nomor sertifikat yang unik.'],
                                 ['q' => 'Bagaimana jika dokumen saya ditolak?', 'a' => 'Jika dokumen ditolak, Anda akan mendapatkan notifikasi via WhatsApp yang menjelaskan alasan penolakan beserta panduan untuk memperbaiki dan mengajukan ulang.'],
-                                ['q' => 'Apakah ada biaya untuk pengajuan sertifikat?', 'a' => 'Informasi mengenai biaya layanan dapat dikonfirmasi melalui tim admin kami. Hubungi helpdesk melalui WhatsApp untuk informasi lebih lanjut.'],
+                                ['q' => 'Apakah ada biaya untuk pengajuan sertifikat?', 'a' => 'Informasi mengenai biaya layanan dapat dikonfirmasi melalui admin. Hubungi helpdesk melalui WhatsApp untuk informasi lebih lanjut.'],
                             ] as $index => $faq)
                             <div class="border border-slate-200 rounded-xl overflow-hidden faq-item">
                                 <button

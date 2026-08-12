@@ -67,8 +67,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-white" data-i18n="form_pembaruan_head">Form Pembaruan Sertifikat</h1>
-                        <p class="text-indigo-200 text-sm mt-0.5" data-i18n="form_pembaruan_sub">Perpanjangan / Pembaruan Sertifikat Elektronik</p>
+                        <h1 class="text-xl font-bold text-white" data-i18n="form_pembaruan_head">Formulir Pembaruan & Perpanjangan Sertifikat</h1>
+                        <p class="text-indigo-200 text-sm mt-0.5" data-i18n="form_pembaruan_sub">Layanan Perpanjangan Masa Berlaku Sertifikat Elektronik</p>
                     </div>
                 </div>
             </div>
@@ -80,9 +80,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p class="text-indigo-700 text-sm leading-relaxed">
-                        Formulir ini digunakan untuk <strong>memperbarui</strong> sertifikat yang sudah ada atau yang akan habis masa berlakunya.
-                        Siapkan <strong>surat rekomendasi permohonan pembaruan sertifikat elektronik</strong> sebelum mengisi formulir ini.
-                        Tanda <span class="text-red-500 font-semibold">*</span> menandakan field yang wajib diisi.
+                        Formulir ini diperuntukkan bagi pemegang Sertifikat Elektronik yang mengajukan perpanjangan masa berlaku atau pembaruan data.
+                        Mohon melengkapi data identitas diri serta melampirkan berkas persyaratan secara lengkap.
+                        Tanda <span class="text-red-500 font-semibold">*</span> menunjukkan kolom yang wajib diisi.
                     </p>
                 </div>
             </div>

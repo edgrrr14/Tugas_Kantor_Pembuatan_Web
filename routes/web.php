@@ -108,10 +108,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::post('/dokumen-syarat/{id}', [AdminController::class, 'updateDokumenSyarat'])->name('dokumen_syarat.update');
         Route::delete('/dokumen-syarat/{id}', [AdminController::class, 'destroyDokumenSyarat'])->name('dokumen_syarat.destroy');
 
-        // Ekspor Data Laporan
+        // Ekspor Data Laporan (Excel/CSV & PDF)
         Route::get('/export/penerbitan/csv', [AdminController::class, 'exportPenerbitanCSV'])->name('export.penerbitan.csv');
+        Route::get('/export/penerbitan/pdf', [AdminController::class, 'exportPenerbitanPDF'])->name('export.penerbitan.pdf');
+
         Route::get('/export/pembaruan/csv', [AdminController::class, 'exportPembaruanCSV'])->name('export.pembaruan.csv');
+        Route::get('/export/pembaruan/pdf', [AdminController::class, 'exportPembaruanPDF'])->name('export.pembaruan.pdf');
+
         Route::get('/export/helpdesk/csv', [AdminController::class, 'exportHelpdeskCSV'])->name('export.helpdesk.csv');
+        Route::get('/export/helpdesk/pdf', [AdminController::class, 'exportHelpdeskPDF'])->name('export.helpdesk.pdf');
 
         // Ganti Password Admin
         Route::post('/change-password', [AdminController::class, 'changePassword'])->name('change_password');

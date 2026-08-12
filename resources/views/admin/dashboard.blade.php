@@ -63,7 +63,7 @@
                     AD
                 </div>
                 <div class="overflow-hidden">
-                    <span class="block text-sm font-semibold text-slate-200 truncate">Administrator</span>
+                    <span class="block text-sm font-semibold text-slate-200 truncate">Admin</span>
                     <span class="block text-xs text-slate-500 truncate">admin@sertifikasiel.go.id</span>
                 </div>
             </div>
@@ -173,7 +173,7 @@
                             </svg>
                         </span>
                         <input type="text" id="penerbitan-search-input" onkeyup="filterPenerbitanTable()"
-                            placeholder="Cari nama..."
+                            placeholder="Cari nama, NIK, atau NIP..."
                             class="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 hover:border-slate-300 transition-all duration-200">
                     </div>
 
@@ -202,13 +202,13 @@
                         <span>Ekspor Excel (CSV)</span>
                     </a>
                     
-                    <button onclick="window.print()" id="btn-export-pdf"
-                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer focus:outline-none">
+                    <a href="{{ route('admin.export.penerbitan.pdf') }}" id="btn-export-pdf"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer border-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-5a2 2 0 00-2-2H5a2 2 0 00-2 2v5a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <span>Cetak Laporan / PDF</span>
-                    </button>
+                        <span>Unduh Laporan (PDF)</span>
+                    </a>
                 </div>
             </div>
 
@@ -388,7 +388,7 @@
                             </svg>
                         </span>
                         <input type="text" id="pembaruan-search-input" onkeyup="filterPembaruanTable()"
-                            placeholder="Cari nama..."
+                            placeholder="Cari nama, NIK, atau NIP..."
                             class="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 hover:border-slate-300 transition-all duration-200">
                     </div>
 
@@ -417,13 +417,13 @@
                         <span>Ekspor Excel (CSV)</span>
                     </a>
                     
-                    <button onclick="window.print()" id="btn-export-pembaruan-pdf"
-                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer focus:outline-none">
+                    <a href="{{ route('admin.export.pembaruan.pdf') }}" id="btn-export-pembaruan-pdf"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer border-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-5a2 2 0 00-2-2H5a2 2 0 00-2 2v5a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <span>Cetak Laporan / PDF</span>
-                    </button>
+                        <span>Unduh Laporan (PDF)</span>
+                    </a>
                 </div>
             </div>
 
@@ -637,7 +637,7 @@
                                 </svg>
                             </span>
                             <input type="text" id="helpdesk-search-input" onkeyup="filterHelpdeskTable()"
-                                placeholder="Cari nama, NIP, atau OPD..."
+                                placeholder="Cari nama, NIK, NIP, atau OPD..."
                                 class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
 
@@ -649,13 +649,13 @@
                             <span>Ekspor Excel (CSV)</span>
                         </a>
                         
-                        <button onclick="window.print()" id="btn-export-helpdesk-pdf"
-                            class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer focus:outline-none">
+                        <a href="{{ route('admin.export.helpdesk.pdf') }}" id="btn-export-helpdesk-pdf"
+                            class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer border-0">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-5a2 2 0 00-2-2H5a2 2 0 00-2 2v5a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
-                            <span>Cetak Laporan / PDF</span>
-                        </button>
+                            <span>Unduh Laporan (PDF)</span>
+                        </a>
                     </div>
                 </div>
 
@@ -1070,7 +1070,7 @@
 
         <div class="py-4">
             <p class="text-sm text-slate-600 leading-relaxed">
-                Apakah Anda yakin ingin keluar dari sesi Administrator? Anda harus memasukkan email & password kembali untuk mengakses dashboard admin.
+                Apakah Anda yakin ingin keluar dari sesi Admin? Anda harus memasukkan email & password kembali untuk mengakses dashboard admin.
             </p>
         </div>
 
@@ -1259,7 +1259,7 @@
                 </div>
                 <div>
                     <h3 class="text-base font-extrabold text-slate-800">Ganti Password Admin</h3>
-                    <p class="text-[11px] text-slate-500">Perbarui kata sandi akun Administrator secara berkala</p>
+                    <p class="text-[11px] text-slate-500">Perbarui kata sandi akun Admin secara berkala</p>
                 </div>
             </div>
             <button type="button" onclick="closeGantiPasswordModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors">
@@ -1457,9 +1457,9 @@
             let matchesStatus = true;
             let matchesDate = true;
             
-            if (namaEl) {
-                const text = namaEl.textContent || namaEl.innerText;
-                matchesSearch = text.toLowerCase().indexOf(searchFilter) > -1;
+            if (searchFilter !== "") {
+                const rowText = row.textContent || row.innerText || "";
+                matchesSearch = rowText.toLowerCase().indexOf(searchFilter) > -1;
             }
 
             if (statusFilter !== 'all') {
@@ -1537,9 +1537,9 @@
             let matchesStatus = true;
             let matchesDate = true;
             
-            if (namaEl) {
-                const text = namaEl.textContent || namaEl.innerText;
-                matchesSearch = text.toLowerCase().indexOf(searchFilter) > -1;
+            if (searchFilter !== "") {
+                const rowText = row.textContent || row.innerText || "";
+                matchesSearch = rowText.toLowerCase().indexOf(searchFilter) > -1;
             }
 
             if (statusFilter !== 'all') {

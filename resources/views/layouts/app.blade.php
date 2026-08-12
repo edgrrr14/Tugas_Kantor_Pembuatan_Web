@@ -184,14 +184,17 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
 
-                {{-- Kolom 1: Logo & Deskripsi --}}
+                {{-- Kolom 1: Logo, Deskripsi & Alamat --}}
                 <div>
                     <div class="flex items-center gap-3 mb-4">
                         <img src="{{ asset('images/logo-mamasa.png') }}" alt="Logo Kabupaten Mamasa" class="h-10 w-auto object-contain">
                         <span class="text-white font-bold" data-i18n="hero_title_1">Sertifikasi Elektronik</span>
                     </div>
-                    <p class="text-sm leading-relaxed" data-i18n="footer_desc">
+                    <p class="text-sm leading-relaxed mb-3" data-i18n="footer_desc">
                         Portal resmi layanan sertifikasi elektronik yang cepat, aman, dan dapat diandalkan untuk kebutuhan Anda.
+                    </p>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        <strong class="text-slate-300 font-semibold">Alamat:</strong> Ktr Gab. Dinas Lt. II, Jl. Demmatande, Kel. Mamasa, Kec. Mamasa 91362 Kabupaten Mamasa, Provinsi Sulawesi Barat
                     </p>
                 </div>
 
