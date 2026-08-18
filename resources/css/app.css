@@ -11,6 +11,9 @@
  * ================================================================
  */
 
+/* Import Font Lexend untuk Mode Ramah Disleksia (Wajib di bagian paling atas sesuai CSS spec) */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap');
+
 /* Import Tailwind CSS v4 */
 @import 'tailwindcss';
 
@@ -176,8 +179,6 @@
     }
 }
 
-/* Import Font Lexend untuk Mode Ramah Disleksia */
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap');
 
 /* ================================================================
    GAYA AKSESIBILITAS (ACCESSIBILITY MODES - 9 FITUR SPESIFIKASI)

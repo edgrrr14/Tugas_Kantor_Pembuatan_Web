@@ -15,12 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(
-            ['email' => 'admin@sertifikasiel.go.id'],
-            [
-                'name' => 'Admin Sertifikasi',
-                'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
-            ]
-        );
+        $this->call([
+            AdminSeeder::class,
+        ]);
     }
 }

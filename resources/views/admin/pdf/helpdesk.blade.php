@@ -173,9 +173,9 @@
             </td>
             <td class="header-text" style="width: 88%;">
                 <h3>PEMERINTAH KABUPATEN MAMASA</h3>
-                <h2>DINAS KOMUNIKASI, INFORMATIKA, PERSANDIAN DAN STATISTIK</h2>
-                <p>Jl. Poros Mamasa - Polewali, Kompleks Perkantoran Bupati Mamasa, Sulawesi Barat</p>
-                <p>Website: sertifikasi.mamasakab.go.id | Email: kominfo@mamasakab.go.id</p>
+                <h2>DINAS KOMUNIKASI INFORMATIKA DAN PERSANDIAN</h2>
+                <p>Kantor Gabungan Dinas Lt. II, Jl. Demmatande, Kel. Mamasa, Kec. Mamasa 91362 Kabupaten Mamasa, Provinsi Sulawesi Barat</p>
+                <p>Website: sertifikasi.mamasakab.go.id | Email: diskominfosandi@mamasakab.go.id</p>
             </td>
         </tr>
     </table>

@@ -194,7 +194,7 @@
                         Portal resmi layanan sertifikasi elektronik yang cepat, aman, dan dapat diandalkan untuk kebutuhan Anda.
                     </p>
                     <p class="text-sm text-slate-400 leading-relaxed">
-                        <strong class="text-slate-300 font-semibold">Alamat:</strong> Ktr Gab. Dinas Lt. II, Jl. Demmatande, Kel. Mamasa, Kec. Mamasa 91362 Kabupaten Mamasa, Provinsi Sulawesi Barat
+                        <strong class="text-slate-300 font-semibold">Alamat:</strong> Kantor Gabungan Dinas Lt. II, Jl. Demmatande, Kel. Mamasa, Kec. Mamasa 91362 Kabupaten Mamasa, Provinsi Sulawesi Barat
                     </p>
                 </div>
 
