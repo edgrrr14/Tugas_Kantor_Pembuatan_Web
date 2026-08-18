@@ -202,52 +202,43 @@
                     {{-- ===== SECTION 5: Persyaratan Dokumen ===== --}}
                     <article id="persyaratan" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 scroll-mt-24">
                         <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center">
-                                <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                             </div>
                             <div>
-                                <h2 class="text-xl font-bold text-slate-800">Persyaratan Dokumen</h2>
+                                <h2 class="text-xl font-bold text-slate-800" data-i18n="toc_3">Persyaratan Dokumen</h2>
                                 <p class="text-xs text-slate-500 mt-0.5">Persyaratan dokumen berlaku sama untuk pengajuan Penerbitan Baru maupun Pembaruan Sertifikat</p>
                             </div>
                         </div>
 
-                        {{-- Card Bersatu untuk Penerbitan & Pembaruan --}}
-                        <div class="bg-gradient-to-br from-blue-50/80 to-indigo-50/80 rounded-2xl border border-blue-100 p-6 sm:p-8">
-                            <div class="flex items-center gap-3 mb-6 pb-4 border-b border-blue-200/60">
-                                <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center shrink-0 shadow-sm">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <p class="text-slate-600 leading-relaxed text-base mb-5">
+                            Berikut adalah berkas persyaratan dan kelengkapan data yang wajib dipersiapkan sebelum mengisi formulir pengajuan Penerbitan Baru maupun Pembaruan Sertifikat Elektronik:
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            @foreach([
+                                ['label' => 'Surat Permohonan', 'desc' => 'Surat permohonan resmi pengajuan sertifikat elektronik yang telah ditandatangani pemohon (Format: PDF • Maksimal 10MB).'],
+                                ['label' => 'Surat Rekomendasi Unit Kerja', 'desc' => 'Surat rekomendasi resmi dari pimpinan Unit Kerja / Instansi terkait (Format: PDF • Maksimal 10MB).'],
+                                ['label' => 'Foto KTP Asli', 'desc' => 'Foto atau scan e-KTP asli yang jelas, terbaca, dan tidak terpotong (Format: JPG, JPEG, atau PNG • Maksimal 10MB).'],
+                                ['label' => 'NIK & NIP Pegawai', 'desc' => '16 digit Nomor Induk Kependudukan (NIK) dan 18 digit Nomor Induk Pegawai (NIP) aktif pemohon.'],
+                                ['label' => 'Email & Nomor Telepon WhatsApp', 'desc' => 'Alamat email aktif serta nomor telepon WhatsApp yang dapat dihubungi untuk verifikasi data dan pengiriman notifikasi status.'],
+                                ['label' => 'Unit Kerja & Jabatan', 'desc' => 'Nama Instansi / Unit Kerja dan Jabatan resmi pemohon saat ini.'],
+                                ['label' => 'Alasan Pengajuan', 'desc' => 'Penjelasan singkat dan jelas mengenai keperluan atau alasan pengajuan sertifikat elektronik.'],
+                            ] as $syarat)
+                            <div class="flex items-start gap-3.5 p-4 rounded-xl bg-blue-50 border border-blue-100 hover:bg-blue-50/80 transition-all hover:shadow-xs {{ $loop->last && $loop->count % 2 !== 0 ? 'md:col-span-2' : '' }}">
+                                <div class="w-7 h-7 bg-blue-200 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                                    <svg class="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
                                 </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-900 text-base">Persyaratan Pengajuan (Penerbitan Baru & Pembaruan)</h4>
-                                    <p class="text-xs text-slate-600 mt-0.5">Seluruh berkas dan data di bawah ini wajib dilengkapi saat mengisi formulir pengajuan</p>
+                                <div class="min-w-0 flex-1">
+                                    <div class="text-sm font-bold text-blue-900">{{ $syarat['label'] }}</div>
+                                    <div class="text-xs text-blue-700 mt-1 leading-relaxed">{{ $syarat['desc'] }}</div>
                                 </div>
                             </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                @foreach([
-                                    ['title' => 'Surat Permohonan', 'desc' => 'Surat permohonan resmi (Format: PDF • Maksimal 10MB)'],
-                                    ['title' => 'Surat Rekomendasi Unit Kerja', 'desc' => 'Surat rekomendasi resmi dari Unit Kerja (Format: PDF • Maksimal 10MB)'],
-                                    ['title' => 'Foto KTP', 'desc' => 'Foto KTP asli (Format: JPG, JPEG, atau PNG • Maksimal 10MB)'],
-                                    ['title' => 'NIK & NIP', 'desc' => '16 digit NIK (KTP) dan 18 digit NIP pegawai'],
-                                    ['title' => 'Email & Nomor Telepon', 'desc' => 'Alamat email aktif & nomor telepon WhatsApp yang dapat dihubungi'],
-                                    ['title' => 'Unit Kerja & Jabatan', 'desc' => 'Nama Unit Kerja dan Jabatan resmi pemohon'],
-                                    ['title' => 'Alasan Pengajuan', 'desc' => 'Penjelasan singkat alasan pengajuan sertifikat'],
-                                ] as $item)
-                                <div class="flex items-start gap-3 p-4 bg-white/90 rounded-xl border border-blue-100/80 shadow-xs">
-                                    <div class="w-6 h-6 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
-                                        ✓
-                                    </div>
-                                    <div>
-                                        <div class="text-xs font-bold text-slate-800">{{ $item['title'] }}</div>
-                                        <div class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{{ $item['desc'] }}</div>
-                                    </div>
-                                </div>
-                                @endforeach
-                            </div>
+                            @endforeach
                         </div>
                     </article>
 

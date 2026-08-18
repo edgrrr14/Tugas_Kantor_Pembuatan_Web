@@ -22,7 +22,7 @@
     WRAPPER HALAMAN
 ================================================================ --}}
 <div class="min-h-screen bg-slate-100 py-12">
-    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {{-- Tombol Kembali di Pojok Kiri Atas --}}
         <div class="mb-6">

@@ -905,14 +905,18 @@
                 <div class="flex flex-wrap items-center gap-3">
                     
                     {{-- Select Tahun (Tersembunyi di Mode Semua Waktu) --}}
+                    @php 
+                        $currYear = (int) date('Y'); 
+                        $currMonth = (int) date('n'); 
+                    @endphp
                     <div id="wrapper-filter-tahun" class="hidden items-center gap-2">
                         <label for="filter-tahun-info" class="text-xs font-semibold text-slate-500">Tahun:</label>
                         <select id="filter-tahun-info" onchange="updateInfografisData()"
                             class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer">
-                            <option value="2026" selected>2026</option>
-                            <option value="2025">2025</option>
-                            <option value="2024">2024</option>
-                            <option value="2023">2023</option>
+                            <option value="2026" {{ $currYear === 2026 ? 'selected' : '' }}>2026</option>
+                            <option value="2025" {{ $currYear === 2025 ? 'selected' : '' }}>2025</option>
+                            <option value="2024" {{ $currYear === 2024 ? 'selected' : '' }}>2024</option>
+                            <option value="2023" {{ $currYear === 2023 ? 'selected' : '' }}>2023</option>
                         </select>
                     </div>
 
@@ -921,18 +925,18 @@
                         <label for="filter-bulan-info" class="text-xs font-semibold text-slate-500">Bulan:</label>
                         <select id="filter-bulan-info" onchange="updateInfografisData()"
                             class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer">
-                            <option value="1">Januari</option>
-                            <option value="2">Februari</option>
-                            <option value="3">Maret</option>
-                            <option value="4">April</option>
-                            <option value="5">Mei</option>
-                            <option value="6">Juni</option>
-                            <option value="7" selected>Juli</option>
-                            <option value="8">Agustus</option>
-                            <option value="9">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
+                            <option value="1" {{ $currMonth === 1 ? 'selected' : '' }}>Januari</option>
+                            <option value="2" {{ $currMonth === 2 ? 'selected' : '' }}>Februari</option>
+                            <option value="3" {{ $currMonth === 3 ? 'selected' : '' }}>Maret</option>
+                            <option value="4" {{ $currMonth === 4 ? 'selected' : '' }}>April</option>
+                            <option value="5" {{ $currMonth === 5 ? 'selected' : '' }}>Mei</option>
+                            <option value="6" {{ $currMonth === 6 ? 'selected' : '' }}>Juni</option>
+                            <option value="7" {{ $currMonth === 7 ? 'selected' : '' }}>Juli</option>
+                            <option value="8" {{ $currMonth === 8 ? 'selected' : '' }}>Agustus</option>
+                            <option value="9" {{ $currMonth === 9 ? 'selected' : '' }}>September</option>
+                            <option value="10" {{ $currMonth === 10 ? 'selected' : '' }}>Oktober</option>
+                            <option value="11" {{ $currMonth === 11 ? 'selected' : '' }}>November</option>
+                            <option value="12" {{ $currMonth === 12 ? 'selected' : '' }}>Desember</option>
                         </select>
                     </div>
 
@@ -1817,7 +1821,7 @@
             if (startDate && endDate) {
                 matchesDate = (rowDate >= startDate && rowDate <= endDate);
             } else if (startDate) {
-                matchesDate = (rowDate === startDate);
+                matchesDate = (rowDate >= startDate);
             } else if (endDate) {
                 matchesDate = (rowDate <= endDate);
             }
@@ -1899,7 +1903,7 @@
             if (startDate && endDate) {
                 matchesDate = (rowDate >= startDate && rowDate <= endDate);
             } else if (startDate) {
-                matchesDate = (rowDate === startDate);
+                matchesDate = (rowDate >= startDate);
             } else if (endDate) {
                 matchesDate = (rowDate <= endDate);
             }
@@ -2090,17 +2094,17 @@
             });
 
             penerbitanChartData = [
-                penerbitanFiltered.filter(i => parseRecordDate(i.created_at).getDate() <= 7).length,
-                penerbitanFiltered.filter(i => { const date = parseRecordDate(i.created_at).getDate(); return date >= 8 && date <= 14; }).length,
-                penerbitanFiltered.filter(i => { const date = parseRecordDate(i.created_at).getDate(); return date >= 15 && date <= 21; }).length,
-                penerbitanFiltered.filter(i => parseRecordDate(i.created_at).getDate() >= 22).length,
+                penerbitanFiltered.filter(i => { const d = parseRecordDate(i.created_at); return d && d.getDate() <= 7; }).length,
+                penerbitanFiltered.filter(i => { const d = parseRecordDate(i.created_at); return d && d.getDate() >= 8 && d.getDate() <= 14; }).length,
+                penerbitanFiltered.filter(i => { const d = parseRecordDate(i.created_at); return d && d.getDate() >= 15 && d.getDate() <= 21; }).length,
+                penerbitanFiltered.filter(i => { const d = parseRecordDate(i.created_at); return d && d.getDate() >= 22; }).length,
             ];
 
             pembaruanChartData = [
-                pembaruanFiltered.filter(i => parseRecordDate(i.created_at).getDate() <= 7).length,
-                pembaruanFiltered.filter(i => { const date = parseRecordDate(i.created_at).getDate(); return date >= 8 && date <= 14; }).length,
-                pembaruanFiltered.filter(i => { const date = parseRecordDate(i.created_at).getDate(); return date >= 15 && date <= 21; }).length,
-                pembaruanFiltered.filter(i => parseRecordDate(i.created_at).getDate() >= 22).length,
+                pembaruanFiltered.filter(i => { const d = parseRecordDate(i.created_at); return d && d.getDate() <= 7; }).length,
+                pembaruanFiltered.filter(i => { const d = parseRecordDate(i.created_at); return d && d.getDate() >= 8 && d.getDate() <= 14; }).length,
+                pembaruanFiltered.filter(i => { const d = parseRecordDate(i.created_at); return d && d.getDate() >= 15 && d.getDate() <= 21; }).length,
+                pembaruanFiltered.filter(i => { const d = parseRecordDate(i.created_at); return d && d.getDate() >= 22; }).length,
             ];
         }
 
