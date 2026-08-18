@@ -158,6 +158,39 @@
         </div>
 
         {{-- ============================================================
+            BANNER NOTIFIKASI WHATSAPP PEMOHON (Saat Status Berubah)
+        ============================================================ --}}
+        @if(session('applicant_wa_url'))
+            <div id="applicant-wa-banner" class="relative mb-6 p-4 sm:p-5 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl text-white shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in border border-emerald-400 no-print transition-all duration-500 overflow-hidden">
+                {{-- Progress bar timer 1 menit (60 detik) --}}
+                <div class="absolute bottom-0 left-0 h-1 bg-white/40 transition-all ease-linear" id="wa-banner-progress" style="width: 0%; transition: width 60s linear;"></div>
+
+                <div class="flex items-center gap-3.5">
+                    <div class="w-11 h-11 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 shadow-inner">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-extrabold text-sm sm:text-base tracking-tight">Kirim Notifikasi Status ke WhatsApp Pemohon</h4>
+                        <p class="text-xs text-emerald-100 mt-0.5">
+                            Pemohon: <strong class="text-white">{{ session('applicant_name') }}</strong> ({{ session('applicant_phone') }}) &bull; Status: <span class="px-2 py-0.5 bg-white/20 rounded-md font-bold text-white">{{ session('applicant_status') }}</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <a href="{{ session('applicant_wa_url') }}" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-emerald-800 hover:bg-emerald-50 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 active:scale-95">
+                        <span>Buka WhatsApp & Kirim</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        @endif
+
+        {{-- ============================================================
             TAB PANEL 1: DASHBOARD PENERBITAN (ACTIVE BY DEFAULT)
         ============================================================ --}}
         <div id="panel-penerbitan" class="tab-panel space-y-6">
@@ -264,11 +297,43 @@
                             <tr class="hover:bg-slate-50/50 transition-colors row-penerbitan" data-date="{{ date('Y-m-d', strtotime($item['created_at'])) }}" data-timestamp="{{ strtotime($item['created_at']) }}" data-status="{{ $item['status'] }}">
                                 <td class="p-4 text-center text-slate-400 font-mono">{{ $index + 1 }}</td>
                                 <td class="p-4 font-bold text-slate-900 nama-pemohon">{{ $item['nama_lengkap'] }}</td>
-                                <td class="p-4 font-mono text-slate-600 text-xs">{{ $item['nik'] }}</td>
-                                <td class="p-4 font-mono text-slate-600 text-xs">{{ $item['nip'] }}</td>
+                                <td class="p-4 font-mono text-slate-600 text-xs whitespace-nowrap">
+                                    <div class="inline-flex items-center gap-1.5 bg-slate-100/90 px-2.5 py-1 rounded-lg border border-slate-200">
+                                        <span>{{ $item['nik'] }}</span>
+                                        <button type="button" onclick="copyToClipboard('{{ $item['nik'] }}', this)" title="Salin NIK" class="text-slate-400 hover:text-indigo-600 transition-colors p-0.5 rounded cursor-pointer">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="p-4 font-mono text-slate-600 text-xs whitespace-nowrap">
+                                    <div class="inline-flex items-center gap-1.5 bg-slate-100/90 px-2.5 py-1 rounded-lg border border-slate-200">
+                                        <span>{{ $item['nip'] }}</span>
+                                        <button type="button" onclick="copyToClipboard('{{ $item['nip'] }}', this)" title="Salin NIP" class="text-slate-400 hover:text-indigo-600 transition-colors p-0.5 rounded cursor-pointer">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
                                 <td class="p-4 text-xs space-y-1">
                                     <div class="font-semibold text-slate-900">{{ $item['email'] }}</div>
-                                    <div class="text-slate-400 font-mono text-[11px]">{{ $item['no_telepon'] ?? '-' }}</div>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-slate-500 font-mono text-[11px]">{{ $item['no_telepon'] ?? '-' }}</span>
+                                        @if(!empty($item['no_telepon']))
+                                            @php
+                                                $waRaw = preg_replace('/[^0-9]/', '', $item['no_telepon']);
+                                                if (str_starts_with($waRaw, '0')) $waRaw = '62' . substr($waRaw, 1);
+                                                elseif (!str_starts_with($waRaw, '62') && !empty($waRaw)) $waRaw = '62' . $waRaw;
+                                            @endphp
+                                            <a href="https://wa.me/{{ $waRaw }}?text={{ urlencode('Halo Bapak/Ibu ' . $item['nama_lengkap'] . ', terkait pengajuan Sertifikasi Elektronik Anda di Diskominfo Mamasa.') }}" 
+                                                target="_blank" rel="noopener noreferrer"
+                                                class="inline-flex items-center gap-0.5 text-[10px] text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-1.5 py-0.5 rounded font-bold transition-colors" title="Chat WhatsApp Pemohon">
+                                                <span>WA</span>
+                                            </a>
+                                        @endif
+                                    </div>
                                     <div class="text-slate-400 font-medium">{{ $item['instansi'] }}</div>
                                 </td>
                                 <td class="p-4 text-xs font-semibold text-slate-600">{{ $item['jabatan'] }}</td>
@@ -295,43 +360,49 @@
                                 <td class="p-4">
                                     <div class="flex flex-wrap gap-1.5 justify-center">
                                         @if(!empty($item['surat_permohonan']))
-                                            <a href="{{ asset('storage/' . $item['surat_permohonan']) }}" target="_blank"
-                                                title="Surat Permohonan"
-                                                class="inline-flex items-center gap-1 text-[11px] text-blue-700 font-semibold bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-1 rounded-md transition-colors">
+                                            <button type="button"
+                                                onclick="openDocViewer('{{ asset('storage/' . $item['surat_permohonan']) }}', 'Surat Permohonan Penerbitan - {{ addslashes($item['nama_lengkap']) }}', 'pdf')"
+                                                title="Pratinjau Surat Permohonan"
+                                                class="inline-flex items-center gap-1 text-[11px] text-blue-700 font-semibold bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-1 rounded-md transition-colors cursor-pointer">
                                                 <svg class="w-3 h-3 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
                                                 <span>Permohonan</span>
-                                            </a>
+                                            </button>
                                         @endif
 
                                         @if(!empty($item['surat_rekomendasi']))
-                                            <a href="{{ asset('storage/' . $item['surat_rekomendasi']) }}" target="_blank"
-                                                title="Surat Rekomendasi Unit Kerja"
-                                                class="inline-flex items-center gap-1 text-[11px] text-purple-700 font-semibold bg-purple-50 hover:bg-purple-100 border border-purple-200 px-2 py-1 rounded-md transition-colors">
+                                            <button type="button"
+                                                onclick="openDocViewer('{{ asset('storage/' . $item['surat_rekomendasi']) }}', 'Surat Rekomendasi - {{ addslashes($item['nama_lengkap']) }}', 'pdf')"
+                                                title="Pratinjau Surat Rekomendasi"
+                                                class="inline-flex items-center gap-1 text-[11px] text-purple-700 font-semibold bg-purple-50 hover:bg-purple-100 border border-purple-200 px-2 py-1 rounded-md transition-colors cursor-pointer">
                                                 <svg class="w-3 h-3 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
                                                 <span>Rekomendasi</span>
-                                            </a>
+                                            </button>
                                         @endif
 
                                         @if(!empty($item['foto_ktp']))
-                                            <a href="{{ asset('storage/' . $item['foto_ktp']) }}" target="_blank"
-                                                title="Foto KTP"
-                                                class="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-semibold bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-1 rounded-md transition-colors">
+                                            <button type="button"
+                                                onclick="openDocViewer('{{ asset('storage/' . $item['foto_ktp']) }}', 'Foto KTP - {{ addslashes($item['nama_lengkap']) }}', 'image')"
+                                                title="Pratinjau Foto KTP"
+                                                class="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-semibold bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-1 rounded-md transition-colors cursor-pointer">
                                                 <svg class="w-3 h-3 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                 </svg>
                                                 <span>Foto KTP</span>
-                                            </a>
+                                            </button>
                                         @endif
 
                                         @if(empty($item['surat_permohonan']) && empty($item['surat_rekomendasi']) && empty($item['foto_ktp']) && !empty($item['dokumen']))
-                                            <a href="{{ asset('storage/' . $item['dokumen']) }}" target="_blank"
-                                                class="inline-flex items-center gap-1 text-[11px] text-slate-700 font-semibold bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded-md transition-colors">
+                                            <button type="button"
+                                                onclick="openDocViewer('{{ asset('storage/' . $item['dokumen']) }}', 'Dokumen - {{ addslashes($item['nama_lengkap']) }}', 'pdf')"
+                                                class="inline-flex items-center gap-1 text-[11px] text-slate-700 font-semibold bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded-md transition-colors cursor-pointer">
                                                 <span>Dokumen Legacy</span>
-                                            </a>
+                                            </button>
                                         @endif
 
                                         @if(empty($item['surat_permohonan']) && empty($item['surat_rekomendasi']) && empty($item['foto_ktp']) && empty($item['dokumen']))
@@ -481,11 +552,51 @@
                             <tr class="hover:bg-slate-50/50 transition-colors row-pembaruan" data-date="{{ date('Y-m-d', strtotime($item['created_at'])) }}" data-timestamp="{{ strtotime($item['created_at']) }}" data-status="{{ $item['status'] }}">
                                 <td class="p-4 text-center text-slate-400 font-mono">{{ $index + 1 }}</td>
                                 <td class="p-4 font-bold text-slate-900 nama-pemohon">{{ $item['nama_lengkap'] }}</td>
-                                <td class="p-4 font-mono text-slate-600 text-xs">{{ $item['nik'] ?? '-' }}</td>
-                                <td class="p-4 font-mono text-slate-600 text-xs">{{ $item['nip'] ?? '-' }}</td>
+                                <td class="p-4 font-mono text-slate-600 text-xs whitespace-nowrap">
+                                    @if(!empty($item['nik']))
+                                        <div class="inline-flex items-center gap-1.5 bg-slate-100/90 px-2.5 py-1 rounded-lg border border-slate-200">
+                                            <span>{{ $item['nik'] }}</span>
+                                            <button type="button" onclick="copyToClipboard('{{ $item['nik'] }}', this)" title="Salin NIK" class="text-slate-400 hover:text-indigo-600 transition-colors p-0.5 rounded cursor-pointer">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    @else
+                                        <span class="text-slate-400 font-medium">-</span>
+                                    @endif
+                                </td>
+                                <td class="p-4 font-mono text-slate-600 text-xs whitespace-nowrap">
+                                    @if(!empty($item['nip']))
+                                        <div class="inline-flex items-center gap-1.5 bg-slate-100/90 px-2.5 py-1 rounded-lg border border-slate-200">
+                                            <span>{{ $item['nip'] }}</span>
+                                            <button type="button" onclick="copyToClipboard('{{ $item['nip'] }}', this)" title="Salin NIP" class="text-slate-400 hover:text-indigo-600 transition-colors p-0.5 rounded cursor-pointer">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    @else
+                                        <span class="text-slate-400 font-medium">-</span>
+                                    @endif
+                                </td>
                                 <td class="p-4 text-xs space-y-1">
                                     <div class="font-semibold text-slate-900">{{ $item['email'] }}</div>
-                                    <div class="text-slate-400 font-mono text-[11px]">{{ $item['no_telepon'] ?? '-' }}</div>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-slate-500 font-mono text-[11px]">{{ $item['no_telepon'] ?? '-' }}</span>
+                                        @if(!empty($item['no_telepon']))
+                                            @php
+                                                $waRaw2 = preg_replace('/[^0-9]/', '', $item['no_telepon']);
+                                                if (str_starts_with($waRaw2, '0')) $waRaw2 = '62' . substr($waRaw2, 1);
+                                                elseif (!str_starts_with($waRaw2, '62') && !empty($waRaw2)) $waRaw2 = '62' . $waRaw2;
+                                            @endphp
+                                            <a href="https://wa.me/{{ $waRaw2 }}?text={{ urlencode('Halo Bapak/Ibu ' . $item['nama_lengkap'] . ', terkait pengajuan Pembaruan Sertifikat Elektronik Anda di Diskominfo Mamasa.') }}" 
+                                                target="_blank" rel="noopener noreferrer"
+                                                class="inline-flex items-center gap-0.5 text-[10px] text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-1.5 py-0.5 rounded font-bold transition-colors" title="Chat WhatsApp Pemohon">
+                                                <span>WA</span>
+                                            </a>
+                                        @endif
+                                    </div>
                                     <div class="text-slate-400 font-medium">{{ $item['instansi'] ?? '-' }}</div>
                                 </td>
                                 <td class="p-4 text-xs font-semibold text-slate-600">{{ $item['jabatan'] ?? '-' }}</td>
@@ -512,36 +623,41 @@
                                 <td class="p-4">
                                     <div class="flex flex-wrap gap-1.5 justify-center">
                                         @if(!empty($item['surat_permohonan']))
-                                            <a href="{{ asset('storage/' . $item['surat_permohonan']) }}" target="_blank"
-                                                title="Surat Permohonan"
-                                                class="inline-flex items-center gap-1 text-[11px] text-blue-700 font-semibold bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-1 rounded-md transition-colors">
+                                            <button type="button"
+                                                onclick="openDocViewer('{{ asset('storage/' . $item['surat_permohonan']) }}', 'Surat Permohonan Pembaruan - {{ addslashes($item['nama_lengkap']) }}', 'pdf')"
+                                                title="Pratinjau Surat Permohonan"
+                                                class="inline-flex items-center gap-1 text-[11px] text-blue-700 font-semibold bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-1 rounded-md transition-colors cursor-pointer">
                                                 <svg class="w-3 h-3 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
                                                 <span>Permohonan</span>
-                                            </a>
+                                            </button>
                                         @endif
 
                                         @if(!empty($item['surat_rekomendasi']))
-                                            <a href="{{ asset('storage/' . $item['surat_rekomendasi']) }}" target="_blank"
-                                                title="Surat Rekomendasi Unit Kerja"
-                                                class="inline-flex items-center gap-1 text-[11px] text-purple-700 font-semibold bg-purple-50 hover:bg-purple-100 border border-purple-200 px-2 py-1 rounded-md transition-colors">
+                                            <button type="button"
+                                                onclick="openDocViewer('{{ asset('storage/' . $item['surat_rekomendasi']) }}', 'Surat Rekomendasi - {{ addslashes($item['nama_lengkap']) }}', 'pdf')"
+                                                title="Pratinjau Surat Rekomendasi"
+                                                class="inline-flex items-center gap-1 text-[11px] text-purple-700 font-semibold bg-purple-50 hover:bg-purple-100 border border-purple-200 px-2 py-1 rounded-md transition-colors cursor-pointer">
                                                 <svg class="w-3 h-3 text-purple-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
                                                 <span>Rekomendasi</span>
-                                            </a>
+                                            </button>
                                         @endif
 
                                         @if(!empty($item['foto_ktp']))
-                                            <a href="{{ asset('storage/' . $item['foto_ktp']) }}" target="_blank"
-                                                title="Foto KTP"
-                                                class="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-semibold bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-1 rounded-md transition-colors">
+                                            <button type="button"
+                                                onclick="openDocViewer('{{ asset('storage/' . $item['foto_ktp']) }}', 'Foto KTP - {{ addslashes($item['nama_lengkap']) }}', 'image')"
+                                                title="Pratinjau Foto KTP"
+                                                class="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-semibold bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2 py-1 rounded-md transition-colors cursor-pointer">
                                                 <svg class="w-3 h-3 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                 </svg>
                                                 <span>Foto KTP</span>
-                                            </a>
+                                            </button>
                                         @endif
 
                                         @if(empty($item['surat_permohonan']) && empty($item['surat_rekomendasi']) && empty($item['foto_ktp']))
@@ -684,9 +800,23 @@
                                 <td class="p-4 font-bold text-slate-900 nama-pemohon">
                                     {{ $item->nama }}
                                 </td>
-                                <td class="p-4 font-mono text-[11px] text-slate-600">
-                                    <div class="font-semibold text-slate-800">NIP: {{ $item->nip }}</div>
-                                    <div class="text-slate-400 text-[10px]">NIK: {{ $item->nik }}</div>
+                                <td class="p-4 font-mono text-[11px] text-slate-600 space-y-1">
+                                    <div class="inline-flex items-center gap-1.5 bg-slate-100/90 px-2 py-0.5 rounded-lg border border-slate-200">
+                                        <span class="font-semibold text-slate-800">NIP: {{ $item->nip }}</span>
+                                        <button type="button" onclick="copyToClipboard('{{ $item->nip }}', this)" title="Salin NIP" class="text-slate-400 hover:text-indigo-600 transition-colors p-0.5 rounded cursor-pointer">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div class="inline-flex items-center gap-1.5 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">
+                                        <span class="text-slate-500 text-[10px]">NIK: {{ $item->nik }}</span>
+                                        <button type="button" onclick="copyToClipboard('{{ $item->nik }}', this)" title="Salin NIK" class="text-slate-400 hover:text-indigo-600 transition-colors p-0.5 rounded cursor-pointer">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </td>
                                 <td class="p-4 text-slate-700 font-medium">
                                     {{ $item->unit_kerja }}
@@ -1312,6 +1442,50 @@
         </form>
     </div>
 </div>
+
+{{-- ================================================================
+    MODAL IN-BROWSER DOCUMENT & PDF VIEWER
+================================================================ --}}
+<div id="modal-document-viewer" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-slate-950/75 backdrop-blur-xs transition-opacity duration-200 no-print p-3 sm:p-6">
+    <div class="bg-white rounded-2xl max-w-5xl w-full flex flex-col max-h-[92vh] shadow-2xl border border-slate-200 transform transition-all animate-fade-in overflow-hidden">
+        {{-- Header Modal --}}
+        <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 bg-slate-50/90">
+            <div class="flex items-center gap-3 overflow-hidden">
+                <div class="w-9 h-9 bg-indigo-100 text-indigo-700 rounded-xl flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <div class="truncate">
+                    <h3 id="doc-viewer-title" class="text-sm font-extrabold text-slate-800 truncate">Pratinjau Dokumen</h3>
+                    <p class="text-[11px] text-slate-500">Pratinjau langsung di dalam browser</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <a id="doc-viewer-tab-link" href="#" target="_blank" rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-xl transition-colors" title="Buka berkas di Tab Baru">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    <span class="hidden sm:inline">Buka Tab Baru</span>
+                </a>
+                <button type="button" onclick="closeDocViewer()" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-xl transition-colors cursor-pointer" title="Tutup (ESC)">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        {{-- Content Area --}}
+        <div class="p-3 sm:p-4 flex-1 overflow-auto bg-slate-900/5 flex items-center justify-center min-h-[450px]">
+            <iframe id="doc-viewer-iframe" class="w-full h-[72vh] rounded-xl border border-slate-200 bg-white hidden" src=""></iframe>
+            <div id="doc-viewer-img-container" class="w-full h-[72vh] flex items-center justify-center overflow-auto hidden">
+                <img id="doc-viewer-img" src="" alt="Pratinjau Foto" class="max-h-full max-w-full rounded-xl object-contain shadow-md bg-white p-2 border border-slate-200">
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -1433,6 +1607,180 @@
     }
 
     // ------------------------------------------------------------------
+    // WHATSAPP APPLICANT NOTIFICATION BANNER (Auto-dismiss 1 menit / 60 detik)
+    // ------------------------------------------------------------------
+    function dismissWaBanner() {
+        const banner = document.getElementById('applicant-wa-banner');
+        if (!banner) return;
+        banner.style.opacity = '0';
+        banner.style.transform = 'translateY(-10px)';
+        banner.style.maxHeight = '0px';
+        banner.style.marginBottom = '0px';
+        banner.style.paddingTop = '0px';
+        banner.style.paddingBottom = '0px';
+        setTimeout(() => {
+            if (banner && banner.parentNode) {
+                banner.parentNode.removeChild(banner);
+            }
+        }, 500);
+    }
+
+    // Jalankan timer 1 menit (60.000 ms) saat banner WhatsApp pemohon muncul
+    const waBannerEl = document.getElementById('applicant-wa-banner');
+    if (waBannerEl) {
+        setTimeout(() => {
+            const progressBar = document.getElementById('wa-banner-progress');
+            if (progressBar) progressBar.style.width = '100%';
+        }, 50);
+
+        // Auto dismiss setelah 1 menit (60 detik)
+        setTimeout(() => {
+            dismissWaBanner();
+        }, 60000);
+    }
+
+    // ------------------------------------------------------------------
+    // MODAL IN-BROWSER DOCUMENT VIEWER HANDLERS
+    // ------------------------------------------------------------------
+    function openDocViewer(url, title, type) {
+        const modal = document.getElementById('modal-document-viewer');
+        const iframe = document.getElementById('doc-viewer-iframe');
+        const imgContainer = document.getElementById('doc-viewer-img-container');
+        const img = document.getElementById('doc-viewer-img');
+        const titleEl = document.getElementById('doc-viewer-title');
+        const tabLink = document.getElementById('doc-viewer-tab-link');
+
+        if (titleEl) titleEl.textContent = title || 'Pratinjau Dokumen';
+        if (tabLink) tabLink.href = url;
+
+        if (type === 'image') {
+            if (iframe) { iframe.src = ''; iframe.classList.add('hidden'); }
+            if (imgContainer && img) {
+                img.src = url;
+                imgContainer.classList.remove('hidden');
+            }
+        } else {
+            if (imgContainer) { imgContainer.classList.add('hidden'); }
+            if (iframe) {
+                iframe.src = url;
+                iframe.classList.remove('hidden');
+            }
+        }
+
+        if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeDocViewer() {
+        const modal = document.getElementById('modal-document-viewer');
+        const iframe = document.getElementById('doc-viewer-iframe');
+        const img = document.getElementById('doc-viewer-img');
+
+        if (iframe) iframe.src = '';
+        if (img) img.src = '';
+        if (modal) modal.classList.add('hidden');
+    }
+
+    // Escape key listener untuk menutup modal document viewer
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeDocViewer();
+            closeDetailAlasanModal();
+            closeLogoutModal();
+            closeGantiPasswordModal();
+        }
+    });
+
+    // ------------------------------------------------------------------
+    // COPY TO CLIPBOARD HANDLER (NIK & NIP)
+    // ------------------------------------------------------------------
+    function copyToClipboard(text, btnElement) {
+        if (!text || text === '-') return;
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(() => showCopySuccess(btnElement));
+        } else {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showCopySuccess(btnElement);
+            } catch (err) {
+                console.error('Gagal menyalin:', err);
+            }
+            textArea.remove();
+        }
+    }
+
+    function showCopySuccess(btnElement) {
+        if (!btnElement) return;
+        const originalHTML = btnElement.innerHTML;
+        btnElement.innerHTML = `<svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>`;
+        btnElement.setAttribute('title', 'Tersalin!');
+
+        setTimeout(() => {
+            btnElement.innerHTML = originalHTML;
+            btnElement.setAttribute('title', 'Salin');
+        }, 1500);
+    }
+
+    // ------------------------------------------------------------------
+    // DYNAMIC EXPORT LINKS SYNC (Search, Status & Date Filter)
+    // ------------------------------------------------------------------
+    function updateExportLinks(type) {
+        if (type === 'penerbitan') {
+            const search = document.getElementById('penerbitan-search-input')?.value || '';
+            const status = document.getElementById('penerbitan-status-filter')?.value || 'all';
+            const start = document.getElementById('penerbitan-start-date')?.value || '';
+            const end = document.getElementById('penerbitan-end-date')?.value || '';
+
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+            if (status && status !== 'all') params.append('status', status);
+            if (start) params.append('start_date', start);
+            if (end) params.append('end_date', end);
+
+            const qs = params.toString() ? '?' + params.toString() : '';
+            const btnExcel = document.getElementById('btn-export-excel');
+            const btnPdf = document.getElementById('btn-export-pdf');
+            if (btnExcel) btnExcel.href = "{{ route('admin.export.penerbitan.csv') }}" + qs;
+            if (btnPdf) btnPdf.href = "{{ route('admin.export.penerbitan.pdf') }}" + qs;
+        } else if (type === 'pembaruan') {
+            const search = document.getElementById('pembaruan-search-input')?.value || '';
+            const status = document.getElementById('pembaruan-status-filter')?.value || 'all';
+            const start = document.getElementById('pembaruan-start-date')?.value || '';
+            const end = document.getElementById('pembaruan-end-date')?.value || '';
+
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+            if (status && status !== 'all') params.append('status', status);
+            if (start) params.append('start_date', start);
+            if (end) params.append('end_date', end);
+
+            const qs = params.toString() ? '?' + params.toString() : '';
+            const btnExcel = document.getElementById('btn-export-pembaruan-excel');
+            const btnPdf = document.getElementById('btn-export-pembaruan-pdf');
+            if (btnExcel) btnExcel.href = "{{ route('admin.export.pembaruan.csv') }}" + qs;
+            if (btnPdf) btnPdf.href = "{{ route('admin.export.pembaruan.pdf') }}" + qs;
+        } else if (type === 'helpdesk') {
+            const search = document.getElementById('helpdesk-search-input')?.value || '';
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+
+            const qs = params.toString() ? '?' + params.toString() : '';
+            const btnExcel = document.getElementById('btn-export-helpdesk-excel');
+            const btnPdf = document.getElementById('btn-export-helpdesk-pdf');
+            if (btnExcel) btnExcel.href = "{{ route('admin.export.helpdesk.csv') }}" + qs;
+            if (btnPdf) btnPdf.href = "{{ route('admin.export.helpdesk.pdf') }}" + qs;
+        }
+    }
+
+    // ------------------------------------------------------------------
     // LIVE SEARCH, STATUS & RANGE DATE FILTER untuk Tab Penerbitan
     // ------------------------------------------------------------------
     function filterPenerbitanTable() {
@@ -1480,6 +1828,8 @@
                 row.style.display = "none";
             }
         });
+
+        updateExportLinks('penerbitan');
     }
 
     function resetFilters() {
@@ -1560,6 +1910,8 @@
                 row.style.display = "none";
             }
         });
+
+        updateExportLinks('pembaruan');
     }
 
     function resetPembaruanFilters() {
@@ -1583,6 +1935,8 @@
                 row.style.display = 'none';
             }
         });
+
+        updateExportLinks('helpdesk');
     }
 
     function sortPembaruanTable() {

@@ -124,7 +124,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Mengubah status pengajuan Penerbitan pada database MySQL.
+     * Mengubah status pengajuan Penerbitan pada database MySQL & Menyiapkan Notifikasi WhatsApp Pemohon.
      */
     public function updateStatusPenerbitan(Request $request, $id)
     {
@@ -135,11 +135,56 @@ class AdminController extends Controller
         $penerbitan = Penerbitan::findOrFail($id);
         $penerbitan->update(['status' => $request->status]);
 
-        return back()->with('active_tab', 'penerbitan')->with('success', 'Status pengajuan penerbitan berhasil diubah menjadi: ' . $request->status);
+        // Format nomor WhatsApp Pemohon (bersihkan karakter non-digit)
+        $rawPhone = $penerbitan->no_telepon ?? '';
+        $cleanPhone = preg_replace('/[^0-9]/', '', $rawPhone);
+        if (str_starts_with($cleanPhone, '0')) {
+            $cleanPhone = '62' . substr($cleanPhone, 1);
+        } elseif (!str_starts_with($cleanPhone, '62') && !empty($cleanPhone)) {
+            $cleanPhone = '62' . $cleanPhone;
+        }
+
+        $waUrl = null;
+        if (!empty($cleanPhone)) {
+            $statusText = strtoupper($request->status);
+            if ($request->status === 'Disetujui') {
+                $statusEmoji = '✅';
+                $statusDetail = "Berkas persyaratan Anda telah kami verifikasi dan dinyatakan *LENGKAP & DISETUJUI*.\n\nSaat ini proses penerbitan sertifikat elektronik Anda sedang kami teruskan ke sistem BSRE / Otoritas Sertifikat Digital. Kami akan menginfokan kembali setelah sertifikat siap.";
+            } elseif ($request->status === 'Ditolak') {
+                $statusEmoji = '⚠️';
+                $statusDetail = "Mohon maaf, berkas pengajuan Anda berstatus *PERLU PERBAIKAN / DITOLAK*.\n\nSilakan periksa kembali keabsahan dan kejelasan berkas (Surat Permohonan, Surat Rekomendasi Unit Kerja, atau Foto KTP). Anda dapat menghubungi Helpdesk kami untuk informasi lebih lanjut.";
+            } else {
+                $statusEmoji = '⏳';
+                $statusDetail = "Pengajuan Anda saat ini berstatus *MENUNGGU VERIFIKASI (PENDING)*. Tim kami sedang memproses pemeriksaan berkas Anda.";
+            }
+
+            $waMessage = "Halo Bapak/Ibu *{$penerbitan->nama_lengkap}*,\n\n"
+                . "Kami dari *Dinas Komunikasi Informatika dan Persandian Kabupaten Mamasa* menginformasikan mengenai status pengajuan *PENERBITAN SERTIFIKAT ELEKTRONIK* Anda:\n\n"
+                . "📋 *Data Pemohon:*\n"
+                . "• Nama: {$penerbitan->nama_lengkap}\n"
+                . "• NIK: {$penerbitan->nik}\n"
+                . "• NIP: {$penerbitan->nip}\n"
+                . "• Unit Kerja: {$penerbitan->instansi}\n"
+                . "• Status Terbaru: *{$statusText}* {$statusEmoji}\n\n"
+                . "📝 *Keterangan:*\n"
+                . "{$statusDetail}\n\n"
+                . "Terima kasih atas kerja sama Anda.\n"
+                . "_Layanan Sertifikasi Elektronik Kab. Mamasa_";
+
+            $waUrl = "https://wa.me/{$cleanPhone}?text=" . urlencode($waMessage);
+        }
+
+        return back()
+            ->with('active_tab', 'penerbitan')
+            ->with('success', 'Status pengajuan penerbitan berhasil diubah menjadi: ' . $request->status)
+            ->with('applicant_wa_url', $waUrl)
+            ->with('applicant_name', $penerbitan->nama_lengkap)
+            ->with('applicant_phone', $penerbitan->no_telepon)
+            ->with('applicant_status', $request->status);
     }
 
     /**
-     * Mengubah status pengajuan Pembaruan pada database MySQL.
+     * Mengubah status pengajuan Pembaruan pada database MySQL & Menyiapkan Notifikasi WhatsApp Pemohon.
      */
     public function updateStatusPembaruan(Request $request, $id)
     {
@@ -150,7 +195,52 @@ class AdminController extends Controller
         $pembaruan = Pembaruan::findOrFail($id);
         $pembaruan->update(['status' => $request->status]);
 
-        return back()->with('active_tab', 'pembaruan')->with('success', 'Status pengajuan pembaruan berhasil diubah menjadi: ' . $request->status);
+        // Format nomor WhatsApp Pemohon
+        $rawPhone = $pembaruan->no_telepon ?? '';
+        $cleanPhone = preg_replace('/[^0-9]/', '', $rawPhone);
+        if (str_starts_with($cleanPhone, '0')) {
+            $cleanPhone = '62' . substr($cleanPhone, 1);
+        } elseif (!str_starts_with($cleanPhone, '62') && !empty($cleanPhone)) {
+            $cleanPhone = '62' . $cleanPhone;
+        }
+
+        $waUrl = null;
+        if (!empty($cleanPhone)) {
+            $statusText = strtoupper($request->status);
+            if ($request->status === 'Disetujui') {
+                $statusEmoji = '✅';
+                $statusDetail = "Berkas persyaratan Anda telah kami verifikasi dan dinyatakan *LENGKAP & DISETUJUI*.\n\nSaat ini proses pembaruan masa berlaku sertifikat elektronik Anda sedang kami proses ke sistem BSRE.";
+            } elseif ($request->status === 'Ditolak') {
+                $statusEmoji = '⚠️';
+                $statusDetail = "Mohon maaf, berkas pengajuan Anda berstatus *PERLU PERBAIKAN / DITOLAK*.\n\nSilakan periksa kembali berkas dan kelengkapan administrasi Anda atau hubungi Helpdesk kami.";
+            } else {
+                $statusEmoji = '⏳';
+                $statusDetail = "Pengajuan pembaruan sertifikat Anda saat ini berstatus *MENUNGGU VERIFIKASI (PENDING)*.";
+            }
+
+            $waMessage = "Halo Bapak/Ibu *{$pembaruan->nama_lengkap}*,\n\n"
+                . "Kami dari *Dinas Komunikasi Informatika dan Persandian Kabupaten Mamasa* menginformasikan mengenai status pengajuan *PEMBARUAN SERTIFIKAT ELEKTRONIK* Anda:\n\n"
+                . "📋 *Data Pemohon:*\n"
+                . "• Nama: {$pembaruan->nama_lengkap}\n"
+                . "• NIK: " . ($pembaruan->nik ?? '-') . "\n"
+                . "• NIP: " . ($pembaruan->nip ?? '-') . "\n"
+                . "• Unit Kerja: " . ($pembaruan->instansi ?? '-') . "\n"
+                . "• Status Terbaru: *{$statusText}* {$statusEmoji}\n\n"
+                . "📝 *Keterangan:*\n"
+                . "{$statusDetail}\n\n"
+                . "Terima kasih atas kerja sama Anda.\n"
+                . "_Layanan Sertifikasi Elektronik Kab. Mamasa_";
+
+            $waUrl = "https://wa.me/{$cleanPhone}?text=" . urlencode($waMessage);
+        }
+
+        return back()
+            ->with('active_tab', 'pembaruan')
+            ->with('success', 'Status pengajuan pembaruan berhasil diubah menjadi: ' . $request->status)
+            ->with('applicant_wa_url', $waUrl)
+            ->with('applicant_name', $pembaruan->nama_lengkap)
+            ->with('applicant_phone', $pembaruan->no_telepon)
+            ->with('applicant_status', $request->status);
     }
 
     /**
@@ -277,11 +367,112 @@ class AdminController extends Controller
     }
 
     /**
-     * Ekspor data Penerbitan dari database MySQL ke Excel (format CSV).
+     * Helper query filter untuk Penerbitan (Pencarian, Status, Tanggal).
      */
-    public function exportPenerbitanCSV()
+    protected function getFilteredPenerbitanQuery(Request $request)
     {
-        $data = Penerbitan::latest()->get();
+        $query = Penerbitan::latest();
+
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        if ($request->filled('search')) {
+            $s = trim($request->search);
+            $query->where(function ($q) use ($s) {
+                $q->where('nama_lengkap', 'like', "%{$s}%")
+                  ->orWhere('nik', 'like', "%{$s}%")
+                  ->orWhere('nip', 'like', "%{$s}%")
+                  ->orWhere('email', 'like', "%{$s}%")
+                  ->orWhere('instansi', 'like', "%{$s}%")
+                  ->orWhere('jabatan', 'like', "%{$s}%");
+            });
+        }
+
+        return $query;
+    }
+
+    /**
+     * Helper query filter untuk Pembaruan (Pencarian, Status, Tanggal).
+     */
+    protected function getFilteredPembaruanQuery(Request $request)
+    {
+        $query = Pembaruan::latest();
+
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        if ($request->filled('search')) {
+            $s = trim($request->search);
+            $query->where(function ($q) use ($s) {
+                $q->where('nama_lengkap', 'like', "%{$s}%")
+                  ->orWhere('nik', 'like', "%{$s}%")
+                  ->orWhere('nip', 'like', "%{$s}%")
+                  ->orWhere('email', 'like', "%{$s}%")
+                  ->orWhere('instansi', 'like', "%{$s}%")
+                  ->orWhere('jabatan', 'like', "%{$s}%");
+            });
+        }
+
+        return $query;
+    }
+
+    /**
+     * Helper query filter untuk Helpdesk (Pencarian, Status, Tanggal).
+     */
+    protected function getFilteredHelpdeskQuery(Request $request)
+    {
+        $query = Helpdesk::latest();
+
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        if ($request->filled('search')) {
+            $s = trim($request->search);
+            $query->where(function ($q) use ($s) {
+                $q->where('nama', 'like', "%{$s}%")
+                  ->orWhere('nik', 'like', "%{$s}%")
+                  ->orWhere('nip', 'like', "%{$s}%")
+                  ->orWhere('unit_kerja', 'like', "%{$s}%")
+                  ->orWhere('keterangan', 'like', "%{$s}%");
+            });
+        }
+
+        return $query;
+    }
+
+    /**
+     * Ekspor data Penerbitan dari database MySQL ke Excel (format CSV) dengan dukungan Filter.
+     */
+    public function exportPenerbitanCSV(Request $request)
+    {
+        $data = $this->getFilteredPenerbitanQuery($request)->get();
 
         $filename = 'laporan_penerbitan_sertifikat_' . date('Ymd_His') . '.csv';
 
@@ -328,11 +519,11 @@ class AdminController extends Controller
     }
 
     /**
-     * Ekspor data Pembaruan dari database MySQL ke Excel (format CSV).
+     * Ekspor data Pembaruan dari database MySQL ke Excel (format CSV) dengan dukungan Filter.
      */
-    public function exportPembaruanCSV()
+    public function exportPembaruanCSV(Request $request)
     {
-        $data = Pembaruan::latest()->get();
+        $data = $this->getFilteredPembaruanQuery($request)->get();
 
         $filename = 'laporan_pembaruan_sertifikat_' . date('Ymd_His') . '.csv';
 
@@ -379,11 +570,11 @@ class AdminController extends Controller
     }
 
     /**
-     * Ekspor data Helpdesk dari database MySQL ke Excel (format CSV).
+     * Ekspor data Helpdesk dari database MySQL ke Excel (format CSV) dengan dukungan Filter.
      */
-    public function exportHelpdeskCSV()
+    public function exportHelpdeskCSV(Request $request)
     {
-        $data = Helpdesk::latest()->get();
+        $data = $this->getFilteredHelpdeskQuery($request)->get();
 
         $filename = 'laporan_pertanyaan_helpdesk_' . date('Ymd_His') . '.csv';
 
@@ -424,11 +615,11 @@ class AdminController extends Controller
     }
 
     /**
-     * Ekspor data Pengajuan Penerbitan ke PDF resmi.
+     * Ekspor data Pengajuan Penerbitan ke PDF resmi dengan dukungan Filter.
      */
-    public function exportPenerbitanPDF()
+    public function exportPenerbitanPDF(Request $request)
     {
-        $data = Penerbitan::latest()->get();
+        $data = $this->getFilteredPenerbitanQuery($request)->get();
         $html = view('admin.pdf.penerbitan', compact('data'))->render();
 
         $options = new Options();
@@ -448,11 +639,11 @@ class AdminController extends Controller
     }
 
     /**
-     * Ekspor data Pengajuan Pembaruan ke PDF resmi.
+     * Ekspor data Pengajuan Pembaruan ke PDF resmi dengan dukungan Filter.
      */
-    public function exportPembaruanPDF()
+    public function exportPembaruanPDF(Request $request)
     {
-        $data = Pembaruan::latest()->get();
+        $data = $this->getFilteredPembaruanQuery($request)->get();
         $html = view('admin.pdf.pembaruan', compact('data'))->render();
 
         $options = new Options();
@@ -472,11 +663,11 @@ class AdminController extends Controller
     }
 
     /**
-     * Ekspor data Helpdesk ke PDF resmi.
+     * Ekspor data Helpdesk ke PDF resmi dengan dukungan Filter.
      */
-    public function exportHelpdeskPDF()
+    public function exportHelpdeskPDF(Request $request)
     {
-        $data = Helpdesk::latest()->get();
+        $data = $this->getFilteredHelpdeskQuery($request)->get();
         $html = view('admin.pdf.helpdesk', compact('data'))->render();
 
         $options = new Options();
