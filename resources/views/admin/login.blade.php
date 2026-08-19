@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="min-h-screen bg-slate-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
+    <div class="max-w-md w-full space-y-6">
         
         {{-- Card Utama Login --}}
         <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden animate-fade-in">
@@ -76,14 +76,12 @@
                 </button>
             </form>
 
-
-
         </div>
 
-        {{-- Kembali ke Beranda --}}
+        {{-- Tombol Kembali ke Beranda di Bawah Card --}}
         <div class="text-center">
-            <a href="{{ route('home') }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="{{ route('home') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-sm text-xs font-semibold text-slate-700 hover:text-indigo-700 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 <span>Kembali ke Beranda Utama</span>

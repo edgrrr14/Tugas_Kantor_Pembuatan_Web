@@ -122,6 +122,17 @@
                 </svg>
                 <span>5. Kelola Dokumen Syarat</span>
             </button>
+
+            <button onclick="switchTab('berita')" id="tab-btn-berita"
+                class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-left transition-all duration-200 cursor-pointer hover:bg-slate-800 hover:text-white text-slate-400">
+                <svg class="w-5 h-5 shrink-0 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                </svg>
+                <div class="flex items-center justify-between flex-1">
+                    <span>6. Berita & Pengumuman</span>
+                    <span class="px-2 py-0.5 bg-amber-500/20 text-amber-300 font-bold text-[10px] rounded-full">{{ $stats['totalBerita'] ?? 0 }}</span>
+                </div>
+            </button>
         </nav>
     </aside>
 
@@ -1182,6 +1193,178 @@
 
         </div>
 
+        {{-- ============================================================
+            TAB PANEL 6: KELOLA BERITA & PENGUMUMAN
+        ============================================================ --}}
+        <div id="panel-berita" class="tab-panel space-y-6 hidden">
+            
+            {{-- Header Action Bar Berita --}}
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
+                <div class="flex flex-wrap items-center gap-3 flex-1">
+                    {{-- Search Berita --}}
+                    <div class="relative min-w-[220px] flex-1 sm:flex-none">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </span>
+                        <input type="text" id="berita-search-input" onkeyup="filterBeritaTable()" placeholder="Cari judul artikel..."
+                            class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all font-medium">
+                    </div>
+
+                    {{-- Filter Kategori --}}
+                    <div class="min-w-[140px]">
+                        <select id="berita-kategori-filter" onchange="filterBeritaTable()"
+                            class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all cursor-pointer">
+                            <option value="all">Semua Kategori</option>
+                            <option value="Berita">Berita</option>
+                            <option value="Pengumuman">Pengumuman</option>
+                        </select>
+                    </div>
+
+                    {{-- Filter Status Tayang --}}
+                    <div class="min-w-[130px]">
+                        <select id="berita-status-filter" onchange="filterBeritaTable()"
+                            class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all cursor-pointer">
+                            <option value="all">Semua Status</option>
+                            <option value="published">🟢 Tayang</option>
+                            <option value="draft">⚪ Draf</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="button" onclick="openTambahBeritaModal()"
+                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl transition-all duration-200 shadow-sm hover:shadow-amber-200 cursor-pointer shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>Tambah Berita Baru</span>
+                </button>
+            </div>
+
+            {{-- Table Berita --}}
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-amber-50/40">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center font-bold text-xs shrink-0">
+                            📰
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">Daftar Berita & Pengumuman</h4>
+                            <span class="text-[11px] text-amber-700 font-medium">Kelola publikasi konten informasi publik</span>
+                        </div>
+                    </div>
+                    <span class="px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-extrabold rounded-full">
+                        {{ $beritaData->count() }} Artikel
+                    </span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs" id="table-berita">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
+                                <th class="p-4 text-center w-12">No</th>
+                                <th class="p-4 w-20 text-center">Gambar</th>
+                                <th class="p-4">Judul & Ringkasan</th>
+                                <th class="p-4 text-center w-28">Kategori</th>
+                                <th class="p-4 text-center w-36">Publikasi</th>
+                                <th class="p-4 text-center w-28">Status</th>
+                                <th class="p-4 text-center w-28 no-print">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse($beritaData as $index => $item)
+                            <tr class="hover:bg-slate-50/80 transition-colors row-berita"
+                                data-kategori="{{ $item->kategori }}"
+                                data-status="{{ $item->is_published ? 'published' : 'draft' }}">
+                                <td class="p-4 text-center text-slate-400 font-mono font-bold">{{ $index + 1 }}</td>
+                                <td class="p-4 text-center">
+                                    @if($item->gambar)
+                                        <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->judul }}"
+                                            class="w-14 h-11 object-cover rounded-lg border border-slate-200 mx-auto shadow-xs">
+                                    @else
+                                        <div class="w-14 h-11 bg-slate-100 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 mx-auto text-sm">
+                                            📰
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="p-4">
+                                    <div class="font-bold text-slate-900 text-sm leading-snug judul-berita">{{ $item->judul }}</div>
+                                    <div class="text-[11px] text-slate-500 mt-1 line-clamp-2 leading-relaxed">{{ $item->ringkasan }}</div>
+                                </td>
+                                <td class="p-4 text-center">
+                                    @if($item->kategori === 'Pengumuman')
+                                        <span class="inline-flex items-center px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full font-bold text-[10px]">
+                                            Pengumuman
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-full font-bold text-[10px]">
+                                            Berita
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="p-4 text-center text-[11px] text-slate-600">
+                                    <div class="font-semibold text-slate-800">{{ $item->formatted_date_time }}</div>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">{{ $item->penulis }}</div>
+                                </td>
+                                <td class="p-4 text-center">
+                                    <form action="{{ route('admin.berita.toggle', $item->id) }}" method="POST">
+                                        @csrf
+                                        @if($item->is_published)
+                                            @if($item->is_scheduled)
+                                                <button type="submit" title="Terjadwal tayang publik pada {{ $item->formatted_date_time }}. Klik untuk ubah jadi Draf."
+                                                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-full font-bold text-[10px] transition-colors cursor-pointer">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                                    Terjadwal
+                                                </button>
+                                            @else
+                                                <button type="submit" title="Klik untuk ubah jadi Draf"
+                                                    class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-full font-bold text-[10px] transition-colors cursor-pointer">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                                    Tayang
+                                                </button>
+                                            @endif
+                                        @else
+                                            <button type="submit" title="Klik untuk Publikasikan"
+                                                class="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 rounded-full font-bold text-[10px] transition-colors cursor-pointer">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                                Draf
+                                            </button>
+                                        @endif
+                                    </form>
+                                </td>
+                                <td class="p-4 text-center no-print">
+                                    <div class="flex items-center justify-center gap-1">
+                                        <button type="button" onclick="openEditBeritaModal({{ json_encode($item) }})"
+                                            class="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer" title="Edit Artikel">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </button>
+
+                                        <form action="{{ route('admin.berita.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus artikel berita ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer" title="Hapus Artikel">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="7" class="p-8 text-center text-slate-400">Belum ada berita atau pengumuman yang ditambahkan.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </main>
 
 </div>
@@ -1448,6 +1631,189 @@
 </div>
 
 {{-- ================================================================
+    MODAL TAMBAH BERITA / PENGUMUMAN
+================================================================ --}}
+<div id="modal-tambah-berita" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200 no-print p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-100 transform transition-all animate-fade-in max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center font-bold text-sm">
+                    📰
+                </div>
+                <h3 class="text-base font-extrabold text-slate-800">Tambah Berita / Pengumuman Baru</h3>
+            </div>
+            <button type="button" onclick="closeTambahBeritaModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <form action="{{ route('admin.berita.store') }}" method="POST" enctype="multipart/form-data" class="py-4 space-y-4">
+            @csrf
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Judul Artikel <span class="text-red-500">*</span></label>
+                <input type="text" name="judul" required placeholder="Masukkan judul berita atau pengumuman..."
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-amber-500 font-semibold">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Kategori <span class="text-red-500">*</span></label>
+                    <select name="kategori" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-amber-500">
+                        <option value="Berita">Berita</option>
+                        <option value="Pengumuman">Pengumuman</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal & Jam Publikasi</label>
+                    <input type="datetime-local" name="published_at" value="{{ date('Y-m-d\TH:i') }}" min="{{ date('Y-m-d\TH:i') }}"
+                        class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-amber-500">
+                    <span class="text-[10px] text-slate-400 mt-1 block">Tentukan tanggal & jam rilis. Berita tidak dapat diatur untuk tanggal sebelum hari ini.</span>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Ringkasan Singkat <span class="text-red-500">*</span></label>
+                <textarea name="ringkasan" rows="2" required placeholder="Tuliskan intisari/ringkasan singkat yang akan muncul pada kartu berita (maksimal 500 karakter)..."
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-amber-500 leading-relaxed"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Isi Konten Lengkap <span class="text-red-500">*</span></label>
+                <textarea name="konten" rows="6" required placeholder="Tuliskan isi artikel secara lengkap. Anda dapat menggunakan baris baru untuk paragraf..."
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-amber-500 leading-relaxed"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Gambar / Thumbnail (Opsional)</label>
+                    <input type="file" name="gambar" accept="image/jpeg,image/png,image/jpg,image/webp"
+                        class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs text-slate-700 file:mr-3 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100 cursor-pointer">
+                    <span class="text-[10px] text-slate-400 mt-1 block">Format: JPG, PNG, WEBP. Maks 5MB.</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Penulis / Sumber</label>
+                    <input type="text" name="penulis" value="Admin Diskominfo Mamasa"
+                        class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-amber-500">
+                </div>
+            </div>
+
+            <div class="p-3 bg-amber-50/60 border border-amber-200/80 rounded-xl flex items-center justify-between">
+                <label for="is_published_create" class="flex items-center gap-2 cursor-pointer select-none">
+                    <input type="checkbox" name="is_published" id="is_published_create" value="1" checked
+                        class="w-4 h-4 text-amber-600 rounded focus:ring-amber-500 border-slate-300">
+                    <span class="text-xs font-bold text-slate-800">Langsung Publikasikan (Status: Tayang)</span>
+                </label>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="closeTambahBeritaModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl">
+                    Batal
+                </button>
+                <button type="submit" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer">
+                    Simpan & Publikasikan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- ================================================================
+    MODAL EDIT BERITA / PENGUMUMAN
+================================================================ --}}
+<div id="modal-edit-berita" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-slate-900/60 backdrop-blur-xs transition-opacity duration-200 no-print p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-100 transform transition-all animate-fade-in max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center font-bold text-sm">
+                    ✏️
+                </div>
+                <h3 class="text-base font-extrabold text-slate-800">Edit Berita / Pengumuman</h3>
+            </div>
+        </div>
+
+        <form id="form-edit-berita" method="POST" enctype="multipart/form-data" class="py-4 space-y-4">
+            @csrf
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Judul Artikel <span class="text-red-500">*</span></label>
+                <input type="text" name="judul" id="edit_berita_judul" required
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-amber-500 font-semibold">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Kategori <span class="text-red-500">*</span></label>
+                    <select name="kategori" id="edit_berita_kategori" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-amber-500">
+                        <option value="Berita">Berita</option>
+                        <option value="Pengumuman">Pengumuman</option>
+                    </select>
+                </div>
+
+                <div id="wrapper_edit_published_at">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal & Jam Publikasi</label>
+                    <input type="datetime-local" name="published_at" id="edit_berita_published_at"
+                        class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-amber-500">
+                    <span class="text-[10px] text-slate-400 mt-1 block">Atur tanggal & jam rilis (tidak bisa memilih waktu di masa lalu).</span>
+                </div>
+
+                <div id="wrapper_edit_published_at_readonly" class="hidden p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700">
+                    <div class="font-bold text-slate-800">Tanggal Publikasi:</div>
+                    <div id="edit_published_at_text" class="font-semibold text-amber-800 mt-0.5"></div>
+                    <div class="text-[10px] text-slate-400 mt-1">Artikel ini sudah tayang. Tanggal & jam publikasi awal tetap dipertahankan.</div>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Ringkasan Singkat <span class="text-red-500">*</span></label>
+                <textarea name="ringkasan" id="edit_berita_ringkasan" rows="2" required
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-amber-500 leading-relaxed"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Isi Konten Lengkap <span class="text-red-500">*</span></label>
+                <textarea name="konten" id="edit_berita_konten" rows="6" required
+                    class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-amber-500 leading-relaxed"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Ganti Gambar (Opsional)</label>
+                    <input type="file" name="gambar" accept="image/jpeg,image/png,image/jpg,image/webp"
+                        class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs text-slate-700 file:mr-3 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100 cursor-pointer">
+                    <span class="text-[10px] text-slate-400 mt-1 block">Biarkan kosong jika tidak ingin mengubah gambar.</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Penulis / Sumber</label>
+                    <input type="text" name="penulis" id="edit_berita_penulis"
+                        class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-xs text-slate-800 focus:ring-2 focus:ring-amber-500">
+                </div>
+            </div>
+
+            <div class="p-3 bg-amber-50/60 border border-amber-200/80 rounded-xl flex items-center justify-between">
+                <label for="is_published_edit" class="flex items-center gap-2 cursor-pointer select-none">
+                    <input type="checkbox" name="is_published" id="is_published_edit" value="1"
+                        class="w-4 h-4 text-amber-600 rounded focus:ring-amber-500 border-slate-300">
+                    <span class="text-xs font-bold text-slate-800">Status: Publikasikan (Tayang di Publik)</span>
+                </label>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="closeEditBeritaModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl">
+                    Batal
+                </button>
+                <button type="submit" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- ================================================================
     MODAL IN-BROWSER DOCUMENT & PDF VIEWER
 ================================================================ --}}
 <div id="modal-document-viewer" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-slate-950/75 backdrop-blur-xs transition-opacity duration-200 no-print p-3 sm:p-6">
@@ -1555,6 +1921,100 @@
     }
 
     // ------------------------------------------------------------------
+    // BERITA & PENGUMUMAN MODALS & FILTER HANDLER
+    // ------------------------------------------------------------------
+    function openTambahBeritaModal() {
+        const now = new Date();
+        const nowIso = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+        const input = document.querySelector('#modal-tambah-berita input[name="published_at"]');
+        if (input) {
+            input.min = nowIso;
+            input.value = nowIso;
+        }
+        document.getElementById('modal-tambah-berita').classList.remove('hidden');
+    }
+
+    function closeTambahBeritaModal() {
+        document.getElementById('modal-tambah-berita').classList.add('hidden');
+    }
+
+    function openEditBeritaModal(item) {
+        const form = document.getElementById('form-edit-berita');
+        form.action = "{{ url('/admin/berita') }}/" + item.id;
+        document.getElementById('edit_berita_judul').value = item.judul;
+        document.getElementById('edit_berita_kategori').value = item.kategori;
+        document.getElementById('edit_berita_ringkasan').value = item.ringkasan;
+        document.getElementById('edit_berita_konten').value = item.konten;
+        document.getElementById('edit_berita_penulis').value = item.penulis || 'Admin Diskominfo Mamasa';
+        document.getElementById('is_published_edit').checked = !!item.is_published;
+
+        const now = new Date();
+        const nowIso = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+        const pubDate = item.published_at ? new Date(item.published_at) : null;
+        const isAlreadyPublished = !!(item.is_published && pubDate && pubDate <= now);
+
+        const inputWrapper = document.getElementById('wrapper_edit_published_at');
+        const readonlyWrapper = document.getElementById('wrapper_edit_published_at_readonly');
+        const publishedInput = document.getElementById('edit_berita_published_at');
+        const publishedText = document.getElementById('edit_published_at_text');
+
+        if (isAlreadyPublished) {
+            // Jika sudah tayang -> ditiadakan input tanggal & jam publikasi
+            if (inputWrapper) inputWrapper.classList.add('hidden');
+            if (readonlyWrapper) readonlyWrapper.classList.remove('hidden');
+            if (publishedText) publishedText.textContent = item.formatted_date_time || (item.published_at ? item.published_at.substring(0, 16) : '-');
+            if (publishedInput) publishedInput.value = '';
+        } else {
+            // Jika belum tayang (Draf atau Terjadwal di masa depan) -> tampilkan input tanggal & jam
+            if (inputWrapper) inputWrapper.classList.remove('hidden');
+            if (readonlyWrapper) readonlyWrapper.classList.add('hidden');
+            
+            if (publishedInput) {
+                publishedInput.min = nowIso;
+                if (pubDate && pubDate > now) {
+                    const yyyy = pubDate.getFullYear();
+                    const mm = String(pubDate.getMonth() + 1).padStart(2, '0');
+                    const dd = String(pubDate.getDate()).padStart(2, '0');
+                    const hh = String(pubDate.getHours()).padStart(2, '0');
+                    const min = String(pubDate.getMinutes()).padStart(2, '0');
+                    publishedInput.value = `${yyyy}-${mm}-${dd}T${hh}:${min}`;
+                } else {
+                    publishedInput.value = nowIso;
+                }
+            }
+        }
+
+        document.getElementById('modal-edit-berita').classList.remove('hidden');
+    }
+
+    function closeEditBeritaModal() {
+        document.getElementById('modal-edit-berita').classList.add('hidden');
+    }
+
+    function filterBeritaTable() {
+        const searchQuery = (document.getElementById('berita-search-input')?.value || '').toLowerCase();
+        const kategoriFilter = document.getElementById('berita-kategori-filter')?.value || 'all';
+        const statusFilter = document.getElementById('berita-status-filter')?.value || 'all';
+
+        const rows = document.querySelectorAll('#table-berita tbody tr.row-berita');
+        rows.forEach(row => {
+            const judul = (row.querySelector('.judul-berita')?.textContent || '').toLowerCase();
+            const kategori = row.getAttribute('data-kategori');
+            const status = row.getAttribute('data-status');
+
+            const matchesSearch = !searchQuery || judul.includes(searchQuery);
+            const matchesKategori = (kategoriFilter === 'all') || (kategori === kategoriFilter);
+            const matchesStatus = (statusFilter === 'all') || (status === statusFilter);
+
+            if (matchesSearch && matchesKategori && matchesStatus) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // ------------------------------------------------------------------
     // TAB NAVIGATION SWITCHER
     // ------------------------------------------------------------------
     function switchTab(tabId) {
@@ -1597,7 +2057,8 @@
             'pembaruan': 'Dashboard Pembaruan',
             'helpdesk': 'Dashboard Pertanyaan Helpdesk',
             'statistik': 'Menu Infografis & Statistik',
-            'dokumen_syarat': 'Kelola Dokumen Persyaratan'
+            'dokumen_syarat': 'Kelola Dokumen Persyaratan',
+            'berita': 'Kelola Berita & Pengumuman'
         };
         const titleEl = document.getElementById('current-title-section');
         if (titleEl && titles[tabId]) {

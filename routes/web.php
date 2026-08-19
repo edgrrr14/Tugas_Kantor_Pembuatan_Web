@@ -104,9 +104,21 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::delete('/helpdesk/{id}', [AdminController::class, 'destroyHelpdesk'])->name('helpdesk.destroy');
 
         // Kelola Dokumen Syarat (Penerbitan & Pembaruan)
+        Route::get('/dokumen-syarat', function () {
+            return redirect()->route('admin.dashboard', ['#dokumen_syarat']);
+        });
         Route::post('/dokumen-syarat', [AdminController::class, 'storeDokumenSyarat'])->name('dokumen_syarat.store');
         Route::post('/dokumen-syarat/{id}', [AdminController::class, 'updateDokumenSyarat'])->name('dokumen_syarat.update');
         Route::delete('/dokumen-syarat/{id}', [AdminController::class, 'destroyDokumenSyarat'])->name('dokumen_syarat.destroy');
+
+        // Kelola Berita & Pengumuman
+        Route::get('/berita', function () {
+            return redirect()->route('admin.dashboard', ['#berita']);
+        });
+        Route::post('/berita', [AdminController::class, 'storeBerita'])->name('berita.store');
+        Route::post('/berita/{id}', [AdminController::class, 'updateBerita'])->name('berita.update');
+        Route::delete('/berita/{id}', [AdminController::class, 'destroyBerita'])->name('berita.destroy');
+        Route::post('/berita/{id}/toggle', [AdminController::class, 'toggleStatusBerita'])->name('berita.toggle');
 
         // Ekspor Data Laporan (Excel/CSV & PDF)
         Route::get('/export/penerbitan/csv', [AdminController::class, 'exportPenerbitanCSV'])->name('export.penerbitan.csv');

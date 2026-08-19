@@ -6,6 +6,7 @@ use App\Models\Penerbitan;
 use App\Models\Pembaruan;
 use App\Models\Helpdesk;
 use App\Models\DokumenSyarat;
+use App\Models\Berita;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -63,7 +64,16 @@ class CertificationController extends Controller
      */
     public function informasi()
     {
-        return view('informasi');
+        $beritaData = Berita::where('is_published', true)
+            ->where(function ($query) {
+                $query->whereNull('published_at')
+                      ->orWhere('published_at', '<=', now());
+            })
+            ->orderBy('published_at', 'desc')
+            ->latest()
+            ->get();
+
+        return view('informasi', compact('beritaData'));
     }
 
     // ===========================================================

@@ -6,8 +6,10 @@ use App\Models\Penerbitan;
 use App\Models\Pembaruan;
 use App\Models\Helpdesk;
 use App\Models\DokumenSyarat;
+use App\Models\Berita;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -80,6 +82,7 @@ class AdminController extends Controller
         $pembaruanData     = Pembaruan::latest()->get();
         $helpdeskData      = Helpdesk::latest()->get();
         $dokumenSyaratData = DokumenSyarat::latest()->get();
+        $beritaData        = Berita::latest()->get();
 
         // Total metrik utama real
         $totalPenerbitan = $penerbitanData->count();
@@ -90,6 +93,10 @@ class AdminController extends Controller
         $totalHelpdesk   = $helpdeskData->count();
         $helpdeskHariIni = Helpdesk::whereDate('created_at', date('Y-m-d'))->count();
         $helpdeskBaru    = $helpdeskData->where('status', 'Baru')->count();
+
+        // Berita Stats
+        $totalBerita     = $beritaData->count();
+        $beritaPublish   = $beritaData->where('is_published', true)->count();
 
         // Distribusi Status Real
         $statusDisetujui = $totalSelesai;
@@ -112,6 +119,8 @@ class AdminController extends Controller
             'totalHelpdesk'     => $totalHelpdesk,
             'helpdeskHariIni'   => $helpdeskHariIni,
             'helpdeskBaru'      => $helpdeskBaru,
+            'totalBerita'       => $totalBerita,
+            'beritaPublish'     => $beritaPublish,
             'statusDisetujui'   => $statusDisetujui,
             'statusPending'     => $statusPending,
             'statusDitolak'     => $statusDitolak,
@@ -120,7 +129,7 @@ class AdminController extends Controller
             'currentYear'       => $currentYear,
         ];
 
-        return view('admin.dashboard', compact('penerbitanData', 'pembaruanData', 'helpdeskData', 'dokumenSyaratData', 'stats'));
+        return view('admin.dashboard', compact('penerbitanData', 'pembaruanData', 'helpdeskData', 'dokumenSyaratData', 'beritaData', 'stats'));
     }
 
     /**
@@ -364,6 +373,185 @@ class AdminController extends Controller
         $dokumen->delete();
 
         return back()->with('active_tab', 'dokumen_syarat')->with('success', 'Dokumen syarat berhasil dihapus.');
+    }
+
+    /**
+     * Menyimpan Berita / Pengumuman Baru.
+     */
+    public function storeBerita(Request $request)
+    {
+        $request->validate([
+            'judul'        => 'required|string|max:255',
+            'kategori'     => 'required|in:Berita,Pengumuman',
+            'ringkasan'    => 'required|string|max:500',
+            'konten'       => 'required|string',
+            'gambar'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'penulis'      => 'nullable|string|max:100',
+            'published_at' => 'nullable|date',
+        ], [
+            'judul.required'     => 'Judul artikel wajib diisi.',
+            'kategori.required'  => 'Kategori artikel wajib dipilih.',
+            'ringkasan.required' => 'Ringkasan artikel wajib diisi.',
+            'konten.required'    => 'Isi konten artikel wajib diisi.',
+            'gambar.image'       => 'Berkas gambar harus berupa format gambar valid.',
+            'gambar.mimes'       => 'Format gambar yang didukung: JPEG, PNG, JPG, atau WEBP.',
+            'gambar.max'         => 'Ukuran gambar maksimal 5MB.',
+        ]);
+
+        if ($request->filled('published_at') && Carbon::parse($request->published_at)->lt(Carbon::now()->subMinutes(1))) {
+            return back()
+                ->withErrors(['published_at' => 'Tanggal dan jam publikasi tidak boleh di masa lalu (sebelum waktu saat ini).'])
+                ->withInput()
+                ->with('active_tab', 'berita');
+        }
+
+        $gambarPath = null;
+        if ($request->hasFile('gambar')) {
+            $gambarPath = $request->file('gambar')->store('berita', 'public');
+        }
+
+        $baseSlug = Str::slug($request->judul);
+        $slug = $baseSlug;
+        $count = 1;
+        while (Berita::where('slug', $slug)->exists()) {
+            $slug = "{$baseSlug}-{$count}";
+            $count++;
+        }
+
+        $publishedAt = $request->filled('published_at') 
+            ? Carbon::parse($request->published_at)->format('Y-m-d H:i:s') 
+            : Carbon::now()->format('Y-m-d H:i:s');
+
+        Berita::create([
+            'judul'        => $request->judul,
+            'slug'         => $slug,
+            'kategori'     => $request->kategori,
+            'ringkasan'    => $request->ringkasan,
+            'konten'       => $request->konten,
+            'gambar'       => $gambarPath,
+            'penulis'      => $request->filled('penulis') ? $request->penulis : 'Admin Diskominfo Mamasa',
+            'is_published' => $request->has('is_published') ? true : false,
+            'published_at' => $publishedAt,
+        ]);
+
+        $isScheduled = Carbon::parse($publishedAt)->isFuture();
+        $msg = $isScheduled
+            ? 'Artikel berita/pengumuman berhasil dijadwalkan dan akan otomatis tayang pada ' . Carbon::parse($publishedAt)->translatedFormat('d F Y, H:i') . '.'
+            : 'Artikel berita/pengumuman baru berhasil dipublikasikan!';
+
+        return back()->with('active_tab', 'berita')->with('success', $msg);
+    }
+
+    /**
+     * Memperbarui Berita / Pengumuman yang ada.
+     */
+    public function updateBerita(Request $request, $id)
+    {
+        $berita = Berita::findOrFail($id);
+
+        $request->validate([
+            'judul'        => 'required|string|max:255',
+            'kategori'     => 'required|in:Berita,Pengumuman',
+            'ringkasan'    => 'required|string|max:500',
+            'konten'       => 'required|string',
+            'gambar'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'penulis'      => 'nullable|string|max:100',
+            'published_at' => 'nullable|date',
+        ], [
+            'judul.required'     => 'Judul artikel wajib diisi.',
+            'kategori.required'  => 'Kategori artikel wajib dipilih.',
+            'ringkasan.required' => 'Ringkasan artikel wajib diisi.',
+            'konten.required'    => 'Isi konten artikel wajib diisi.',
+            'gambar.image'       => 'Berkas gambar harus berupa format gambar valid.',
+            'gambar.mimes'       => 'Format gambar yang didukung: JPEG, PNG, JPG, atau WEBP.',
+            'gambar.max'         => 'Ukuran gambar maksimal 5MB.',
+        ]);
+
+        // Cek apakah artikel sudah tayang
+        $isAlreadyPublished = $berita->is_published && $berita->published_at && Carbon::parse($berita->published_at)->lte(Carbon::now());
+
+        if ($isAlreadyPublished) {
+            // Jika sudah tayang, tanggal & jam publikasi awal tetap dipertahankan
+            $publishedAt = $berita->published_at;
+        } else {
+            // Jika draf atau masih terjadwal di masa depan
+            if ($request->filled('published_at')) {
+                $requestedTime = Carbon::parse($request->published_at);
+                if ($requestedTime->lt(Carbon::now()->subMinutes(1))) {
+                    return back()
+                        ->withErrors(['published_at' => 'Tanggal dan jam publikasi tidak boleh diatur ke waktu yang sudah lewat.'])
+                        ->withInput()
+                        ->with('active_tab', 'berita');
+                }
+                $publishedAt = $requestedTime->format('Y-m-d H:i:s');
+            } else {
+                $publishedAt = $berita->published_at ?: Carbon::now()->format('Y-m-d H:i:s');
+            }
+        }
+
+        $updateData = [
+            'judul'        => $request->judul,
+            'kategori'     => $request->kategori,
+            'ringkasan'    => $request->ringkasan,
+            'konten'       => $request->konten,
+            'penulis'      => $request->filled('penulis') ? $request->penulis : $berita->penulis,
+            'is_published' => $request->has('is_published') ? true : false,
+            'published_at' => $publishedAt,
+        ];
+
+        // Jika judul berubah, perbarui slug
+        if ($request->judul !== $berita->judul) {
+            $baseSlug = Str::slug($request->judul);
+            $slug = $baseSlug;
+            $count = 1;
+            while (Berita::where('slug', $slug)->where('id', '!=', $berita->id)->exists()) {
+                $slug = "{$baseSlug}-{$count}";
+                $count++;
+            }
+            $updateData['slug'] = $slug;
+        }
+
+        if ($request->hasFile('gambar')) {
+            // Hapus gambar lama jika ada
+            if ($berita->gambar) {
+                Storage::disk('public')->delete($berita->gambar);
+            }
+            $updateData['gambar'] = $request->file('gambar')->store('berita', 'public');
+        }
+
+        $berita->update($updateData);
+
+        return back()->with('active_tab', 'berita')->with('success', 'Artikel berita/pengumuman berhasil diperbarui!');
+    }
+
+    /**
+     * Menghapus Berita / Pengumuman.
+     */
+    public function destroyBerita($id)
+    {
+        $berita = Berita::findOrFail($id);
+
+        if ($berita->gambar) {
+            Storage::disk('public')->delete($berita->gambar);
+        }
+
+        $berita->delete();
+
+        return back()->with('active_tab', 'berita')->with('success', 'Artikel berita/pengumuman berhasil dihapus.');
+    }
+
+    /**
+     * Toggle Status Publikasi (Publish / Draf).
+     */
+    public function toggleStatusBerita($id)
+    {
+        $berita = Berita::findOrFail($id);
+        $berita->update([
+            'is_published' => !$berita->is_published,
+        ]);
+
+        $statusMsg = $berita->is_published ? 'dipublikasikan (Tayang)' : 'diubah menjadi Draf';
+        return back()->with('active_tab', 'berita')->with('success', "Status artikel berhasil {$statusMsg}.");
     }
 
     /**

@@ -90,8 +90,12 @@
                             <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">4</span>
                             <span>SOP Layanan</span>
                         </a>
-                        <a href="#faq" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
+                        <a href="#berita" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
                             <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">5</span>
+                            <span>Berita & Pengumuman</span>
+                        </a>
+                        <a href="#faq" class="flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600 py-1 transition-colors duration-200">
+                            <span class="w-5 h-5 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold shrink-0">6</span>
                             <span data-i18n="toc_4">FAQ</span>
                         </a>
                     </nav>
@@ -333,6 +337,97 @@
                         </div>
                     </article>
 
+                    {{-- ===== SECTION 5: BERITA & PENGUMUMAN ===== --}}
+                    <article id="berita" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 scroll-mt-24">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-800">Berita & Pengumuman</h2>
+                                <p class="text-xs text-slate-500 mt-0.5">Informasi terbaru seputar sertifikasi elektronik Pemkab Mamasa</p>
+                            </div>
+                        </div>
+
+                        {{-- Grid Berita (Kiri Kanan 2-2) --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="public-berita-grid">
+                            @forelse($beritaData ?? [] as $item)
+                                @php
+                                    $imgSrc = $item->gambar ? asset('storage/' . $item->gambar) : null;
+                                @endphp
+                                <div class="public-berita-card bg-slate-50/70 border border-slate-200 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-amber-300 hover:shadow-md transition-all duration-200 group"
+                                    data-kategori="{{ $item->kategori }}">
+                                    
+                                    {{-- Thumbnail / Header Gambar --}}
+                                    @if($imgSrc)
+                                        <div class="h-44 w-full overflow-hidden bg-slate-200 relative">
+                                            <img src="{{ $imgSrc }}" alt="{{ $item->judul }}"
+                                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                            <div class="absolute top-3 left-3">
+                                                @if($item->kategori === 'Pengumuman')
+                                                    <span class="px-2.5 py-1 bg-amber-500 text-white font-bold text-[10px] rounded-full shadow-xs">
+                                                        Pengumuman
+                                                    </span>
+                                                @else
+                                                    <span class="px-2.5 py-1 bg-blue-600 text-white font-bold text-[10px] rounded-full shadow-xs">
+                                                        Berita
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="h-28 bg-gradient-to-r {{ $item->kategori === 'Pengumuman' ? 'from-amber-500 to-amber-600' : 'from-blue-600 to-indigo-700' }} p-4 flex items-center justify-between text-white relative">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-lg">
+                                                    {{ $item->kategori === 'Pengumuman' ? '📢' : '📰' }}
+                                                </div>
+                                                <span class="px-2.5 py-0.5 bg-white/20 text-white font-bold text-[11px] rounded-full backdrop-blur-xs">
+                                                    {{ $item->kategori }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    {{-- Konten Ringkas Kartu --}}
+                                    <div class="p-5 flex-1 flex flex-col justify-between">
+                                        <div>
+                                            <div class="flex items-center justify-between gap-2 text-[11px] text-slate-400 font-semibold mb-2">
+                                                <span>{{ $item->penulis }}</span>
+                                                <span>{{ $item->formatted_date }}</span>
+                                            </div>
+
+                                            <h3 class="font-extrabold text-slate-900 text-sm leading-snug group-hover:text-amber-700 transition-colors line-clamp-2 mb-2">
+                                                {{ $item->judul }}
+                                            </h3>
+
+                                            <p class="text-xs text-slate-600 leading-relaxed line-clamp-3 mb-4">
+                                                {{ $item->ringkasan }}
+                                            </p>
+                                        </div>
+
+                                        {{-- Tombol Buka Modal Detail --}}
+                                        <div class="pt-3 border-t border-slate-200/60">
+                                            <button type="button" onclick="openBacaBeritaModal({{ json_encode($item) }})"
+                                                class="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-white hover:bg-amber-50 text-amber-700 hover:text-amber-800 border border-slate-200 hover:border-amber-200 rounded-xl text-xs font-bold transition-all duration-200 shadow-2xs group-hover:shadow-xs cursor-pointer">
+                                                <span>Baca Selengkapnya</span>
+                                                <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            @empty
+                                <div class="col-span-1 md:col-span-2 p-8 text-center bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-slate-400 text-xs">
+                                    Belum ada berita atau pengumuman yang dipublikasikan saat ini.
+                                </div>
+                            @endforelse
+                        </div>
+                    </article>
+
                     {{-- ===== SECTION 6: FAQ ===== --}}
                     <article id="faq" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 scroll-mt-24">
                         <div class="flex items-center gap-3 mb-6">
@@ -413,6 +508,53 @@
     </div>
 </div>
 
+{{-- ================================================================
+    MODAL BACA BERITA LENGKAP (IN-BROWSER NEWS READER)
+================================================================ --}}
+<div id="modal-baca-berita" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-slate-900/70 backdrop-blur-xs transition-opacity duration-200 p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full flex flex-col max-h-[90vh] shadow-2xl border border-slate-100 transform transition-all animate-fade-in overflow-hidden">
+        
+        {{-- Header Modal --}}
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
+            <div class="flex items-center gap-2">
+                <span id="modal-berita-kategori" class="px-2.5 py-0.5 rounded-full text-xs font-bold"></span>
+                <span id="modal-berita-tanggal" class="text-xs text-slate-500 font-medium"></span>
+            </div>
+            <button type="button" onclick="closeBacaBeritaModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        {{-- Konten Modal (Scrollable) --}}
+        <div class="p-6 overflow-y-auto space-y-4 flex-1">
+            <div id="modal-berita-img-container" class="hidden rounded-xl overflow-hidden max-h-72 w-full bg-slate-100 border border-slate-200">
+                <img id="modal-berita-img" src="" alt="Thumbnail" class="w-full h-full object-cover">
+            </div>
+
+            <h2 id="modal-berita-judul" class="text-xl sm:text-2xl font-black text-slate-900 leading-snug"></h2>
+
+            <div class="flex items-center gap-2 text-xs text-slate-500 pb-3 border-b border-slate-100">
+                <span class="font-semibold text-slate-700">Ditulis oleh:</span>
+                <span id="modal-berita-penulis"></span>
+            </div>
+
+            <div id="modal-berita-ringkasan" class="p-4 bg-amber-50/70 border border-amber-200/80 rounded-xl text-xs text-slate-800 italic leading-relaxed font-medium"></div>
+
+            <div id="modal-berita-konten" class="text-sm text-slate-700 leading-relaxed space-y-3 whitespace-pre-line pt-2"></div>
+        </div>
+
+        {{-- Footer Modal --}}
+        <div class="px-6 py-3.5 border-t border-slate-100 bg-slate-50 flex items-center justify-end">
+            <button type="button" onclick="closeBacaBeritaModal()"
+                class="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl shadow-xs cursor-pointer">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -442,6 +584,49 @@
             modal.classList.add('hidden');
             document.body.classList.remove('overflow-hidden');
             if (iframe) iframe.src = '';
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // MODAL BACA BERITA & FILTER HANDLERS
+    // ------------------------------------------------------------------
+    function openBacaBeritaModal(item) {
+        const modal = document.getElementById('modal-baca-berita');
+        if (!modal) return;
+
+        document.getElementById('modal-berita-judul').textContent = item.judul || '';
+        document.getElementById('modal-berita-tanggal').textContent = item.formatted_date || '';
+        document.getElementById('modal-berita-penulis').textContent = item.penulis || 'Admin Diskominfo Mamasa';
+        document.getElementById('modal-berita-ringkasan').textContent = item.ringkasan || '';
+        document.getElementById('modal-berita-konten').textContent = item.konten || '';
+
+        const katBadge = document.getElementById('modal-berita-kategori');
+        if (katBadge) {
+            katBadge.textContent = item.kategori === 'Pengumuman' ? 'Pengumuman' : 'Berita';
+            katBadge.className = item.kategori === 'Pengumuman' 
+                ? 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800' 
+                : 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800';
+        }
+
+        const imgContainer = document.getElementById('modal-berita-img-container');
+        const imgEl = document.getElementById('modal-berita-img');
+        if (item.gambar) {
+            imgEl.src = "{{ asset('storage') }}/" + item.gambar;
+            imgContainer.classList.remove('hidden');
+        } else {
+            imgContainer.classList.add('hidden');
+            imgEl.src = '';
+        }
+
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+    }
+
+    function closeBacaBeritaModal() {
+        const modal = document.getElementById('modal-baca-berita');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
         }
     }
 
